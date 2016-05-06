@@ -98,7 +98,11 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\ChatModel.cs" />
+    <Compile Include="Models\DataModel.cs" />
+    <Compile Include="Models\MessageModel.cs" />
     <Compile Include="Models\StubModel.cs" />
+    <Compile Include="Models\UserModel.cs" />
     <Compile Include="ViewModels\StubViewModel.cs" />
     <Compile Include="Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
