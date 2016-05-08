@@ -10,12 +10,19 @@ namespace WoChat.Models
 {
     class ChatModel
     {
+        private string chatid;
         private string chater, chatee;
         private string chaterId, chateeId;
         private string groupName;
         private string groupId;
         private Boolean isGroupChat;
         private List<MessageModel> messageList;
+
+        public string getID()
+        {
+            return chatid;
+        }
+
 
         public string lookUpForId(string name)
         {
@@ -58,10 +65,22 @@ namespace WoChat.Models
             return true;
         }
 
-        public ChatModel(string _chater , string _chatee , Boolean _isGroupChat)
+        public ChatModel(string _chater , string _chatee , Boolean _isGroupChat = false)
         {
+            this.chatid = Guid.NewGuid().ToString();
             this.chater = _chater;
             this.chatee = _chatee;
+            this.isGroupChat = _isGroupChat;
+            this.messageList = new List<MessageModel>();
+        }
+
+        public ChatModel(string _chater, string _chaterid , string _chatee, string _chateeid , Boolean _isGroupChat = false)
+        {
+            this.chatid = Guid.NewGuid().ToString();
+            this.chater = _chater;
+            this.chatee = _chatee;
+            this.chaterId = _chaterid;
+            this.chateeId = _chateeid;
             this.isGroupChat = _isGroupChat;
             this.messageList = new List<MessageModel>();
         }
