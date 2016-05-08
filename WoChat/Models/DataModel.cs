@@ -248,10 +248,14 @@ namespace WoChat.Models
             int index = getUserIndexByID(id);
             if (index != -1)
             {
-                users.ElementAt(index).addFriend(fid, 1);
-                return true;
+                //users.ElementAt(index).addFriend(fid, 1);
+                return users.ElementAt(index).addFriend(fid, 1); ;
             }
             else return false;
+        }
+        public static bool removeFriend(string id , string fid)
+        {
+
         }
 
 

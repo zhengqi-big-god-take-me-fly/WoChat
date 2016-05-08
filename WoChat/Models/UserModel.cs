@@ -84,42 +84,65 @@ namespace WoChat.Models
         public bool addFriend(string friend , int type)
         {
             string id = friend;
+            UserModel tempModel;
             if (type == 0)
             {
-                id = DataModel.getFriendByName(friend).getID();
+                tempModel = DataModel.getFriendByName(friend);
+                if (tempModel == null) return false;
+                id = tempModel.getID();
                 this.friends.Add(id);
                 this.chats.Add(addChatModel(friend , id));
             } else
             {
-                id = DataModel.getFriend(friend).getName();
+                tempModel = DataModel.getFriend(friend);
+                if (tempModel == null) return false;
+                id = tempModel.getName();
                 this.friends.Add(friend);
                 this.chats.Add(addChatModel(id, friend));
             }
             return true;
         }
-        public bool syncAddFriends(string friend, int type)
-        {
-            DataModel.addFriend(this.uid, friend);
 
-            return false;
+        public bool deleteFriend(string fid)
+        {
+            for (int i = 0; i < friends.Count; i++)
+            {
+                
+            }
         }
 
 
 
-        public void syncFriendsWithServer()
+        public bool setFriend(List<string> newFriends)
         {
-            this.friends = DataModel.getFriendIDs(this.uid);
+            this.friends = newFriends;
+            return true;
+        }
+        public bool setGroup(List<string> newGroups)
+        {
+            this.groups = newGroups;
+            return true;
+        }
+        public bool setChat(List<string> newChat)
+        {
+            this.chats = newChat;
+            return true;
         }
 
-        public void syncGroupsWithServer()
-        {
-            this.groups = DataModel.getGroupIDs(this.uid);
-        }
-        
-        public void syncChatsWithServer()
-        {
-            this.chats = DataModel.getChatIDs(this.uid);
-        }
+        //public void syncFriendsWithServer()
+        //{
+        //    this.friends = DataModel.getFriendIDs(this.uid);
+        //}
+
+        //public void syncGroupsWithServer()
+        //{
+        //    this.groups = DataModel.getGroupIDs(this.uid);
+        //}
+
+        //public void syncChatsWithServer()
+        //{
+        //    this.chats = DataModel.getChatIDs(this.uid);
+        //}
 
         public UserModel getFriendInfo(string friendID)
         {

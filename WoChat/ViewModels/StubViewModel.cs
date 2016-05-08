@@ -37,8 +37,30 @@ namespace WoChat.ViewModels {
         }
 
 
+        //从登陆注册注销开始
+        public bool login(string uname , string password)
+        {
+            if (isLogin) return false;
+            this.currentUser = DataModel.userLogin(uname, password);
+            if (this.currentUser == null) return false;
+            isLogin = true;
+            return true;
+        }
 
-        // 数据的初始化构造器
+        public bool register(string name, string password, string _nick, string _email, string _icon = "default", string _style = "None Yet!")
+        {
+            return DataModel.userRegister(name, password, _nick, _email, _icon = "default", _style = "None Yet!");
+        }
+
+        public bool logout()
+        {
+            if (!isLogin) return false;
+            this.isLogin = false;
+            this.currentUser = null;
+            return true;
+        }
+
+        // 登陆之后的数据初始化
         private bool initDatas()
         {
             if (!isLogin) return false;
@@ -48,13 +70,13 @@ namespace WoChat.ViewModels {
             {
                 this.friends.Add(fetchFriend(friendList.ElementAt(i)));
             }
-            // 添加群
+            //添加群
             List<string> groupList = currentUser.getGroups();
             for (int i = 0; i < groupList.Count; i++)
             {
                 this.groups.Add(fetchGroup(groupList.ElementAt(i)));
             }
-            // 添加聊天系列
+            //添加聊天系列
             List<string> chatList = currentUser.getChats();
             for (int i = 0; i < chatList.Count; i++)
             {
@@ -62,6 +84,70 @@ namespace WoChat.ViewModels {
             }
             return true;
         }
+
+        //正常情况的动作：
+            //添加删除好友
+        public bool addFriend(string fid)
+        {
+            if (!this.isLogin) return false;
+            if (DataModel.addFriend(this.currentUser.getID() , fid)) {
+                syncUserFriend();
+                syncUserChat();
+                return true;
+            } else
+            {
+                return false;
+            }
+        }
+
+        public bool removeFriend(string fid)
+        {
+            bool res = DataModel.removeFriend(this.currentUser.getID(), fid);
+            return false;
+        }
+
+
+
+
+        private void syncUserFriend()
+        {
+            this.currentUser.setFriend(DataModel.getFriendIDs(this.currentUser.getID()));
+        }
+        private void syncUserGroup()
+        {
+            this.currentUser.setGroup(DataModel.getGroupIDs(this.currentUser.getID()));
+        }
+        private void syncUserChat()
+        {
+            this.currentUser.setChat(DataModel.getChatIDs(this.currentUser.getID()));
+        }
+
+
+
+        //// 数据的初始化构造器
+        //private bool initDatas()
+        //{
+        //    if (!isLogin) return false;
+        //    // 添加朋友
+        //    List<string> friendList = currentUser.getFriends();
+        //    for (int i = 0; i < friendList.Count; i++)
+        //    {
+        //        this.friends.Add(fetchFriend(friendList.ElementAt(i)));
+        //    }
+        //    // 添加群
+        //    List<string> groupList = currentUser.getGroups();
+        //    for (int i = 0; i < groupList.Count; i++)
+        //    {
+        //        this.groups.Add(fetchGroup(groupList.ElementAt(i)));
+        //    }
+        //    // 添加聊天系列
+        //    List<string> chatList = currentUser.getChats();
+        //    for (int i = 0; i < chatList.Count; i++)
+        //    {
+        //        this.chats.Add(fetchChat(chatList.ElementAt(i)));
+        //    }
+        //    return true;
+        //}
 
 
         public bool fetchCurrentUser()
