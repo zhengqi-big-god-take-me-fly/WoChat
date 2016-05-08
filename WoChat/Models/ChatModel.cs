@@ -80,6 +80,12 @@ namespace WoChat.Models
             }
         }
 
+        public bool setGroupName(string name)
+        {
+            this.groupName = name;
+            return true;
+        }
+
         public string getGroupID()
         {
             if (!isGroupChat)
@@ -91,7 +97,11 @@ namespace WoChat.Models
             }
         }
 
-
+        public bool setGroupID(string gid)
+        {
+            this.groupId = gid;
+            return true;
+        }
 
         public string lookUpForId(string name)
         {
@@ -125,33 +135,17 @@ namespace WoChat.Models
 
 
 
-
-       public Boolean pushMessageLocal(string message)
+       public Boolean pushMessage(string message)
         {
             if (this.messageList == null)
             {
                 this.messageList = new List<MessageModel>();
             }
             // Start pushing process
-            MessageModel newMessage = new MessageModel(this.chater, this.chatee, message);
+            MessageModel newMessage = new MessageModel(this.chater , this.chatee , message , this.isGroupChat);
             this.messageList.Add(newMessage);
             return true;
         }
-
-        public Boolean pushMessageToServer(string message)
-        {
-            if (!this.isGroupChat)
-            {
-                DataModel.pushMessageToChat(message, this.chaterId, this.isGroupChat);
-            } else
-            {
-                DataModel.pushMessageToChat(message, this.groupId, this.isGroupChat);
-            }
-            return true;
-        }
-
-
-
 
 
 

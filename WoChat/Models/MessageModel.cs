@@ -41,7 +41,7 @@ namespace WoChat.Models
             return this.isGroupMessage;
         }
 
-        public MessageModel(string _sender , string _receiver , string message , bool _isGroupMessage)
+        public MessageModel(string _sender , string _receiver , string message , bool _isGroupMessage = false)
         {
             this.sender = _sender;
             this.senderId = DataModel.getFriendByName(_sender).getID();

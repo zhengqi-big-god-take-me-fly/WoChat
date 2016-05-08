@@ -21,6 +21,7 @@ namespace WoChat.ViewModels {
             return this.friends;
         }
 
+
         public ObservableCollection<GroupModel> getGroups()
         {
             return this.groups;
@@ -44,7 +45,7 @@ namespace WoChat.ViewModels {
             this.currentUser = DataModel.userLogin(uname, password);
             if (this.currentUser == null) return false;
             isLogin = true;
-            return true;
+            return initDatas();
         }
 
         public bool register(string name, string password, string _nick, string _email, string _icon = "default", string _style = "None Yet!")
@@ -94,16 +95,50 @@ namespace WoChat.ViewModels {
                 syncUserFriend();
                 syncUserChat();
                 return true;
-            } else
-            {
-                return false;
             }
+            return false;
         }
 
         public bool removeFriend(string fid)
         {
+            if (!this.isLogin) return false;
             bool res = DataModel.removeFriend(this.currentUser.getID(), fid);
-            return false;
+            if (res)
+            {
+                syncUserFriend();
+                syncUserChat();
+            }
+            return res;
+        }
+
+        public List<string> searchGroup(string gname)
+        {
+            return DataModel.searchGroups(gname);
+        }
+
+        //添加删除群
+        public bool joinOrCreateGroup(string gname , string gid = "NULL")
+        {
+            if (!this.isLogin) return false;
+            // Safe for a RUBBISH value of gid;
+            bool res = DataModel.addToGroupByID(this.currentUser.getID() , gid , gname);
+            if (res)
+            {
+                syncUserGroup();
+                syncUserChat();
+            }
+            return res;
+        }
+        public bool exitGroup(string gid)
+        {
+            if (!this.isLogin) return false;
+            bool res = DataModel.quitGroupByID(this.currentUser.getID() , gid);
+            if (res)
+            {
+                syncUserGroup();
+                syncUserChat();
+            }
+            return res;
         }
 
 
@@ -173,6 +208,11 @@ namespace WoChat.ViewModels {
         {
             this.currentUser = null;
             isLogin = false;
+            //在通讯录显示的（离线数据）
+            this.groups = new ObservableCollection<GroupModel>();
+            this.friends = new ObservableCollection<UserModel>();
+            this.chats = new ObservableCollection<ChatModel>();
+
         }
     }
 }

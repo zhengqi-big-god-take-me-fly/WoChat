@@ -84,7 +84,6 @@ namespace WoChat.Models
         public bool addFriend(string fid)
         {
             this.friends.Add(fid);
-                //this.chats.Add(addChatModel(id, friend));
             return true;
         }
 

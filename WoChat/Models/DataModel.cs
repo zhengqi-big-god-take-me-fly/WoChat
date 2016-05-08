@@ -203,7 +203,7 @@ namespace WoChat.Models
             return ret;
         }
 
-        private bool createGroup(int uindex , string gname , string _gicon = "default", string _gstyle = "None Yet!")
+        private static bool createGroup(int uindex , string gname , string _gicon = "default", string _gstyle = "None Yet!")
         {
             string uid = users.ElementAt(uindex).getID();
             string uname = users.ElementAt(uindex).getName();
@@ -220,7 +220,7 @@ namespace WoChat.Models
         }
 
 
-        private bool joinGroupByIndex(int uindex , int gindex)
+        private static bool joinGroupByIndex(int uindex , int gindex)
         {
             //第一步 ， 自己group列表加入gid
             users.ElementAt(uindex).addGroup(groups.ElementAt(gindex).getID());
@@ -326,11 +326,24 @@ namespace WoChat.Models
         }
 
 
+        public static List<string> searchGroups(string gname)
+        {
+            List<string> res = new List<string>();
+            for (int i = 0; i < groups.Count; i++)
+            {
+                if (groups.ElementAt(i).getName() == gname)
+                {
+                    res.Add(groups.ElementAt(i).getID());
+                }
+            }
+            return res;
+        }
+
         //加入群
-        public bool addToGroupByName(string uid , string gname)
+        public static bool addToGroupByID(string uid , string gid , string gname)
         {
             int index = getUserIndexByID(uid);
-            int gindex = getGroupIndexByName(gname);
+            int gindex = getGroupIndexByID(gid);
             if (index != -1)
             {
                 if (gindex != -1) return joinGroupByIndex(index, gindex);
@@ -339,10 +352,10 @@ namespace WoChat.Models
             else return false;
         }
         //退出群，注意创建者退出将自动解散
-        public bool quitGroup(string uid , string gname)
+        public static bool quitGroupByID(string uid , string gid)
         {
             int index = getUserIndexByID(uid);
-            int gindex = getGroupIndexByName(gname);
+            int gindex = getGroupIndexByID(gid);
             if (index == -1 || gindex == -1) return false;
             // 是组内成员才能退出
             if (groups.ElementAt(gindex).hasMember(uid))
@@ -406,33 +419,35 @@ namespace WoChat.Models
             else return null;
         }
 
-
-        public static Boolean pushMessageToChat(string message , string chaterID , Boolean isGroupChat = false)
+        //一对一类型信息
+        public static bool pushMessageToChat(string message , string chaterID , string chatID , string chateeID = "NULL")
         {
-            if (!isGroupChat)
+            int cindex = getChatIndexByID(chatID);
+            int aindex = getUserIndexByID(chaterID);
+            if (cindex == -1)
             {
-                //不是群聊的话就只能是参与者或者发起者
-                for (int i = 0; i < chats.Count; i++)
-                {
-                    if (chaterID == chats.ElementAt(i).getChaterID() || chaterID == chats.ElementAt(i).getChateeID())
-                    {
-                        chats.ElementAt(i).pushMessageLocal(message);
-                    }
-                }
-                return true;
-                //群聊则需要根据GroupId找到一个组
+                if (chateeID == "NULL" || getUserIndexByID(chateeID) == -1) return false;
+                //创建新的Chat
+                string cid = createChatForUser(chaterID, chateeID);
+                users.ElementAt(aindex).addChat(cid);
+                users.ElementAt(getUserIndexByID(chateeID)).addChat(cid);
+                //添加信息
+                return chats.ElementAt(getChatIndexByID(cid)).pushMessage(message);
             } else
             {
-                for (int i = 0; i < chats.Count; i++)
-                {
-                    if (chats.ElementAt(i).getGroupID() == chaterID)
-                    {
-                        chats.ElementAt(i).pushMessageLocal(message);
-                        break;
-                    }
-                }
-                return true;
+                return chats.ElementAt(cindex).pushMessage(message);
             }
+        }
+        //群消息
+        public static bool pushMessageToGroup(string message , string gid)
+        {
+            int gindex = getGroupIndexByID(gid);
+            if (gindex == -1) return false;
+
+            string cid = groups.ElementAt(gindex).getChatID();
+            int cindex = getChatIndexByID(cid);
+            if (cindex == -1) return false;
+            return chats.ElementAt(cindex).pushMessage(message);
         }
 
         private static string encryptCreator(string encrypt)
