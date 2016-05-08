@@ -74,29 +74,37 @@ namespace WoChat.Models
 
 
         //这也是要跟服务器处理的 这里只是模拟
-        private string addChatModel(string participantName , string participantID,  bool isGroup = false) 
+        public string addChatModel(string participantName , string participantID,  bool isGroup = false) 
         {
             return DataModel.createChatForUser(this.uname, this.uid, participantName, participantID);
         }
 
         // Add a friend.
         // if type == 0 then is passing a name , or else it's passing a friend's ID
-        public Boolean addFriend(string friend , int type)
+        public bool addFriend(string friend , int type)
         {
             string id = friend;
             if (type == 0)
             {
-                id = DataModel.lookUpForId(friend, "user");
+                id = DataModel.getFriendByName(friend).getID();
                 this.friends.Add(id);
                 this.chats.Add(addChatModel(friend , id));
             } else
             {
-                id = DataModel.lookUpForName(friend, "user");
+                id = DataModel.getFriend(friend).getName();
                 this.friends.Add(friend);
-                this.chats.Add(addChatModel(friend, id));
+                this.chats.Add(addChatModel(id, friend));
             }
             return true;
         }
+        public bool syncAddFriends(string friend, int type)
+        {
+            DataModel.addFriend(this.uid, friend);
+
+            return false;
+        }
+
+
 
         public void syncFriendsWithServer()
         {

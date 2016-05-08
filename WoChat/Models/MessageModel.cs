@@ -16,18 +16,12 @@ namespace WoChat.Models
         private string content;
         private DateTimeOffset time;
 
-        private string lookUpForId(string name)
-        {
-            // needs to be implemented;
-            return null;
-        }
-
         public MessageModel(string _sender , string _receiver , string message)
         {
             this.sender = _sender;
-            this.senderId = DataModel.lookUpForId(_sender , "user");
+            this.senderId = DataModel.getFriendByName(_sender).getID();
             this.receiver = _receiver;
-            this.receiverId = DataModel.lookUpForId(_receiver , "user");
+            this.receiverId = DataModel.getFriendByName(_receiver).getID();
             this.content = message;
             this.time = DateTimeOffset.Now;
         }

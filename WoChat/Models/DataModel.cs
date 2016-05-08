@@ -17,14 +17,12 @@ namespace WoChat.Models
 
         // 这里只是模拟服务器请求 ， 实际上数据应该存在服务器上。
         public DataModel() {
-            //this.users = new List<UserModel>();
-            //this.groups = new List<GroupModel>();
-            //this.chats = new List<ChatModel>();
+
         }
 
-        public static Boolean init()
+        public static bool init()
         {
-            // ALL get Methods.
+
             return true;
         }
 
@@ -33,24 +31,16 @@ namespace WoChat.Models
         public static UserModel userLogin(string username , string password)
         {
             UserModel uml = null;
-            string pw = encryptCreator(password);
-            for (int i = 0; i < users.Count; i++)
+            int index = getUserIndexByName(username);
+            if (index != -1 && users.ElementAt(index).getPassword() == encryptCreator(password))
             {
-                if (users.ElementAt(i).getName() == username)
-                {
-                    if (users.ElementAt(i).getPassword() == pw)
-                    {
-                        uml = users.ElementAt(i);
-                        break;
-                    }
-                    break;
-                }
+                uml = users.ElementAt(index);
             }
             return uml;
         }
 
         //注册模块
-        public static Boolean userRegister(string name, string password, string _nick, string _email, string _icon = "default", string _style = "None Yet!")
+        public static bool userRegister(string name, string password, string _nick, string _email, string _icon = "default", string _style = "None Yet!")
         {
             //先查询
             if (searchForUser(name, _nick, _email) != "Pass!") return false;
@@ -87,6 +77,133 @@ namespace WoChat.Models
             return warningMessage;
         }
 
+        private static int getUserIndexByID(string uid)
+        {
+            int ret = -1;
+            for (int i = 0; i < users.Count; i++)
+            {
+                if (users.ElementAt(i).getID() == uid)
+                {
+                    ret = i;
+                    break;
+                }
+            }
+            return ret;
+        }
+
+        private static int getUserIndexByName(string uname)
+        {
+            int ret = -1;
+            for (int i = 0; i < users.Count; i++)
+            {
+                if (users.ElementAt(i).getName() == uname)
+                {
+                    ret = i;
+                    break;
+                }
+            }
+            return ret;
+        }
+
+        private static int getChatIndexByID(string cid)
+        {
+            int ret = -1;
+            for (int i = 0; i < chats.Count; i++)
+            {
+                if (chats.ElementAt(i).getID() == cid)
+                {
+                    ret = i;
+                    break;
+                }
+            }
+            return ret;
+        }
+
+        private static int getChatIndexByHostName(string host)
+        {
+            int ret = -1;
+            for (int i = 0; i < chats.Count; i++)
+            {
+                if (chats.ElementAt(i).getChaterName() == host)
+                {
+                    ret = i;
+                    break;
+                }
+            }
+            return ret;
+        }
+
+        private static int getChatIndexByParticipantName(string partipant)
+        {
+            int ret = -1;
+            for (int i = 0; i < chats.Count; i++)
+            {
+                if (chats.ElementAt(i).getChateeName() == partipant)
+                {
+                    ret = i;
+                    break;
+                }
+            }
+            return ret;
+        }
+
+        private static int getChatIndexByHostID(string hostID)
+        {
+            int ret = -1;
+            for (int i = 0; i < chats.Count; i++)
+            {
+                if (chats.ElementAt(i).getChaterID() == hostID)
+                {
+                    ret = i;
+                    break;
+                }
+            }
+            return ret;
+        }
+
+        private static int getChatIndexByParticipantID(string partipantID)
+        {
+            int ret = -1;
+            for (int i = 0; i < chats.Count; i++)
+            {
+                if (chats.ElementAt(i).getChateeID() == partipantID)
+                {
+                    ret = i;
+                    break;
+                }
+            }
+            return ret;
+        }
+
+        private static int getGroupIndexByID(string gid)
+        {
+            int ret = -1;
+            for (int i = 0; i < groups.Count; i++)
+            {
+                if (groups.ElementAt(i).getID() == gid)
+                {
+                    ret = i;
+                    break;
+                }
+            }
+            return ret;
+        }
+
+        private static int getGroupIndexByName(string gname)
+        {
+            int ret = -1;
+            for (int i = 0; i < groups.Count; i++)
+            {
+                if (groups.ElementAt(i).getName() == gname)
+                {
+                    ret = i;
+                    break;
+                }
+            }
+            return ret;
+        }
+
+
 
 
         public static string createChatForUser(string hostName, string hostID, string participantName, string participantID)
@@ -100,29 +217,20 @@ namespace WoChat.Models
         {
             return users;
         }
+
         public static List<string> getFriendIDs(string uid)
         {
             List<string> ret = null;
-            for (int i = 0; i < users.Count; i++)
-            {
-                if (users.ElementAt(i).getID() == uid)
-                {
-                    ret = users.ElementAt(i).getFriends();
-                }
-            }
+            int index = getUserIndexByID(uid);
+            if (index != -1) ret = users.ElementAt(index).getFriends();
             return ret;
         }
 
         public static List<string> getGroupIDs(string uid)
         {
             List<string> ret = null;
-            for (int i = 0; i < users.Count; i++)
-            {
-                if (users.ElementAt(i).getID() == uid)
-                {
-                    ret = users.ElementAt(i).getGroups();
-                }
-            }
+            int index = getUserIndexByID(uid);
+            if (index != -1) ret = users.ElementAt(index).getGroups();
             return ret;
         }
 
@@ -130,60 +238,49 @@ namespace WoChat.Models
         public static List<string> getChatIDs(string uid)
         {
             List<string> ret = null;
-            for (int i = 0; i < users.Count; i++)
-            {
-                if (users.ElementAt(i).getID() == uid)
-                {
-                    ret = users.ElementAt(i).getChats();
-                }
-            }
+            int index = getUserIndexByID(uid);
+            if (index != -1) ret = users.ElementAt(index).getChats();
             return ret;
         }
 
-
+        public static bool addFriend(string id , string fid)
+        {
+            int index = getUserIndexByID(id);
+            if (index != -1)
+            {
+                users.ElementAt(index).addFriend(fid, 1);
+                return true;
+            }
+            else return false;
+        }
 
 
 
         public static UserModel getFriend(string id)
         {
-            UserModel ret = null;
-            for (int i = 0; i < users.Count; i++)
-            {
-                if (users.ElementAt(i).getID() == id)
-                {
-                    ret = users.ElementAt(i);
-                    break;
-                }
-            }
-            return ret;
+            int index = getUserIndexByID(id);
+            if (index != -1) return users.ElementAt(index);
+            else return null;
+        }
+        public static UserModel getFriendByName(string name)
+        {
+            int index = getUserIndexByName(name);
+            if (index != -1) return users.ElementAt(index);
+            else return null;
         }
 
         public static GroupModel getGroup(string id)
         {
-            GroupModel ret = null;
-            for (int i = 0; i < groups.Count; i++)
-            {
-                if (groups.ElementAt(i).getID() == id)
-                {
-                    ret = groups.ElementAt(i);
-                    break;
-                }
-            }
-            return ret;
+            int index = getGroupIndexByID(id);
+            if (index != -1) return groups.ElementAt(index);
+            else return null;
         }
 
         public static ChatModel getChat(string id)
         {
-            ChatModel ret = null;
-            for (int i = 0; i < chats.Count; i++)
-            {
-                if (chats.ElementAt(i).getID() == id)
-                {
-                    ret = chats.ElementAt(i);
-                    break;
-                }
-            }
-            return ret;
+            int index = getChatIndexByID(id);
+            if (index != -1) return chats.ElementAt(index);
+            else return null;
         }
 
 
@@ -215,50 +312,6 @@ namespace WoChat.Models
             }
         }
 
-        public static string lookUpForId(string name , string type , int identity = 0)
-        {
-            string o = "Not Found!";
-            switch (type) {
-                case "user":
-                    for (int i = 0; i < users.Count; i++)
-                    {
-                        if (users.ElementAt(i).getName() == name)
-                        {
-                            return users.ElementAt(i).getID();
-                        }
-                    }
-                    // Look up in userList;
-                    break;
-                case "group":
-                    // Look up in groupList;
-                    for (int i = 0; i < groups.Count; i++)
-                    {
-                        if (groups.ElementAt(i).getName() == name)
-                        {
-                            return groups.ElementAt(i).getID();
-                        }
-                    }
-                    break;
-                case "send":
-                    for (int i = 0; i < chats.Count; i++)
-                    {
-                        // Send to personal users
-                        if (identity == 0)
-                        {
-                        }
-                    }
-                    // Look up in messageList;
-                    break;
-                case "receive":
-                    // Don't know what to append;
-                    break;
-                default:
-                    break;
-            }
-            return o;
-
-        }
-
         private static string encryptCreator(string encrypt)
         {
             string sha = HashAlgorithmNames.Sha512;
@@ -269,51 +322,6 @@ namespace WoChat.Models
             IBuffer result = hashme.GetValueAndReset();
             string hashcode = CryptographicBuffer.EncodeToBase64String(result);
             return hashcode;
-        }
-
-        public static string lookUpForName(string name, string type, int identity = 0)
-        {
-            string o = "Not Found!";
-            switch (type)
-            {
-                case "user":
-                    for (int i = 0; i < users.Count; i++)
-                    {
-                        if (users.ElementAt(i).getID() == name)
-                        {
-                            return users.ElementAt(i).getName();
-                        }
-                    }
-                    // Look up in userList;
-                    break;
-                case "group":
-                    // Look up in groupList;
-                    for (int i = 0; i < groups.Count; i++)
-                    {
-                        if (groups.ElementAt(i).getID() == name)
-                        {
-                            return groups.ElementAt(i).getName();
-                        }
-                    }
-                    break;
-                case "send":
-                    for (int i = 0; i < chats.Count; i++)
-                    {
-                        // Send to personal users
-                        if (identity == 0)
-                        {
-                        }
-                    }
-                    // Look up in messageList;
-                    break;
-                case "receive":
-                    // Don't know what to append;
-                    break;
-                default:
-                    break;
-            }
-            return o;
-
         }
     }
 }
