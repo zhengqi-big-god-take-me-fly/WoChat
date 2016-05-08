@@ -155,7 +155,7 @@ namespace WoChat.Models
 
 
 
-        public ChatModel(string _chater , string _chatee , Boolean _isGroupChat = false)
+        public ChatModel(string _chater , string _chatee = "NULL" , bool _isGroupChat = false)
         {
             this.chatid = Guid.NewGuid().ToString();
             this.chater = _chater;
@@ -163,8 +163,9 @@ namespace WoChat.Models
             this.isGroupChat = _isGroupChat;
             this.messageList = new List<MessageModel>();
         }
+        
 
-        public ChatModel(string _chater, string _chaterid , string _chatee, string _chateeid , Boolean _isGroupChat = false)
+        public ChatModel(string _chater, string _chaterid , string _chatee, string _chateeid , bool _isGroupChat = false)
         {
             if (!_isGroupChat)
             {

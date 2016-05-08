@@ -74,42 +74,47 @@ namespace WoChat.Models
 
 
         //这也是要跟服务器处理的 这里只是模拟
-        public string addChatModel(string participantName , string participantID,  bool isGroup = false) 
-        {
-            return DataModel.createChatForUser(this.uname, this.uid, participantName, participantID);
-        }
+        //public string addChatModel(string participantName , string participantID,  bool isGroup = false) 
+        //{
+        //    return DataModel.createChatForUser(this.uname, this.uid, participantName, participantID);
+        //}
+
 
         // Add a friend.
-        // if type == 0 then is passing a name , or else it's passing a friend's ID
-        public bool addFriend(string friend , int type)
+        public bool addFriend(string fid)
         {
-            string id = friend;
-            UserModel tempModel;
-            if (type == 0)
-            {
-                tempModel = DataModel.getFriendByName(friend);
-                if (tempModel == null) return false;
-                id = tempModel.getID();
-                this.friends.Add(id);
-                this.chats.Add(addChatModel(friend , id));
-            } else
-            {
-                tempModel = DataModel.getFriend(friend);
-                if (tempModel == null) return false;
-                id = tempModel.getName();
-                this.friends.Add(friend);
-                this.chats.Add(addChatModel(id, friend));
-            }
+            this.friends.Add(fid);
+                //this.chats.Add(addChatModel(id, friend));
             return true;
         }
 
         public bool deleteFriend(string fid)
         {
-            for (int i = 0; i < friends.Count; i++)
-            {
-                
-            }
+            return this.friends.Remove(fid);
         }
+
+        public bool addGroup(string gid)
+        {
+            this.groups.Add(gid);
+            return true;
+        }
+
+        public bool deleteGroup(string gid)
+        {
+            return this.groups.Remove(gid);
+        }
+
+        public bool addChat(string cid)
+        {
+            this.chats.Add(cid);
+            return true;
+        }
+        public bool deleteChat(string cid)
+        {
+            return this.chats.Remove(cid);
+        }
+
+
 
 
 
@@ -129,20 +134,7 @@ namespace WoChat.Models
             return true;
         }
 
-        //public void syncFriendsWithServer()
-        //{
-        //    this.friends = DataModel.getFriendIDs(this.uid);
-        //}
 
-        //public void syncGroupsWithServer()
-        //{
-        //    this.groups = DataModel.getGroupIDs(this.uid);
-        //}
-
-        //public void syncChatsWithServer()
-        //{
-        //    this.chats = DataModel.getChatIDs(this.uid);
-        //}
 
         public UserModel getFriendInfo(string friendID)
         {

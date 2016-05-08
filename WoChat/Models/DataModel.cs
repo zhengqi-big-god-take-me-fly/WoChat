@@ -203,12 +203,42 @@ namespace WoChat.Models
             return ret;
         }
 
-
-
-
-        public static string createChatForUser(string hostName, string hostID, string participantName, string participantID)
+        private bool createGroup(int uindex , string gname , string _gicon = "default", string _gstyle = "None Yet!")
         {
-            ChatModel cm = new ChatModel(hostName, hostID, participantName, participantID);
+            string uid = users.ElementAt(uindex).getID();
+            string uname = users.ElementAt(uindex).getName();
+            ChatModel cm = new ChatModel(uname, "NULL", true);
+            if (cm == null) return false;
+            GroupModel gm = new GroupModel(uid, uname, gname, cm.getID() , _gicon, _gstyle);
+            if (gm != null)
+            {
+                groups.Add(gm);
+                //自己的group列表加入gid，自己的chat列表加入cid；
+                return true;
+            }
+            else return false;
+        }
+
+
+        private bool joinGroupByIndex(int uindex , int gindex)
+        {
+            //第一步 ， 自己group列表加入gid
+            users.ElementAt(uindex).addGroup(groups.ElementAt(gindex).getID());
+            //第二部 ， group的member里面加入uid
+            groups.ElementAt(gindex).addMember(users.ElementAt(uindex).getID());
+            //第三步，在自己的Chat列表中加入cid
+            users.ElementAt(uindex).addChat(groups.ElementAt(gindex).getChatID());
+            return true;
+        }
+
+
+
+        public static string createChatForUser(string hostID, string participantID , bool isGroupChat = false)
+        {
+            if (getUserIndexByID(hostID) == -1 || getUserIndexByID(participantID) == -1) return "No User!";
+            string hostName = users.ElementAt(getUserIndexByID(hostID)).getName();
+            string participantName = users.ElementAt(getUserIndexByID(participantID)).getName();
+            ChatModel cm = new ChatModel(hostName , hostID, participantName ,participantID , isGroupChat);
             chats.Add(cm);
             return cm.getID();
         }
@@ -243,20 +273,109 @@ namespace WoChat.Models
             return ret;
         }
 
+
+        //正常套路：添加朋友
         public static bool addFriend(string id , string fid)
         {
             int index = getUserIndexByID(id);
-            if (index != -1)
+            int findex = getUserIndexByID(fid);
+            if (index != -1 && findex != -1)
             {
-                //users.ElementAt(index).addFriend(fid, 1);
-                return users.ElementAt(index).addFriend(fid, 1); ;
+                users.ElementAt(index).addFriend(fid);
+                users.ElementAt(findex).addFriend(id);
+                return true;
             }
             else return false;
         }
         public static bool removeFriend(string id , string fid)
         {
-
+            int index = getUserIndexByID(id);
+            if (index != -1)
+            {
+                return users.ElementAt(index).deleteFriend(fid);
+            }
+            else return false;
         }
+
+        //下面是添加聊天
+        public bool addChatForUser(string id , string fid , bool isGroupChat = false)
+        {
+            //Double Binding
+            string cid = createChatForUser(id, fid, isGroupChat);
+            //createChatForUser(fid, id, isGroupChat);
+
+            //Add into the users chatlist;
+            int index = getUserIndexByID(id);
+            int findex = getUserIndexByID(fid);
+            //addChat to their list
+            if (index != -1 && findex != -1)
+            {
+                users.ElementAt(index).addChat(cid);
+                users.ElementAt(findex).addChat(cid);
+                return true;
+            }
+            else return false;
+        }
+
+        public bool removeChatForUser(string id , string cid)
+        {
+            //不删除聊天记录
+            int index = getUserIndexByID(id);
+            if (index != -1) return users.ElementAt(index).deleteChat(cid);
+            else return false;
+        }
+
+
+        //加入群
+        public bool addToGroupByName(string uid , string gname)
+        {
+            int index = getUserIndexByID(uid);
+            int gindex = getGroupIndexByName(gname);
+            if (index != -1)
+            {
+                if (gindex != -1) return joinGroupByIndex(index, gindex);
+                else return createGroup(index, gname);
+            }
+            else return false;
+        }
+        //退出群，注意创建者退出将自动解散
+        public bool quitGroup(string uid , string gname)
+        {
+            int index = getUserIndexByID(uid);
+            int gindex = getGroupIndexByName(gname);
+            if (index == -1 || gindex == -1) return false;
+            // 是组内成员才能退出
+            if (groups.ElementAt(gindex).hasMember(uid))
+            {
+                if (groups.ElementAt(gindex).isAdmin(uid))
+                {
+                    //批量删除用户中的Chat和Group。
+                    int userIndex;
+                    List<string> allMembers = groups.ElementAt(gindex).getMembers();
+                    string chatID = groups.ElementAt(gindex).getChatID();
+                    string groupID = groups.ElementAt(gindex).getID();
+                    for (int i = 0; i < allMembers.Count; i++)
+                    {
+                        userIndex = getUserIndexByID(allMembers.ElementAt(i));
+                        users.ElementAt(userIndex).deleteChat(chatID);
+                        users.ElementAt(userIndex).deleteGroup(groupID);
+                        groups.ElementAt(gindex).deleteMember(allMembers.ElementAt(i));
+                    }
+                    //最后删除自己的chat和销毁自己。
+                    chats.RemoveAt(getChatIndexByID(chatID));
+                    groups.RemoveAt(gindex);
+                } else
+                {
+                    // 只是普通成员 , 在自己的列表中删除Chat和Group
+                    users.ElementAt(index).deleteChat(groups.ElementAt(gindex).getChatID());
+                    users.ElementAt(index).deleteGroup(groups.ElementAt(gindex).getID());
+                    // 然后从该群聊中退出（无视该用户已经发送的信息）
+                    groups.ElementAt(gindex).deleteMember(uid);
+                }
+            }
+            return false;
+        }
+
 
 
 
