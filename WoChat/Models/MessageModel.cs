@@ -12,6 +12,7 @@ namespace WoChat.Models
         private string senderId;
         private string receiver;
         private string receiverId;
+        private Boolean isGroupMessage;
         private string content;
         private DateTimeOffset time;
 
@@ -24,9 +25,9 @@ namespace WoChat.Models
         public MessageModel(string _sender , string _receiver , string message)
         {
             this.sender = _sender;
-            this.senderId = lookUpForId(_sender);
+            this.senderId = DataModel.lookUpForId(_sender , "user");
             this.receiver = _receiver;
-            this.receiverId = lookUpForId(_receiver);
+            this.receiverId = DataModel.lookUpForId(_receiver , "user");
             this.content = message;
             this.time = DateTimeOffset.Now;
         }

@@ -9,13 +9,13 @@ namespace WoChat.Models
     class InfoModel
     {
         //用户呢称
-        private string nickname { get; set; }
+        public string nickname { get; set; }
         //个人签名
-        private string stylish { get; set; }
+        public string stylish { get; set; }
         //用户头像（序列化）
-        private string icon { get; set; }
+        public string icon { get; set; }
         //邮箱
-        private string email { get; set; }
+        public string email { get; set; }
 
         public InfoModel(string _nick , string _email , string _icon = "default" , string _style = "None Yet!")
         {

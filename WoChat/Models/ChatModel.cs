@@ -16,12 +16,81 @@ namespace WoChat.Models
         private string groupName;
         private string groupId;
         private Boolean isGroupChat;
+        private List<string> chaterList;
         private List<MessageModel> messageList;
 
         public string getID()
         {
-            return chatid;
+            return this.chatid;
         }
+
+        public string getChaterName()
+        {
+            if (!this.isGroupChat)
+            {
+                return this.chater;
+            } else
+            {
+                return "It's a Group Chat!";
+            }
+        }
+
+        public string getChaterID()
+        {
+            if (!this.isGroupChat)
+            {
+                return this.chaterId;
+            } else
+            {
+                return "It's a Group Chat!";
+            }
+        }
+
+        public string getChateeName()
+        {
+            if (!isGroupChat)
+            {
+                return this.chatee;
+            } else
+            {
+                return "It's a Group Chat!";
+            }
+        }
+
+        public string getChateeID()
+        {
+            if (!isGroupChat)
+            {
+                return this.chateeId;
+            } else
+            {
+                return "It's a Group Chat!";
+            }
+        }
+
+
+        public string getGroupName()
+        {
+            if (!isGroupChat)
+            {
+                return "It's NOT a Group Chat!";
+            } else
+            {
+                return this.groupName;
+            }
+        }
+
+        public string getGroupID()
+        {
+            if (!isGroupChat)
+            {
+                return "It's NOT a Group Chat!";
+            } else
+            {
+                return this.groupId;
+            }
+        }
+
 
 
         public string lookUpForId(string name)
@@ -53,7 +122,11 @@ namespace WoChat.Models
             }
         }
 
-       public Boolean pushMessage(string message)
+
+
+
+
+       public Boolean pushMessageLocal(string message)
         {
             if (this.messageList == null)
             {
@@ -64,6 +137,23 @@ namespace WoChat.Models
             this.messageList.Add(newMessage);
             return true;
         }
+
+        public Boolean pushMessageToServer(string message)
+        {
+            if (!this.isGroupChat)
+            {
+                DataModel.pushMessageToChat(message, this.chaterId, this.isGroupChat);
+            } else
+            {
+                DataModel.pushMessageToChat(message, this.groupId, this.isGroupChat);
+            }
+            return true;
+        }
+
+
+
+
+
 
         public ChatModel(string _chater , string _chatee , Boolean _isGroupChat = false)
         {
@@ -76,13 +166,23 @@ namespace WoChat.Models
 
         public ChatModel(string _chater, string _chaterid , string _chatee, string _chateeid , Boolean _isGroupChat = false)
         {
-            this.chatid = Guid.NewGuid().ToString();
-            this.chater = _chater;
-            this.chatee = _chatee;
-            this.chaterId = _chaterid;
-            this.chateeId = _chateeid;
-            this.isGroupChat = _isGroupChat;
-            this.messageList = new List<MessageModel>();
+            if (!_isGroupChat)
+            {
+                this.chatid = Guid.NewGuid().ToString();
+                this.chater = _chater;
+                this.chatee = _chatee;
+                this.chaterId = _chaterid;
+                this.chateeId = _chateeid;
+                this.isGroupChat = _isGroupChat;
+                this.messageList = new List<MessageModel>();
+            } else
+            {
+                this.chatid = Guid.NewGuid().ToString();
+                this.isGroupChat = _isGroupChat;
+                this.messageList = new List<MessageModel>();
+                this.chaterList = new List<string>();
+                this.chaterList.Add(_chaterid);
+            }
         }
     }
 }

@@ -24,6 +24,18 @@ namespace WoChat.Models
         //所有的聊天列表
         private List<string> chats;
 
+        public void setName(string newname)
+        {
+            this.uname = newname;
+        }
+        public void setPassword(string newpassword)
+        {
+            this.upassword = encryptCreator(newpassword);
+        }
+        public void setInfo(InfoModel info)
+        {
+            this.uinfo = info;
+        }
 
 
         public string getID()
@@ -42,6 +54,24 @@ namespace WoChat.Models
         {
             return uinfo;
         }
+
+        public List<string> getFriends()
+        {
+            return this.friends;
+        }
+
+        public List<string> getGroups()
+        {
+            return this.groups;
+        }
+
+        public List<string> getChats()
+        {
+            return this.chats;
+        }
+
+
+
 
         //这也是要跟服务器处理的 这里只是模拟
         private string addChatModel(string participantName , string participantID,  bool isGroup = false) 
@@ -68,6 +98,35 @@ namespace WoChat.Models
             return true;
         }
 
+        public void syncFriendsWithServer()
+        {
+            this.friends = DataModel.getFriendIDs(this.uid);
+        }
+
+        public void syncGroupsWithServer()
+        {
+            this.groups = DataModel.getGroupIDs(this.uid);
+        }
+        
+        public void syncChatsWithServer()
+        {
+            this.chats = DataModel.getChatIDs(this.uid);
+        }
+
+        public UserModel getFriendInfo(string friendID)
+        {
+            return DataModel.getFriend(friendID);
+        }
+
+        public GroupModel getGroupInfo(string groupID)
+        {
+            return DataModel.getGroup(groupID);
+        }
+
+        public ChatModel getChatInfo(string chatID)
+        {
+            return DataModel.getChat(chatID);
+        }
 
 
 
