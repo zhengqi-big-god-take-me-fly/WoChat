@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,21 +9,46 @@ using Windows.Storage.Streams;
 
 namespace WoChat.Models
 {
+    /**
+     * Model of a user
+     */
     class UserModel
     {
-        //模型定义： uid：用户名,password：用户密码
+        /**
+         * Intialize variables:
+         *
+         * uid: the user id
+         * uname: the username
+         * upassword: the user Password(Encrypted)
+         */
         private string uid;
         private string uname;
         private string upassword;
-        //Info包括头像、Email、个人简介、呢称（以及其他，可拓展）；
+
+        /**
+         * uinfo: the user info (type: InfoModel)
+         */
         private InfoModel uinfo;
-        //朋友的ID列表
+
+        /**
+         * A string list of a user's friends(ids)
+         */
         private List<string> friends;
-        //讨论群的ID列表
+
+        /**
+         * A string list of a user's group(ids)
+         */
         private List<string> groups;
-        //所有的聊天列表
+
+        /**
+         * A string list of a user's chat(ids)
+         */
         private List<string> chats;
 
+
+        /**
+         * setter of name password and info
+         */
         public void setName(string newname)
         {
             this.uname = newname;
@@ -38,6 +63,9 @@ namespace WoChat.Models
         }
 
 
+        /**
+         * getter of ID, Name, Password , Info
+         */
         public string getID()
         {
             return uid;
@@ -55,6 +83,9 @@ namespace WoChat.Models
             return uinfo;
         }
 
+        /**
+         * The getter of the String Lists.
+         */
         public List<string> getFriends()
         {
             return this.friends;
@@ -73,41 +104,73 @@ namespace WoChat.Models
 
 
 
-        //这也是要跟服务器处理的 这里只是模拟
-        //public string addChatModel(string participantName , string participantID,  bool isGroup = false) 
+        /**
+         * Just Wait for Sync
+         */
+        //public string addChatModel(string participantName , string participantID,  bool isGroup = false)
         //{
         //    return DataModel.createChatForUser(this.uname, this.uid, participantName, participantID);
         //}
 
 
-        // Add a friend.
+        /**
+         * Add a Friend by id
+         * this function adds id to the String list of friend ids
+         * return true if no execption
+         */
         public bool addFriend(string fid)
         {
             this.friends.Add(fid);
             return true;
         }
 
+        /**
+         * Delete a friend by id
+         * This function removes id from the String list of friend ids
+         * return true if removal successful.
+         */
         public bool deleteFriend(string fid)
         {
             return this.friends.Remove(fid);
         }
 
+        /**
+         * Add a group by id
+         * this function adds id to the String list of user group ids
+         * return true if no execption
+         */
         public bool addGroup(string gid)
         {
             this.groups.Add(gid);
             return true;
         }
 
+        /**
+         * Exit a group by id
+         * This function removes id from the String list of user groups
+         * return true if Exit successfully.
+         */
         public bool deleteGroup(string gid)
         {
             return this.groups.Remove(gid);
         }
 
+        /**
+         * Add a chat by id
+         * this function adds id to the String list of user groups
+         * return true if no exception
+         */
         public bool addChat(string cid)
         {
             this.chats.Add(cid);
             return true;
         }
+
+        /**
+         * Delete a chat by id
+         * This function removes id from the String list of user chats
+         * return true if Deletion successful
+         */
         public bool deleteChat(string cid)
         {
             return this.chats.Remove(cid);
@@ -116,7 +179,10 @@ namespace WoChat.Models
 
 
 
-
+        /**
+         * Setters for the three Lists
+         * Used for Synchronization
+         */
         public bool setFriend(List<string> newFriends)
         {
             this.friends = newFriends;
@@ -135,6 +201,9 @@ namespace WoChat.Models
 
 
 
+        /**
+         * Here are useless methods.
+         */
         public UserModel getFriendInfo(string friendID)
         {
             return DataModel.getFriend(friendID);
@@ -152,7 +221,12 @@ namespace WoChat.Models
 
 
 
-        //针对传入的string encrypt生成对应的密文 ， 加密方法为SHA512
+        /**
+         * Encrypter for the password
+         * accepts the regular password and generate the encrypted ones
+         * use SHA512 Algorithms
+         * return : the encrypted password.
+         */
         private string encryptCreator(string encrypt)
         {
             string sha = HashAlgorithmNames.Sha512;
@@ -164,17 +238,38 @@ namespace WoChat.Models
             string hashcode = CryptographicBuffer.EncodeToBase64String(result);
             return hashcode;
         }
-        //构造函数
+
+        /**
+         * Constructor for User
+         * Required name ,pw ,nickname , email, icon and style
+         *
+         */
         public UserModel(string name, string password , string _nick , string _email , string _icon = "default" , string _style = "None Yet!")
         {
-            //生成基本信息
+
+            /**
+             * Auto generate for User ID
+             * [uid description]
+             * @type {[type]}
+             */
             this.uid = Guid.NewGuid().ToString();
             this.uname = name;
+            /**
+             * [upassword description]
+             * Only storage Encrypted passwords!
+             * @type {[type]}
+             */
             this.upassword = encryptCreator(password);
             this.uinfo = new InfoModel(_nick, _email, _icon, _style);
-            //初始化好友和群列表
+
+
+            /**
+             * Initialize for three String Lists
+             * @type {List}
+             */
             this.groups = new List<string>();
             this.friends = new List<string>();
+            this.chats = new List<string>();
         }
     }
 }

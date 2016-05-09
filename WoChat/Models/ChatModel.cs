@@ -8,17 +8,43 @@ using System.Threading.Tasks;
 
 namespace WoChat.Models
 {
+    /**
+     * Model of a Chat
+     */
     class ChatModel
     {
+        /**
+         * Initialize Variables:
+         * id of a specified chat
+         */
         private string chatid;
+
+        /**
+         * chater/chatee's names and ids
+         */
         private string chater, chatee;
         private string chaterId, chateeId;
+
+        /**
+         * Specified if a Corresponding group
+         * (If it's a Group Chat)
+         * And it's GroupName and Ids.
+         */
         private string groupName;
         private string groupId;
         private Boolean isGroupChat;
-        private List<string> chaterList;
+        // private List<string> chaterList;
+
+        /**
+         * The Message Box of a Specified Chat
+         */
         private List<MessageModel> messageList;
 
+
+
+        /**
+         * Getters for those Variables
+         */
         public string getID()
         {
             return this.chatid;
@@ -26,6 +52,9 @@ namespace WoChat.Models
 
         public string getChaterName()
         {
+            /**
+             * We won't pass the chater's name when creating a GroupChat
+             */
             if (!this.isGroupChat)
             {
                 return this.chater;
@@ -37,6 +66,9 @@ namespace WoChat.Models
 
         public string getChaterID()
         {
+            /**
+             * We won't pass the chater's id when creating a GroupChat
+             */
             if (!this.isGroupChat)
             {
                 return this.chaterId;
@@ -48,6 +80,9 @@ namespace WoChat.Models
 
         public string getChateeName()
         {
+            /**
+             * We won't pass the chatee's name when creating a GroupChat
+             */
             if (!isGroupChat)
             {
                 return this.chatee;
@@ -59,6 +94,9 @@ namespace WoChat.Models
 
         public string getChateeID()
         {
+            /**
+             * We won't pass the chatee's id when creating a GroupChat
+             */
             if (!isGroupChat)
             {
                 return this.chateeId;
@@ -69,6 +107,11 @@ namespace WoChat.Models
         }
 
 
+        /**
+         * Getter and Setters of a Group Name
+         * Use to Upgrade Again the GroupName When Entering a Chat
+         * And we also can visit the Members when using the chat.
+         */
         public string getGroupName()
         {
             if (!isGroupChat)
@@ -86,6 +129,10 @@ namespace WoChat.Models
             return true;
         }
 
+
+        /**
+         * Only can get the GroupID if it's a groupChat
+         */
         public string getGroupID()
         {
             if (!isGroupChat)
@@ -103,52 +150,41 @@ namespace WoChat.Models
             return true;
         }
 
-        public string lookUpForId(string name)
-        {
-            // Implement;
-            return null;
 
-        }
-
-        public List<MessageModel> getGroupChat()
-        {
-            if (this.isGroupChat == true)
-            {
-                return messageList;
-            } else
-            {
-                return null;
-            }
-        }
-        
+        /**
+         * The getter of the Chat Histories.
+         */
         public List<MessageModel> getChat()
         {
-            if (this.isGroupChat == false)
-            {
-                return messageList;
-            } else
-            {
-                return null;
-            }
+           return messageList;
         }
 
 
 
 
-       public Boolean pushMessage(string message)
+        /**
+         * Push a specified Message to the MessageList
+         * Specified the Chater and Chatee
+         * 
+         */
+       public Boolean pushMessage(string message , string schater , string schatee)
         {
             if (this.messageList == null)
             {
                 this.messageList = new List<MessageModel>();
             }
             // Start pushing process
-            MessageModel newMessage = new MessageModel(this.chater , this.chatee , message , this.isGroupChat);
+            MessageModel newMessage = new MessageModel(schater , schatee , message , this.isGroupChat);
             this.messageList.Add(newMessage);
             return true;
         }
 
 
-
+        /**
+         * Constructer: used for only no chater IDs
+         * Needs to Be Modified! Warning!
+         * @type {String}
+         */
         public ChatModel(string _chater , string _chatee = "NULL" , bool _isGroupChat = false)
         {
             this.chatid = Guid.NewGuid().ToString();
@@ -159,6 +195,10 @@ namespace WoChat.Models
         }
         
 
+        /**
+         * Regular Constructor
+         * @type {[type]}
+         */
         public ChatModel(string _chater, string _chaterid , string _chatee, string _chateeid , bool _isGroupChat = false)
         {
             if (!_isGroupChat)

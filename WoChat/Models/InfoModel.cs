@@ -6,17 +6,33 @@ using System.Threading.Tasks;
 
 namespace WoChat.Models
 {
+    /**
+     * Models of all kinds of infos
+     */
     class InfoModel
     {
-        //用户呢称
+        /**
+         * Nickname
+         */
         public string nickname { get; set; }
-        //个人签名
+        /**
+         * Signatures
+         */
         public string stylish { get; set; }
-        //用户头像（序列化）
+        /**
+         * User Icons(Serialized)
+         */
         public string icon { get; set; }
-        //邮箱
+        /**
+         * Emails
+         */
         public string email { get; set; }
 
+
+        /**
+         * Constructer for Info
+         * @type {String}
+         */
         public InfoModel(string _nick , string _email , string _icon = "default" , string _style = "None Yet!")
         {
             this.nickname = _nick;

@@ -10,12 +10,18 @@ namespace WoChat.ViewModels {
         private bool isLogin;
 
 
-        //本地化聊天数据和联系人/组别数据(只同步跟本用户有关的)
+        /**
+         * 
+         */
         private ObservableCollection<UserModel> friends;
         private ObservableCollection<GroupModel> groups;
         private ObservableCollection<ChatModel> chats;
 
-        //聊天数据联系人、组别数据的getter
+        
+
+        /**
+         * 
+         */
         public ObservableCollection<UserModel> getFriends()
         {
             return this.friends;
@@ -38,21 +44,36 @@ namespace WoChat.ViewModels {
         }
 
 
-        //从登陆注册注销开始
+        
+        /**
+         * 
+         */
         public bool login(string uname , string password)
         {
             if (isLogin) return false;
             this.currentUser = DataModel.userLogin(uname, password);
             if (this.currentUser == null) return false;
             isLogin = true;
+            /**
+             * 
+             */
             return initDatas();
         }
 
+
+        /**
+         * [_icon description]
+         * @type {String}
+         */
         public bool register(string name, string password, string _nick, string _email, string _icon = "default", string _style = "None Yet!")
         {
             return DataModel.userRegister(name, password, _nick, _email, _icon = "default", _style = "None Yet!");
         }
 
+
+        /**
+         * 
+         */
         public bool logout()
         {
             if (!isLogin) return false;
@@ -61,23 +82,44 @@ namespace WoChat.ViewModels {
             return true;
         }
 
-        // 登陆之后的数据初始化
+        
+
+        /**
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         * 
+         */
         private bool initDatas()
         {
             if (!isLogin) return false;
-            // 添加朋友
+            /**
+             * [friendList description]
+             * @type {[type]}
+             */
             List<string> friendList = currentUser.getFriends();
             for (int i = 0; i < friendList.Count; i++)
             {
                 this.friends.Add(fetchFriend(friendList.ElementAt(i)));
             }
-            //添加群
+            /**
+             * [groupList description]
+             * @type {[type]}
+             */
             List<string> groupList = currentUser.getGroups();
             for (int i = 0; i < groupList.Count; i++)
             {
                 this.groups.Add(fetchGroup(groupList.ElementAt(i)));
             }
-            //添加聊天系列
+            /**
+             * [chatList description]
+             * @type {[type]}
+             */
             List<string> chatList = currentUser.getChats();
             for (int i = 0; i < chatList.Count; i++)
             {
@@ -86,12 +128,20 @@ namespace WoChat.ViewModels {
             return true;
         }
 
-        //正常情况的动作：
-            //添加删除好友
+        
+
+        /**
+         *
+         *
+         * 
+         */
         public bool addFriend(string fid)
         {
             if (!this.isLogin) return false;
             if (DataModel.addFriend(this.currentUser.getID() , fid)) {
+                /**
+                 * 
+                 */
                 syncUserFriend();
                 syncUserChat();
                 return true;
@@ -99,24 +149,50 @@ namespace WoChat.ViewModels {
             return false;
         }
 
+
+
+        /**
+         *
+         *
+         * 
+         */
         public bool removeFriend(string fid)
         {
             if (!this.isLogin) return false;
             bool res = DataModel.removeFriend(this.currentUser.getID(), fid);
             if (res)
             {
+                /**
+                 * 
+                 */
                 syncUserFriend();
                 syncUserChat();
             }
             return res;
         }
 
+
+        /**
+         *  Override
+         * 
+         */
         public List<string> searchGroup(string gname)
         {
             return DataModel.searchGroups(gname);
         }
 
-        //添加删除群
+        
+
+        /**
+         * 
+         *
+         *
+         *
+         *
+         *
+         * 
+         * @type {String}
+         */
         public bool joinOrCreateGroup(string gname , string gid = "NULL")
         {
             if (!this.isLogin) return false;
@@ -129,6 +205,16 @@ namespace WoChat.ViewModels {
             }
             return res;
         }
+
+
+
+        /**
+         *
+         *
+         *
+         *
+         * 
+         */
         public bool exitGroup(string gid)
         {
             if (!this.isLogin) return false;
@@ -143,7 +229,12 @@ namespace WoChat.ViewModels {
 
 
 
-
+        /**
+         *
+         *
+         *
+         * 
+         */
         private void syncUserFriend()
         {
             this.currentUser.setFriend(DataModel.getFriendIDs(this.currentUser.getID()));
@@ -185,12 +276,21 @@ namespace WoChat.ViewModels {
         //}
 
 
+        /**
+         *
+         * 
+         */
         public bool fetchCurrentUser()
         {
             return true;
         }
 
 
+
+        /**
+         *
+         * 
+         */
         private UserModel fetchFriend(string fid)
         {
             return DataModel.getFriend(fid);
@@ -204,6 +304,15 @@ namespace WoChat.ViewModels {
             return DataModel.getChat(cid);
         }
 
+
+
+        /**
+         *
+         *
+         *
+         *
+         * 
+         */
         public StubViewModel()
         {
             this.currentUser = null;

@@ -9,17 +9,34 @@ using Windows.Storage.Streams;
 
 namespace WoChat.Models
 {
+
+    /**
+     * The Data Processing Models
+     */
     class DataModel
     {
+
+        /**
+         * The "Database Tables" of Users , Groups and Chats
+         * @type {List}
+         */
         private static List<UserModel> users = new List<UserModel>();
         private static List<GroupModel> groups = new List<GroupModel>();
         private static List<ChatModel> chats = new List<ChatModel>();
 
-        // 这里只是模拟服务器请求 ， 实际上数据应该存在服务器上。
+        /**
+         * We use all kinds of Static items,so we no need constructers
+         */
         public DataModel() {
 
         }
 
+
+ 
+        /**
+         * Initialize of the "Databases"
+         * Needed to Sync with Server
+         */
         public static bool init()
         {
 
@@ -27,7 +44,13 @@ namespace WoChat.Models
         }
 
 
-        //登录模块
+ 
+
+        /**
+         * Login Module
+         * return a Specified Model of User.
+         * (To the Client)
+         */
         public static UserModel userLogin(string username , string password)
         {
             UserModel uml = null;
@@ -39,17 +62,33 @@ namespace WoChat.Models
             return uml;
         }
 
-        //注册模块
+ 
+
+        /**
+         * User Register Module
+         * return true if Create User Success.
+         * @type {String}
+         */
         public static bool userRegister(string name, string password, string _nick, string _email, string _icon = "default", string _style = "None Yet!")
         {
-            //先查询
+            /**
+             * Query First
+             */
             if (searchForUser(name, _nick, _email) != "Pass!") return false;
             UserModel um = new UserModel(name, password, _nick, _email, _icon, _style);
+            /**
+             * Append to user database
+             */
             users.Add(um);
             return true;
         }
 
-        //这三个条件都是unique
+  
+        /**
+         * User Register Searcher
+         * Judge if the User term is duplicate
+         * return a warning Message
+         */
         public static string searchForUser(string name , string _nick , string _email)
         {
             string warningMessage = "";
@@ -77,6 +116,12 @@ namespace WoChat.Models
             return warningMessage;
         }
 
+
+  
+        /**
+         * Index Getters for users
+         * To get the Specified index from the database
+         */
         private static int getUserIndexByID(string uid)
         {
             int ret = -1;
@@ -105,6 +150,19 @@ namespace WoChat.Models
             return ret;
         }
 
+
+
+ 
+        /**
+         * Index Getters for chats
+         * To get the Specified index from the Database
+         *
+         * ByID: search by ChatID
+         * ByHostName: search by chater's name (First Value)
+         * ByParticipantName: search By chatee's name (First Value)
+         * ByHostID: search by chater's ID(first Value)
+         * ByParticipantID: search by chatee's ID (First Value)
+         */
         private static int getChatIndexByID(string cid)
         {
             int ret = -1;
@@ -175,6 +233,14 @@ namespace WoChat.Models
             return ret;
         }
 
+  
+
+        /**
+         * Index Getters for a specified Chat
+         * ByID: search by group id
+         * ByName: search by group name(First Value)
+         * 
+         */
         private static int getGroupIndexByID(string gid)
         {
             int ret = -1;
@@ -203,36 +269,88 @@ namespace WoChat.Models
             return ret;
         }
 
+
+ 
+        /**
+         * Create a Group if the Group & GroupChat not Exist
+         * params:
+         *     uindex: user index of Group Founder
+         *     gname: group name
+         *     _gicon: the group icon
+         *     _gstyle: the group's personal Signature
+         *
+         * return true if creation success
+         * @type {String}
+         */
         private static bool createGroup(int uindex , string gname , string _gicon = "default", string _gstyle = "None Yet!")
         {
+            /**
+             * Get UID and UNAME by user Index
+             * @type {[type]}
+             */
             string uid = users.ElementAt(uindex).getID();
             string uname = users.ElementAt(uindex).getName();
+
+            /**
+             * Create Chatmodel First
+             * @type {ChatModel}
+             */
             ChatModel cm = new ChatModel(uname, "NULL", true);
             if (cm == null) return false;
+
+            /**
+             * Create GroupModel
+             * @type {GroupModel}
+             */
             GroupModel gm = new GroupModel(uid, uname, gname, cm.getID() , _gicon, _gstyle);
+
             if (gm != null)
             {
                 groups.Add(gm);
-                //自己的group列表加入gid，自己的chat列表加入cid；
+                /**
+                 * Append the new Group & GroupChat to the Current User(Founder).
+                 */
+                users.ElementAt(uindex).addGroup(gid);
+                users.ElementAt(uindex).addChat(cid);
                 return true;
             }
             else return false;
         }
 
 
+
+        /**
+         * Join an existing group
+         * params:
+         *     uindex: user index
+         *     gindex: the Specified Group he want to join
+         *
+         * return true if creating successfully.
+         */
         private static bool joinGroupByIndex(int uindex , int gindex)
         {
-            //第一步 ， 自己group列表加入gid
+            /**
+             * Step 1: add the group id to the groupList of the current User
+             */
             users.ElementAt(uindex).addGroup(groups.ElementAt(gindex).getID());
-            //第二部 ， group的member里面加入uid
+            /**
+             * Step2: add the current user to the memberList of the object Group
+             */
             groups.ElementAt(gindex).addMember(users.ElementAt(uindex).getID());
-            //第三步，在自己的Chat列表中加入cid
+            /**
+             * Step3: add the groupChat to the chatList of the Current User
+             */
             users.ElementAt(uindex).addChat(groups.ElementAt(gindex).getChatID());
             return true;
         }
 
 
 
+        /**
+         * Create a specified chat for the host and parcipant
+         * returns a string of creating process successful or not.
+         * @type {Boolean}
+         */
         public static string createChatForUser(string hostID, string participantID , bool isGroupChat = false)
         {
             if (getUserIndexByID(hostID) == -1 || getUserIndexByID(participantID) == -1) return "No User!";
@@ -243,71 +361,109 @@ namespace WoChat.Models
             return cm.getID();
         }
 
+
+
+        /**
+         * Getters of the User Database
+         * Should be depreciated.
+         * 
+         */
         public static List<UserModel> getUsers()
         {
             return users;
         }
 
-        public static List<string> getFriendIDs(string uid)
-        {
-            List<string> ret = null;
-            int index = getUserIndexByID(uid);
-            if (index != -1) ret = users.ElementAt(index).getFriends();
-            return ret;
-        }
-
-        public static List<string> getGroupIDs(string uid)
-        {
-            List<string> ret = null;
-            int index = getUserIndexByID(uid);
-            if (index != -1) ret = users.ElementAt(index).getGroups();
-            return ret;
-        }
 
 
-        public static List<string> getChatIDs(string uid)
-        {
-            List<string> ret = null;
-            int index = getUserIndexByID(uid);
-            if (index != -1) ret = users.ElementAt(index).getChats();
-            return ret;
-        }
+
+        /**
+         * Depreciated Methods
+         */
+        // public static List<string> getFriendIDs(string uid)
+        // {
+        //     List<string> ret = null;
+        //     int index = getUserIndexByID(uid);
+        //     if (index != -1) ret = users.ElementAt(index).getFriends();
+        //     return ret;
+        // }
+
+        // public static List<string> getGroupIDs(string uid)
+        // {
+        //     List<string> ret = null;
+        //     int index = getUserIndexByID(uid);
+        //     if (index != -1) ret = users.ElementAt(index).getGroups();
+        //     return ret;
+        // }
 
 
-        //正常套路：添加朋友
+        // public static List<string> getChatIDs(string uid)
+        // {
+        //     List<string> ret = null;
+        //     int index = getUserIndexByID(uid);
+        //     if (index != -1) ret = users.ElementAt(index).getChats();
+        //     return ret;
+        // }
+
+
+
+        /**
+         * Add Friend Method
+         */
         public static bool addFriend(string id , string fid)
         {
             int index = getUserIndexByID(id);
             int findex = getUserIndexByID(fid);
             if (index != -1 && findex != -1)
             {
+                /**
+                 * Add a friend is Double Binding
+                 */
                 users.ElementAt(index).addFriend(fid);
                 users.ElementAt(findex).addFriend(id);
                 return true;
             }
             else return false;
         }
+
+        /**
+         * Remove a friend Method
+         */
         public static bool removeFriend(string id , string fid)
         {
             int index = getUserIndexByID(id);
             if (index != -1)
             {
+                /**
+                 * But Delete a friend is just Single-deletion
+                 */
                 return users.ElementAt(index).deleteFriend(fid);
             }
             else return false;
         }
 
-        //下面是添加聊天
+
+  
+        /**
+         * Sinple Add Chat for a user
+         * params:
+         *     id: the user(host) ID
+         *     fid: the user(participant) ID
+         *
+         * return true if adding success.
+         * @type {Boolean}
+         */
         public bool addChatForUser(string id , string fid , bool isGroupChat = false)
         {
-            //Double Binding
+            /**
+             * A chat should be create once.
+             * But use many times
+             * @type {[type]}
+             */
             string cid = createChatForUser(id, fid, isGroupChat);
-            //createChatForUser(fid, id, isGroupChat);
 
-            //Add into the users chatlist;
             int index = getUserIndexByID(id);
             int findex = getUserIndexByID(fid);
-            //addChat to their list
+            //addChat to their listWa
             if (index != -1 && findex != -1)
             {
                 users.ElementAt(index).addChat(cid);
@@ -317,15 +473,36 @@ namespace WoChat.Models
             else return false;
         }
 
+
+
+        /**
+         * Chat remove Method
+         * params:
+         *     id: user id,
+         *     cid: the chat id
+         *
+         * return true if removal successful
+         */
         public bool removeChatForUser(string id , string cid)
         {
-            //不删除聊天记录
+            /**
+             * Not remove the records(MessageList)
+             * @type {[type]}
+             */
             int index = getUserIndexByID(id);
             if (index != -1) return users.ElementAt(index).deleteChat(cid);
             else return false;
         }
 
 
+
+        /**
+         * Search group from a given name
+         * params:
+         *     gname: the name you want to search
+         *
+         * return a List of corresponding group ids
+         */
         public static List<string> searchGroups(string gname)
         {
             List<string> res = new List<string>();
@@ -339,7 +516,17 @@ namespace WoChat.Models
             return res;
         }
 
-        //加入群
+
+
+        /**
+         * Join a specified group(Called by Client)
+         * params:
+         *     uid: user Id;
+         *     gid: group id;
+         *     gname: group name;
+         *
+         * return true if add Successfully
+         */
         public static bool addToGroupByID(string uid , string gid , string gname)
         {
             int index = getUserIndexByID(uid);
@@ -351,18 +538,37 @@ namespace WoChat.Models
             }
             else return false;
         }
-        //退出群，注意创建者退出将自动解散
+        
+
+
+        /**
+         * Group Quit Method
+         * Remember that the group will be explosed
+         * if the owner exit the group
+         *
+         * params: 
+         *     uid: user id;
+         *     gid: group id;
+         *
+         *
+         * return true if exitation success
+         */
         public static bool quitGroupByID(string uid , string gid)
         {
             int index = getUserIndexByID(uid);
             int gindex = getGroupIndexByID(gid);
             if (index == -1 || gindex == -1) return false;
-            // 是组内成员才能退出
+            /**
+             * Only permits quitting for the 
+             * chrrent group members
+             */
             if (groups.ElementAt(gindex).hasMember(uid))
             {
                 if (groups.ElementAt(gindex).isAdmin(uid))
                 {
-                    //批量删除用户中的Chat和Group。
+                    /**
+                     * batch removal for the group members
+                     */
                     int userIndex;
                     List<string> allMembers = groups.ElementAt(gindex).getMembers();
                     string chatID = groups.ElementAt(gindex).getChatID();
@@ -374,16 +580,25 @@ namespace WoChat.Models
                         users.ElementAt(userIndex).deleteGroup(groupID);
                         groups.ElementAt(gindex).deleteMember(allMembers.ElementAt(i));
                     }
-                    //最后删除自己的chat和销毁自己。
+
+                    /**
+                     * Finally release chatid and itself
+                     */
                     chats.RemoveAt(getChatIndexByID(chatID));
                     groups.RemoveAt(gindex);
+                    return true;
                 } else
                 {
-                    // 只是普通成员 , 在自己的列表中删除Chat和Group
+                    /**
+                     * remove chat and group for the ordinary group members
+                     */
                     users.ElementAt(index).deleteChat(groups.ElementAt(gindex).getChatID());
                     users.ElementAt(index).deleteGroup(groups.ElementAt(gindex).getID());
-                    // 然后从该群聊中退出（无视该用户已经发送的信息）
+                    /**
+                     * And simply dismiss the user from the group
+                     */
                     groups.ElementAt(gindex).deleteMember(uid);
+                    return true;
                 }
             }
             return false;
@@ -391,7 +606,9 @@ namespace WoChat.Models
 
 
 
-
+        /**
+         * I don't remember what these functions for
+         */
         public static UserModel getFriend(string id)
         {
             int index = getUserIndexByID(id);
@@ -419,7 +636,12 @@ namespace WoChat.Models
             else return null;
         }
 
-        //一对一类型信息
+
+        /**
+         * Single one to one push
+         * warning!!!
+         * @type {String}
+         */
         public static bool pushMessageToChat(string message , string chaterID , string chatID , string chateeID = "NULL")
         {
             int cindex = getChatIndexByID(chatID);
@@ -427,18 +649,29 @@ namespace WoChat.Models
             if (cindex == -1)
             {
                 if (chateeID == "NULL" || getUserIndexByID(chateeID) == -1) return false;
-                //创建新的Chat
+                /**
+                 * if chat not exists , then we create a new Chat
+                 * @type {[type]}
+                 */
                 string cid = createChatForUser(chaterID, chateeID);
                 users.ElementAt(aindex).addChat(cid);
                 users.ElementAt(getUserIndexByID(chateeID)).addChat(cid);
-                //添加信息
+                /**
+                 * Append the Message
+                 */
                 return chats.ElementAt(getChatIndexByID(cid)).pushMessage(message);
             } else
             {
-                return chats.ElementAt(cindex).pushMessage(message);
+                return chats.ElementAt(cindex).pushMessage(message , chaterID , chateeID);
             }
         }
-        //群消息
+        
+
+
+
+        /**
+         * Push Message to an existing group
+         */
         public static bool pushMessageToGroup(string message , string gid)
         {
             int gindex = getGroupIndexByID(gid);
@@ -450,6 +683,10 @@ namespace WoChat.Models
             return chats.ElementAt(cindex).pushMessage(message);
         }
 
+
+        /**
+         * No-use Creator
+         */
         private static string encryptCreator(string encrypt)
         {
             string sha = HashAlgorithmNames.Sha512;
