@@ -310,8 +310,8 @@ namespace WoChat.Models
                 /**
                  * Append the new Group & GroupChat to the Current User(Founder).
                  */
-                users.ElementAt(uindex).addGroup(gid);
-                users.ElementAt(uindex).addChat(cid);
+                users.ElementAt(uindex).addGroup(gm.getID());
+                users.ElementAt(uindex).addChat(cm.getID());
                 return true;
             }
             else return false;
@@ -378,31 +378,33 @@ namespace WoChat.Models
 
         /**
          * Depreciated Methods
+         * Return the Requested Method to the Users.
+         *
          */
-        // public static List<string> getFriendIDs(string uid)
-        // {
-        //     List<string> ret = null;
-        //     int index = getUserIndexByID(uid);
-        //     if (index != -1) ret = users.ElementAt(index).getFriends();
-        //     return ret;
-        // }
+        public static List<string> getFriendIDs(string uid)
+        {
+            List<string> ret = null;
+            int index = getUserIndexByID(uid);
+            if (index != -1) ret = users.ElementAt(index).getFriends();
+            return ret;
+        }
 
-        // public static List<string> getGroupIDs(string uid)
-        // {
-        //     List<string> ret = null;
-        //     int index = getUserIndexByID(uid);
-        //     if (index != -1) ret = users.ElementAt(index).getGroups();
-        //     return ret;
-        // }
+        public static List<string> getGroupIDs(string uid)
+        {
+            List<string> ret = null;
+            int index = getUserIndexByID(uid);
+            if (index != -1) ret = users.ElementAt(index).getGroups();
+            return ret;
+        }
 
 
-        // public static List<string> getChatIDs(string uid)
-        // {
-        //     List<string> ret = null;
-        //     int index = getUserIndexByID(uid);
-        //     if (index != -1) ret = users.ElementAt(index).getChats();
-        //     return ret;
-        // }
+        public static List<string> getChatIDs(string uid)
+        {
+            List<string> ret = null;
+            int index = getUserIndexByID(uid);
+            if (index != -1) ret = users.ElementAt(index).getChats();
+            return ret;
+        }
 
 
 
@@ -659,7 +661,7 @@ namespace WoChat.Models
                 /**
                  * Append the Message
                  */
-                return chats.ElementAt(getChatIndexByID(cid)).pushMessage(message);
+                return chats.ElementAt(getChatIndexByID(cid)).pushMessage(message , chaterID , chateeID);
             } else
             {
                 return chats.ElementAt(cindex).pushMessage(message , chaterID , chateeID);
@@ -672,7 +674,7 @@ namespace WoChat.Models
         /**
          * Push Message to an existing group
          */
-        public static bool pushMessageToGroup(string message , string gid)
+        public static bool pushMessageToGroup(string message , string uid , string gid)
         {
             int gindex = getGroupIndexByID(gid);
             if (gindex == -1) return false;
@@ -680,7 +682,7 @@ namespace WoChat.Models
             string cid = groups.ElementAt(gindex).getChatID();
             int cindex = getChatIndexByID(cid);
             if (cindex == -1) return false;
-            return chats.ElementAt(cindex).pushMessage(message);
+            return chats.ElementAt(cindex).pushMessage(message , uid , gid);
         }
 
 
