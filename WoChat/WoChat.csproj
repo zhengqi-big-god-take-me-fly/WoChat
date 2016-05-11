@@ -106,6 +106,7 @@
     <Compile Include="Models\StubModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="ViewModels\StubViewModel.cs" />
+    <Compile Include="ViewModels\UserViewModel.cs" />
     <Compile Include="Views\ChatPage.xaml.cs">
       <DependentUpon>ChatPage.xaml</DependentUpon>
     </Compile>
