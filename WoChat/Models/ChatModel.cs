@@ -215,8 +215,8 @@ namespace WoChat.Models
                 this.chatid = Guid.NewGuid().ToString();
                 this.isGroupChat = _isGroupChat;
                 this.messageList = new List<MessageModel>();
-                this.chaterList = new List<string>();
-                this.chaterList.Add(_chaterid);
+                //this.chaterList = new List<string>();
+                //this.chaterList.Add(_chaterid);
             }
         }
     }

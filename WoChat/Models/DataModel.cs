@@ -50,23 +50,32 @@ namespace WoChat.Models
          * Login Module
          * return a Specified Model of User.
          * (To the Client)
+         * 
+         * If no such user
+         * Then return null
          */
         public static UserModel userLogin(string username , string password)
         {
             UserModel uml = null;
             int index = getUserIndexByName(username);
-            if (index != -1 && users.ElementAt(index).getPassword() == encryptCreator(password))
+            if (index != -1 && users.ElementAt(index).comparePassword(encryptCreator(password)))
             {
                 uml = users.ElementAt(index);
             }
             return uml;
         }
 
- 
+
 
         /**
          * User Register Module
          * return true if Create User Success.
+         * 
+         * --------------Updated 11th May----------------------
+         * We now use the Server(DataModel) For Encryption
+         * Therefore encryptCreator before Create a user is needed
+         * ----------------------------------------------------
+         * 
          * @type {String}
          */
         public static bool userRegister(string name, string password, string _nick, string _email, string _icon = "default", string _style = "None Yet!")
@@ -75,7 +84,7 @@ namespace WoChat.Models
              * Query First
              */
             if (searchForUser(name, _nick, _email) != "Pass!") return false;
-            UserModel um = new UserModel(name, password, _nick, _email, _icon, _style);
+            UserModel um = new UserModel(name, encryptCreator(password), _nick, _email, _icon, _style);
             /**
              * Append to user database
              */
@@ -83,7 +92,29 @@ namespace WoChat.Models
             return true;
         }
 
-  
+
+
+
+        /**
+         * --------------Updated 11th May----------------------
+         * User Change Password
+         * return true if Change Success
+         * 
+         * We now use the Server(DataModel) For Encryption
+         * Therefore encryptCreator before change a password is needed
+         * ----------------------------------------------------
+         * 
+         * @type {String}
+         */
+        public bool updatePassword(string username , string originalPassword , string newPassword)
+        {
+            int index = getUserIndexByName(username);
+            if (index == -1) return false;
+            else return users.ElementAt(index).changePassword(encryptCreator(originalPassword), encryptCreator(newPassword));
+        }
+
+
+
         /**
          * User Register Searcher
          * Judge if the User term is duplicate
@@ -310,8 +341,8 @@ namespace WoChat.Models
                 /**
                  * Append the new Group & GroupChat to the Current User(Founder).
                  */
-                users.ElementAt(uindex).addGroup(gid);
-                users.ElementAt(uindex).addChat(cid);
+                users.ElementAt(uindex).addGroup(gm.getID());
+                users.ElementAt(uindex).addChat(cm.getID());
                 return true;
             }
             else return false;
@@ -378,31 +409,33 @@ namespace WoChat.Models
 
         /**
          * Depreciated Methods
+         * Return the Requested Method to the Users.
+         *
          */
-        // public static List<string> getFriendIDs(string uid)
-        // {
-        //     List<string> ret = null;
-        //     int index = getUserIndexByID(uid);
-        //     if (index != -1) ret = users.ElementAt(index).getFriends();
-        //     return ret;
-        // }
+        public static List<string> getFriendIDs(string uid)
+        {
+            List<string> ret = null;
+            int index = getUserIndexByID(uid);
+            if (index != -1) ret = users.ElementAt(index).getFriends();
+            return ret;
+        }
 
-        // public static List<string> getGroupIDs(string uid)
-        // {
-        //     List<string> ret = null;
-        //     int index = getUserIndexByID(uid);
-        //     if (index != -1) ret = users.ElementAt(index).getGroups();
-        //     return ret;
-        // }
+        public static List<string> getGroupIDs(string uid)
+        {
+            List<string> ret = null;
+            int index = getUserIndexByID(uid);
+            if (index != -1) ret = users.ElementAt(index).getGroups();
+            return ret;
+        }
 
 
-        // public static List<string> getChatIDs(string uid)
-        // {
-        //     List<string> ret = null;
-        //     int index = getUserIndexByID(uid);
-        //     if (index != -1) ret = users.ElementAt(index).getChats();
-        //     return ret;
-        // }
+        public static List<string> getChatIDs(string uid)
+        {
+            List<string> ret = null;
+            int index = getUserIndexByID(uid);
+            if (index != -1) ret = users.ElementAt(index).getChats();
+            return ret;
+        }
 
 
 
@@ -659,7 +692,7 @@ namespace WoChat.Models
                 /**
                  * Append the Message
                  */
-                return chats.ElementAt(getChatIndexByID(cid)).pushMessage(message);
+                return chats.ElementAt(getChatIndexByID(cid)).pushMessage(message , chaterID , chateeID);
             } else
             {
                 return chats.ElementAt(cindex).pushMessage(message , chaterID , chateeID);
@@ -672,7 +705,7 @@ namespace WoChat.Models
         /**
          * Push Message to an existing group
          */
-        public static bool pushMessageToGroup(string message , string gid)
+        public static bool pushMessageToGroup(string message , string uid , string gid)
         {
             int gindex = getGroupIndexByID(gid);
             if (gindex == -1) return false;
@@ -680,7 +713,7 @@ namespace WoChat.Models
             string cid = groups.ElementAt(gindex).getChatID();
             int cindex = getChatIndexByID(cid);
             if (cindex == -1) return false;
-            return chats.ElementAt(cindex).pushMessage(message);
+            return chats.ElementAt(cindex).pushMessage(message , uid , gid);
         }
 
 

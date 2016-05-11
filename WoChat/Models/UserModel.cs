@@ -47,24 +47,76 @@ namespace WoChat.Models
 
 
         /**
-         * setter of name password and info
+         * setter of infos
+         *
+         * --------------Updated 11th May----------------------
+         * Remove setName method
+         * Since the Username is not permitted to change , we Depreciate this method
+         * Add SetNick , SetIcon and SetStyle Method
+         * ----------------------------------------------------
          */
-        public void setName(string newname)
+        //public void setName(string newname)
+        //{
+        //    this.uname = newname;
+        //}
+        public void setNick(string newNick)
         {
-            this.uname = newname;
+            this.getInfo().nickname = newNick;
         }
-        public void setPassword(string newpassword)
+        public void setIcon(string newIcon)
         {
-            this.upassword = encryptCreator(newpassword);
+            this.getInfo().icon = newIcon;
         }
+        public void setStyle(string newStyle)
+        {
+            this.getInfo().stylish = newStyle;
+        }
+        
+
         public void setInfo(InfoModel info)
         {
             this.uinfo = info;
         }
 
 
+
+
+
         /**
-         * getter of ID, Name, Password , Info
+         * --------------Updated 11th May----------------------
+         * We now use the Server(DataModel) For Encryption
+         * Therefore encryptCreator Function is no need any more in the UserModel
+         * For safety respect , we only provide password setter when we authorized the user identity
+         * ----------------------------------------------------
+         */
+        public bool changePassword(string orignalPassword , string newPassword)
+        {
+            if (this.upassword == orignalPassword)
+            {
+                this.setPassword(newPassword);
+                return true;
+            }
+            else return false;
+        }
+        //private void setPassword(string newpassword)
+        //{
+        //    this.upassword = encryptCreator(newpassword);
+        //}
+        private void setPassword(string newpassword)
+        {
+            this.upassword = newpassword;
+        }
+
+
+
+
+
+        /**
+         * getter of ID, Name, Info
+         *
+         * --------------Updated 11th May----------------------
+         * Add GetNick , GetIcon and GetStyle Method
+         * ----------------------------------------------------
          */
         public string getID()
         {
@@ -74,14 +126,46 @@ namespace WoChat.Models
         {
             return uname;
         }
-        public string getPassword()
-        {
-            return upassword;
-        }
         public InfoModel getInfo()
         {
             return uinfo;
         }
+        public string getNick()
+        {
+            return this.getInfo().nickname;
+        }
+        public string getIcon()
+        {
+            return this.getInfo().icon;
+        }
+        public string getStyle()
+        {
+            return this.getInfo().stylish;
+        }
+
+
+
+
+
+
+        /**
+         * --------------Updated 11th May----------------------
+         * For safety respect , we don't provide password Getters.
+         * Instead , we provide comparePassword to check if password is a match
+         * ----------------------------------------------------
+         */
+        public bool comparePassword(string to_be_compared)
+        {
+            if (this.upassword == to_be_compared) return true;
+            else return false;
+        }
+        //public string getPassword()
+        //{
+        //    return upassword;
+        //}
+
+
+
 
         /**
          * The getter of the String Lists.
@@ -220,24 +304,31 @@ namespace WoChat.Models
         }
 
 
-
         /**
-         * Encrypter for the password
-         * accepts the regular password and generate the encrypted ones
-         * use SHA512 Algorithms
-         * return : the encrypted password.
-         */
-        private string encryptCreator(string encrypt)
-        {
-            string sha = HashAlgorithmNames.Sha512;
-            HashAlgorithmProvider provider = HashAlgorithmProvider.OpenAlgorithm(sha);
-            CryptographicHash hashme = provider.CreateHash();
-            IBuffer origin = CryptographicBuffer.ConvertStringToBinary(encrypt, BinaryStringEncoding.Utf16BE);
-            hashme.Append(origin);
-            IBuffer result = hashme.GetValueAndReset();
-            string hashcode = CryptographicBuffer.EncodeToBase64String(result);
-            return hashcode;
-        }
+          * --------------Updated 11th May----------------------
+          * We now use the Server(DataModel) For Encryption
+          * Therefore encryptCreator Function is no need any more in the UserModel
+          * ----------------------------------------------------
+          */
+        // /**
+        // * Encrypter for the password
+        // * accepts the regular password and generate the encrypted ones
+        // * use SHA512 Algorithms
+        // * return : the encrypted password.
+        // */
+        //private string encryptCreator(string encrypt)
+        //{
+        //    string sha = HashAlgorithmNames.Sha512;
+        //    HashAlgorithmProvider provider = HashAlgorithmProvider.OpenAlgorithm(sha);
+        //    CryptographicHash hashme = provider.CreateHash();
+        //    IBuffer origin = CryptographicBuffer.ConvertStringToBinary(encrypt, BinaryStringEncoding.Utf16BE);
+        //    hashme.Append(origin);
+        //    IBuffer result = hashme.GetValueAndReset();
+        //    string hashcode = CryptographicBuffer.EncodeToBase64String(result);
+        //    return hashcode;
+        //}
+
+
 
         /**
          * Constructor for User
@@ -257,9 +348,16 @@ namespace WoChat.Models
             /**
              * [upassword description]
              * Only storage Encrypted passwords!
+             * 
+             * --------------Updated 11th May----------------------
+             * We now use the Server(DataModel) For Encryption
+             * Therefore encryptCreator Function is no need any more in the UserModel
+             * ----------------------------------------------------
+             * 
              * @type {[type]}
              */
-            this.upassword = encryptCreator(password);
+            //this.upassword = encryptCreator(password);
+            this.upassword = password;
             this.uinfo = new InfoModel(_nick, _email, _icon, _style);
 
 
