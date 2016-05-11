@@ -19,15 +19,15 @@
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
         <Image x:Name="image" Grid.Row="1" HorizontalAlignment="Center" Height="150" VerticalAlignment="Center" Width="150" Source="../Assets/image.jpg" Stretch="UniformToFill"/>
-        <TextBox x:Name="textBox" Grid.Row="2" HorizontalAlignment="Center" Height="80"  TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="225" FontFamily="Sitka Text" FontSize="22" Header="username:" />
-        <TextBox x:Name="textBox1" Grid.Row="3" HorizontalAlignment="Center" Height="80"  TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="225" FontFamily="Sitka Text" FontSize="22" Header="password:" />
+        <TextBox x:Name="userName" Grid.Row="2" HorizontalAlignment="Center" Height="80"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="225" FontFamily="Sitka Text" FontSize="22" Header="username:" />
+        <TextBox x:Name="passWord" Grid.Row="3" HorizontalAlignment="Center" Height="80"  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="225" FontFamily="Sitka Text" FontSize="22" Header="password:" />
         <Grid Grid.Row="4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
-            <Button  Content="Register" Grid.Column="0" HorizontalAlignment="Right" Margin="0,10,10,5" Height="35" Width="101" FontFamily="Sitka Text" FontSize="18"/>
-            <Button Content="Login" Grid.Column="1" HorizontalAlignment="Left" Margin="10,10,0,0" Height="35" Width="101" FontFamily="Sitka Text" FontSize="18"/>
+            <Button  Content="注册" Grid.Column="0" HorizontalAlignment="Right" Margin="0,10,10,0" Height="35" Width="101" FontFamily="Sitka Text" FontSize="18" Click="userRegister"/>
+            <Button Content="登陆" Grid.Column="1" HorizontalAlignment="Left" Margin="10,10,0,0" Height="35" Width="101" FontFamily="Sitka Text" FontSize="18" Click="userLogin"/>
         </Grid>
     </Grid>
 </Page>

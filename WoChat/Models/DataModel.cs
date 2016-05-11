@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Windows.Security.Cryptography;
 using Windows.Security.Cryptography.Core;
 using Windows.Storage.Streams;
+using Windows.UI.Popups;
 
 namespace WoChat.Models
 {
@@ -28,7 +29,7 @@ namespace WoChat.Models
          * We use all kinds of Static items,so we no need constructers
          */
         public DataModel() {
-
+            
         }
 
 
@@ -39,6 +40,14 @@ namespace WoChat.Models
          */
         public static bool init()
         {
+            /**
+             * ---------------------Modified 12th May------------------
+             * ---------Test Page , We Simply add a test User----------
+             * --------------------------------------------------------
+             */
+
+            UserModel testUser = new UserModel("a20185", encryptCreator("52013142"), "Souler" , "ou@souler.me");
+            users.Add(testUser);
 
             return true;
         }

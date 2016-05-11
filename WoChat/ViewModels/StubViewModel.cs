@@ -325,6 +325,7 @@ namespace WoChat.ViewModels {
         {
             this.currentUser = null;
             isLogin = false;
+            DataModel.init();
             //在通讯录显示的（离线数据）
             this.groups = new ObservableCollection<GroupModel>();
             this.friends = new ObservableCollection<UserModel>();
