@@ -47,7 +47,23 @@ namespace WoChat.Models
              */
 
             UserModel testUser = new UserModel("a20185", encryptCreator("52013142"), "Souler" , "ou@souler.me");
+            UserModel testUser2 = new UserModel("tidyzq", encryptCreator("zqdashen"), "BigGod Qi Zheng", "tidyzq@tidyzq.com");
+            UserModel testUser3 = new UserModel("perqin", encryptCreator("changlaoshi"), "Teacher Aoi", "perqin@perqin.com");
             users.Add(testUser);
+            users.Add(testUser2);
+            users.Add(testUser3);
+
+
+
+            /**
+             * ---------------------Modified 12th May------------------
+             * ---------Test Page , We Simply add a TestGroup----------
+             * --------------------------------------------------------
+             */
+            ChatModel godZheng = new ChatModel(testUser2.getID(), true);
+            chats.Add(godZheng);
+            GroupModel zhengqi_big_god_carries_me_fly = new GroupModel(testUser2.getID(), testUser2.getName(), "Fly", godZheng.getID());
+            groups.Add(zhengqi_big_god_carries_me_fly);
 
             return true;
         }
@@ -335,7 +351,7 @@ namespace WoChat.Models
              * Create Chatmodel First
              * @type {ChatModel}
              */
-            ChatModel cm = new ChatModel(uname, "NULL", true);
+            ChatModel cm = new ChatModel(uname , true);
             if (cm == null) return false;
 
             /**

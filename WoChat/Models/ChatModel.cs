@@ -185,7 +185,7 @@ namespace WoChat.Models
          * Needs to Be Modified! Warning!
          * @type {String}
          */
-        public ChatModel(string _chater , string _chatee = "NULL" , bool _isGroupChat = false)
+        public ChatModel(string _chater, bool _isGroupChat = false , string _chatee = "NULL")
         {
             this.chatid = Guid.NewGuid().ToString();
             this.chater = _chater;
