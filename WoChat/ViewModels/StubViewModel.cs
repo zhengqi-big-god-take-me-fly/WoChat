@@ -11,23 +11,25 @@ namespace WoChat.ViewModels {
 
 
         /**
-         * 
+         * Init the Models Providing to the Page Renderer
+         * Type: ObservableCollection
+         * All models have the function for Getters and Setters
          */
         private ObservableCollection<UserModel> friends;
         private ObservableCollection<GroupModel> groups;
         private ObservableCollection<ChatModel> chats;
 
-        
+
 
         /**
-         * 
+         * The 3 datas that return to the Page Renderer
+         * just Open the Api for the Xaml Page cs files
          */
         public ObservableCollection<UserModel> getFriends()
         {
             return this.friends;
         }
-
-
+       
         public ObservableCollection<GroupModel> getGroups()
         {
             return this.groups;
@@ -38,6 +40,12 @@ namespace WoChat.ViewModels {
             return this.chats;
         }
 
+
+        /**
+         * Functions for getting current Users
+         * if User has been Logged in , then we return the basic Information for the User
+         * For safety Respect , User Model didn't provide open Api For pasword Getters.
+         */
         public UserModel getCurrentUser()
         {
             return this.currentUser;
@@ -241,7 +249,7 @@ namespace WoChat.ViewModels {
         }
         private void syncUserGroup()
         {
-            this.currentUser.setGroup(DataModel.getGroupIDs(this.currentUser.getID()));
+            this.currentUser.setGroup(DataModel. getGroupIDs(this.currentUser.getID()));
         }
         private void syncUserChat()
         {
