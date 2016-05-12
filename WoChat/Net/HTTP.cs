@@ -3,6 +3,7 @@ using System;
 using System.Threading.Tasks;
 using Windows.Storage.Streams;
 using Windows.Web.Http;
+using WoChat.Utils;
 
 namespace WoChat.Net {
     class HTTP {
@@ -15,18 +16,21 @@ namespace WoChat.Net {
         public static string URI_AUTH_LOGIN = "/auth/login";
 
         public static async Task<PostUsersResult> PostUsers(string un, string pw) {
+            PostUsersResult result;
+            if (un.Equals("") || pw.Equals("")) {
+                return new PostUsersResult() { StatusCode = PostUsersResult.PostUsersStatusCode.InvalidParams };
+            }
             HttpClient client = new HttpClient();
             HttpRequestMessage req = new HttpRequestMessage() {
                 Content = new HttpStringContent(JsonConvert.SerializeObject(new PostUsersParams() {
                     username = un,
-                    //TODO: MD5 encryption
-                    password = pw
+                    password = MD5.Hash(pw)
                 }), UnicodeEncoding.Utf8, "application/json"),
                 Method = HttpMethod.Post,
                 RequestUri = new Uri(API_HOST + URI_USERS)
             };
             HttpResponseMessage res = await client.SendRequestAsync(req);
-            PostUsersResult result = new PostUsersResult();
+            result = new PostUsersResult();
             switch (res.StatusCode) {
                 case HttpStatusCode.Created:
                     result.StatusCode = PostUsersResult.PostUsersStatusCode.Success;
@@ -45,18 +49,20 @@ namespace WoChat.Net {
         }
 
         public static async Task<PostAuthLoginResult> PostAuthLogin(string un, string pw) {
+            PostAuthLoginResult result;
+            if (un.Equals("") || pw.Equals("")) {
+                return new PostAuthLoginResult() { StatusCode = PostAuthLoginResult.PostAuthLoginStatusCode.UnknownError };
+            }
             HttpClient client = new HttpClient();
             HttpRequestMessage req = new HttpRequestMessage() {
                 Content = new HttpStringContent(JsonConvert.SerializeObject(new PostAuthLoginParams() {
                     username = un,
-                    //TODO: MD5 encryption
-                    password = pw
+                    password = MD5.Hash(pw)
                 }), UnicodeEncoding.Utf8, "application/json"),
                 Method = HttpMethod.Post,
                 RequestUri = new Uri(API_HOST + URI_AUTH_LOGIN)
             };
             HttpResponseMessage res = await client.SendRequestAsync(req);
-            PostAuthLoginResult result;
             try {
                 result = JsonConvert.DeserializeObject<PostAuthLoginResult>(res.Content.ToString());
                 switch (res.StatusCode) {
