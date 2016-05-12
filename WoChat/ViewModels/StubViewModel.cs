@@ -52,7 +52,23 @@ namespace WoChat.ViewModels {
         }
 
 
-        
+        /**
+         * --------------------------------------------------------
+         * ------------------Updated 12th May----------------------
+         * --------------Check if a user is addable----------------
+         * --------------------------------------------------------
+         */
+        public bool checkAddability(string userid)
+        {
+            //isLogin false -> not Logged in
+            if (!isLogin) return false;
+            //if adding oneself then we not permit this method
+            if (currentUser.getID() == userid) return false;
+            return DataModel.isUserExist(userid);
+        }
+
+
+
         /**
          * 
          */
@@ -136,26 +152,88 @@ namespace WoChat.ViewModels {
             return true;
         }
 
-        
 
         /**
-         *
-         *
-         * 
+         * ---------------------Modified 12th May------------------
+         * ----------Search A User By Name and Return ID-----------
+         * ---------Return The First Users Match Username----------
+         * -----If no such user found , then we simply return------
+         * ----------------------"NOTFOUND"------------------------
+         * --------------------------------------------------------
+         */
+         public string searchUserByName(string username)
+        {
+            return DataModel.getUserIDByName(username);
+        }
+
+
+
+
+        /**
+         * ------------------Update 12th May-----------------
+         * ---------If add friend Successfully , then-------- 
+         * ----Sync The Observation List and User himself----
+         * --------------------------------------------------
          */
         public bool addFriend(string fid)
         {
             if (!this.isLogin) return false;
             if (DataModel.addFriend(this.currentUser.getID() , fid)) {
                 /**
-                 * 
+                 * Sync User's Friend String List(Update User)
                  */
                 syncUserFriend();
                 syncUserChat();
+                /**
+                 * Sync Local Friend Observation Collection Set
+                 */
+                syncLocalFriend(this.getCurrentUser().getFriends().ElementAt(this.getCurrentUser().getFriends().Count - 1));
+                syncLocalChat(this.getCurrentUser().getChats().ElementAt(this.getCurrentUser().getChats().Count - 1));
                 return true;
             }
             return false;
         }
+
+        private void syncLocalFriend(string newFriendID)
+        {
+            UserModel newFriend = DataModel.getFriendObjectById(newFriendID);
+            this.friends.Add(newFriend);
+        }
+        private void syncLocalGroup(string newGroupID)
+        {
+            GroupModel newGroup = DataModel.getGroupObjectById(newGroupID);
+            this.groups.Add(newGroup);
+        }
+        private void syncLocalChat(string newChatID)
+        {
+            ChatModel newChat = DataModel.getChatObjectById(newChatID);
+            this.chats.Add(newChat);
+        }
+
+
+
+
+        // Should Be Modified
+        public ChatModel getChatByFriend(string fid)
+        {
+            if (!isLogin) return null;
+            // If we Can find At Local
+            // Certainly should be found at local!
+
+            for (int i = 0; i < chats.Count; i++)
+            {
+                if (this.chats.ElementAt(i).getChaterID() == this.currentUser.getID() && this.chats.ElementAt(i).getChateeID() == fid)
+                {
+                    return this.chats.ElementAt(i);
+                } else if (this.chats.ElementAt(i).getChaterID() == fid && this.chats.ElementAt(i).getChateeID() == this.currentUser.getID())
+                {
+                    return this.chats.ElementAt(i);
+                }
+            }
+            return null;
+        }
+
+
 
 
 
@@ -325,6 +403,7 @@ namespace WoChat.ViewModels {
         {
             this.currentUser = null;
             isLogin = false;
+            DataModel.init();
             //在通讯录显示的（离线数据）
             this.groups = new ObservableCollection<GroupModel>();
             this.friends = new ObservableCollection<UserModel>();

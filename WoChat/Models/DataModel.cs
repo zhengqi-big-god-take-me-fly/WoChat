@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Windows.Security.Cryptography;
 using Windows.Security.Cryptography.Core;
 using Windows.Storage.Streams;
+using Windows.UI.Popups;
 
 namespace WoChat.Models
 {
@@ -28,7 +29,7 @@ namespace WoChat.Models
          * We use all kinds of Static items,so we no need constructers
          */
         public DataModel() {
-
+            
         }
 
 
@@ -39,6 +40,30 @@ namespace WoChat.Models
          */
         public static bool init()
         {
+            /**
+             * ---------------------Modified 12th May------------------
+             * ---------Test Page , We Simply add a test User----------
+             * --------------------------------------------------------
+             */
+
+            UserModel testUser = new UserModel("a20185", encryptCreator("52013142"), "Souler" , "ou@souler.me");
+            UserModel testUser2 = new UserModel("tidyzq", encryptCreator("zqdashen"), "BigGod Qi Zheng", "tidyzq@tidyzq.com");
+            UserModel testUser3 = new UserModel("perqin", encryptCreator("changlaoshi"), "Teacher Aoi", "perqin@perqin.com");
+            users.Add(testUser);
+            users.Add(testUser2);
+            users.Add(testUser3);
+
+
+
+            /**
+             * ---------------------Modified 12th May------------------
+             * ---------Test Page , We Simply add a TestGroup----------
+             * --------------------------------------------------------
+             */
+            ChatModel godZheng = new ChatModel(testUser2.getID(), true);
+            chats.Add(godZheng);
+            GroupModel zhengqi_big_god_carries_me_fly = new GroupModel(testUser2.getID(), testUser2.getName(), "Fly", godZheng.getID());
+            groups.Add(zhengqi_big_god_carries_me_fly);
 
             return true;
         }
@@ -147,8 +172,23 @@ namespace WoChat.Models
             return warningMessage;
         }
 
+        /**
+         * --------------------------------------------------------
+         * ------------------Updated 12th May----------------------
+         * ----------Return User ID by Finding his name------------
+         * --------------------------------------------------------
+         */
+         public static string getUserIDByName(string username)
+        {
+            int index = getUserIndexByName(username);
+            if (index != -1)
+            {
+                return users.ElementAt(index).getID();
+            }
+            return "NOTFOUND";
+        }
 
-  
+
         /**
          * Index Getters for users
          * To get the Specified index from the database
@@ -264,7 +304,85 @@ namespace WoChat.Models
             return ret;
         }
 
-  
+
+
+
+        // Local Should Provide The Specified Function
+        // Search Local First
+        // If Local NONEXIST
+        // Then we will fetch from Server
+        // Then sync
+
+
+
+
+
+
+
+
+
+
+        /**
+        * --------------------------------------------------------
+        * ------------------Updated 12th May----------------------
+        * ----------Methods For Syncing Datas(New Datas)----------
+        * --------------------------------------------------------
+        */
+
+
+        public static UserModel getFriendObjectById(string fid)
+        {
+            int index = getUserIndexByID(fid);
+            if (index != -1)
+            {
+                return users.ElementAt(index);
+            }
+            return null;
+        }
+        public static GroupModel getGroupObjectById(string gid)
+        {
+            int index = getGroupIndexByID(gid);
+            if (index != -1)
+            {
+                return groups.ElementAt(index);
+            }
+            return null;
+        }
+        public static ChatModel getChatObjectById(string cid)
+        {
+            int index = getChatIndexByID(cid);
+            if (index != -1)
+            {
+                return chats.ElementAt(index);
+            }
+            return null;
+        }
+
+        /**
+         * --------------------------------------------------------
+         * ------------------Updated 12th May----------------------
+         * ----------Determine if a certain user is exist----------
+         * --------------------------------------------------------
+         */
+
+
+
+
+
+
+
+        /**
+         * --------------------------------------------------------
+         * ------------------Updated 12th May----------------------
+         * ----------Determine if a certain user is exist----------
+         * --------------------------------------------------------
+         */
+        public static bool isUserExist(string uid)
+        {
+            return (getUserIndexByID(uid) != -1);
+        }
+
+
 
         /**
          * Index Getters for a specified Chat
@@ -326,7 +444,7 @@ namespace WoChat.Models
              * Create Chatmodel First
              * @type {ChatModel}
              */
-            ChatModel cm = new ChatModel(uname, "NULL", true);
+            ChatModel cm = new ChatModel(uname , true);
             if (cm == null) return false;
 
             /**
