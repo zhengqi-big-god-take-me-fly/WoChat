@@ -30,20 +30,14 @@ namespace WoChat.ViewModels {
         }
 
         /// <summary>
-        /// Save all local user data to local storage
-        /// </summary>
-        public void Save() {
-            //TODO: Save to local storage
-        }
-
-        /// <summary>
         /// Load all local user data from local storage
         /// </summary>
         public void Load() {
             //TODO: Load from local storage
         }
 
-        private UserModel localUser;
+        //TODO: Initialization
+        private UserModel localUser = new UserModel("User1", "gggg", "User Haha", "a@b.com");
         private string jwt;
         private bool isLogin;
     }
