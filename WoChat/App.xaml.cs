@@ -12,7 +12,7 @@ namespace WoChat {
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
     sealed partial class App : Application {
-        public static UserViewModel UserVM = new UserViewModel();
+        public static LocalUserViewModel LocalUserVM = new LocalUserViewModel();
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().

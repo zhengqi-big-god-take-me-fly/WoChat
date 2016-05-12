@@ -5,7 +5,7 @@ using WoChat.ViewModels;
 
 namespace WoChat.Views {
     public sealed partial class RegLogPage : Page {
-        private UserViewModel UserVM = App.UserVM;
+        private LocalUserViewModel LocalUserVM = App.LocalUserVM;
         private RegLogPageUIViewModel RegLogPageUIVM = new RegLogPageUIViewModel();
         //private StubViewModel tester;
         //private bool isLogin;

@@ -4,7 +4,7 @@ namespace WoChat.ViewModels {
     /// <summary>
     /// For the user information of this client
     /// </summary>
-    public class UserViewModel {
+    public class LocalUserViewModel {
         public UserModel LocalUser {
             get {
                 return localUser;
@@ -27,6 +27,20 @@ namespace WoChat.ViewModels {
             set {
                 isLogin = value;
             }
+        }
+
+        /// <summary>
+        /// Save all local user data to local storage
+        /// </summary>
+        public void Save() {
+            //TODO: Save to local storage
+        }
+
+        /// <summary>
+        /// Load all local user data from local storage
+        /// </summary>
+        public void Load() {
+            //TODO: Load from local storage
         }
 
         private UserModel localUser;

@@ -21,11 +21,11 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Row="1" Grid.Column="1" Width="240">
+        <StackPanel Grid.Row="1" Grid.Column="1" Width="320">
             <Image HorizontalAlignment="Center" Height="150" Width="150" Source="../Assets/image.jpg" Stretch="UniformToFill" Margin="16"/>
-            <TextBox IsEnabled="{x:Bind RegLogPageUIVM.AcceptInput}" Header="用户名" InputScope="AlphanumericHalfWidth"/>
-            <TextBox IsEnabled="{x:Bind RegLogPageUIVM.AcceptInput}" Header="密码" InputScope="Password"/>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <TextBox IsEnabled="{x:Bind RegLogPageUIVM.AcceptInput}" Header="用户名" InputScope="AlphanumericHalfWidth" Margin="0,8,0,0"/>
+            <TextBox IsEnabled="{x:Bind RegLogPageUIVM.AcceptInput}" Header="密码" InputScope="Password" Margin="0,8,0,0"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8" >
                 <ProgressRing IsActive="{x:Bind RegLogPageUIVM.IsLoading}" Visibility="{x:Bind RegLogPageUIVM.IsLoading,Converter={StaticResource B2VConverter}}" VerticalAlignment="Center"/>
                 <TextBlock Text="{x:Bind RegLogPageUIVM.HintText}" VerticalAlignment="Center"/>
             </StackPanel>
