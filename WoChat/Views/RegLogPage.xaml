@@ -18,7 +18,7 @@
             <RowDefinition Height="50"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
-        <Image x:Name="image" Grid.Row="1" HorizontalAlignment="Center" Height="117"  VerticalAlignment="Center" Width="170" Source="../Assets/image.jpg"/>
+        <Image x:Name="image" Grid.Row="1" HorizontalAlignment="Center" Height="150" VerticalAlignment="Center" Width="150" Source="../Assets/image.jpg" Stretch="UniformToFill"/>
         <TextBox x:Name="textBox" Grid.Row="2" HorizontalAlignment="Center" Height="80"  TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="225" FontFamily="Sitka Text" FontSize="22" Header="username:" />
         <TextBox x:Name="textBox1" Grid.Row="3" HorizontalAlignment="Center" Height="80"  TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="225" FontFamily="Sitka Text" FontSize="22" Header="password:" />
         <Grid Grid.Row="4">
