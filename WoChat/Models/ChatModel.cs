@@ -11,7 +11,7 @@ namespace WoChat.Models
     /**
      * Model of a Chat
      */
-    class ChatModel
+    public class ChatModel
     {
         /**
          * Initialize Variables:

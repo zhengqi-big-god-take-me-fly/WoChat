@@ -9,7 +9,7 @@ namespace WoChat.Models
     /**
      * Models of all kinds of infos
      */
-    class InfoModel
+    public class InfoModel
     {
         /**
          * Nickname

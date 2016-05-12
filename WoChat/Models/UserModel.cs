@@ -12,7 +12,7 @@ namespace WoChat.Models
     /**
      * Model of a user
      */
-    class UserModel
+    public class UserModel
     {
         /**
          * Intialize variables:

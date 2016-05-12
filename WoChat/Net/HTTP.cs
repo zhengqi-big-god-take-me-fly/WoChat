@@ -76,7 +76,9 @@ namespace WoChat.Net {
                         result.StatusCode = PostAuthLoginResult.PostAuthLoginStatusCode.Failure;
                         break;
                 }
+#pragma warning disable CS0168 // Variable is declared but never used
             } catch (JsonException e) {
+#pragma warning restore CS0168 // Variable is declared but never used
                 result = new PostAuthLoginResult() { StatusCode = PostAuthLoginResult.PostAuthLoginStatusCode.UnknownError };
             }
             return result;

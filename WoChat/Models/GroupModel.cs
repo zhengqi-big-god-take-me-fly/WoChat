@@ -9,7 +9,7 @@ namespace WoChat.Models
     /**
      * Model of a group
      */
-    class GroupModel
+    public class GroupModel
     {
 
         /**

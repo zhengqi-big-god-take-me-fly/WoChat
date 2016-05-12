@@ -9,7 +9,7 @@ namespace WoChat.Models
     /**
      * The model for the message
      */
-    class MessageModel
+    public class MessageModel
     {
         /**
          * Initialize Variables:
