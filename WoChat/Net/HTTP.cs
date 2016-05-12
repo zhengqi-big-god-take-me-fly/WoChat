@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Threading.Tasks;
 using Windows.Storage.Streams;
 using Windows.Web.Http;
@@ -6,6 +7,7 @@ using Windows.Web.Http;
 namespace WoChat.Net {
     class HTTP {
         // Host
+        //TODO: Should be change to Internet IP address
         public static string API_HOST = "http://localhost:3000";
 
         // Uri
@@ -24,16 +26,22 @@ namespace WoChat.Net {
                 RequestUri = new Uri(API_HOST + URI_USERS)
             };
             HttpResponseMessage res = await client.SendRequestAsync(req);
+            PostUsersResult result = new PostUsersResult();
             switch (res.StatusCode) {
                 case HttpStatusCode.Created:
-                    return PostUsersResult.Success;
+                    result.StatusCode = PostUsersResult.PostUsersStatusCode.Success;
+                    break;
                 case HttpStatusCode.BadRequest:
-                    return PostUsersResult.InvalidParams;
+                    result.StatusCode = PostUsersResult.PostUsersStatusCode.InvalidParams;
+                    break;
                 case HttpStatusCode.Conflict:
-                    return PostUsersResult.ExistingUser;
+                    result.StatusCode = PostUsersResult.PostUsersStatusCode.ExistingUser;
+                    break;
                 default:
-                    return PostUsersResult.InvalidParams;
+                    result.StatusCode = PostUsersResult.PostUsersStatusCode.UnknownError;
+                    break;
             }
+            return result;
         }
 
         public static async Task<PostAuthLoginResult> PostAuthLogin(string un, string pw) {
@@ -48,14 +56,24 @@ namespace WoChat.Net {
                 RequestUri = new Uri(API_HOST + URI_AUTH_LOGIN)
             };
             HttpResponseMessage res = await client.SendRequestAsync(req);
-            switch (res.StatusCode) {
-                case HttpStatusCode.Ok:
-                    return PostAuthLoginResult.Success;
-                case HttpStatusCode.Unauthorized:
-                    return PostAuthLoginResult.Failure;
-                default:
-                    return PostAuthLoginResult.Failure;
+            PostAuthLoginResult result;
+            try {
+                result = JsonConvert.DeserializeObject<PostAuthLoginResult>(res.Content.ToString());
+                switch (res.StatusCode) {
+                    case HttpStatusCode.Ok:
+                        result.StatusCode = PostAuthLoginResult.PostAuthLoginStatusCode.Success;
+                        break;
+                    case HttpStatusCode.Unauthorized:
+                        result.StatusCode = PostAuthLoginResult.PostAuthLoginStatusCode.Failure;
+                        break;
+                    default:
+                        result.StatusCode = PostAuthLoginResult.PostAuthLoginStatusCode.Failure;
+                        break;
+                }
+            } catch (JsonException e) {
+                result = new PostAuthLoginResult() { StatusCode = PostAuthLoginResult.PostAuthLoginStatusCode.UnknownError };
             }
+            return result;
         }
     }
 
@@ -70,6 +88,13 @@ namespace WoChat.Net {
     }
 
     // Result for functions' returns
-    public enum PostUsersResult { Success, InvalidParams, ExistingUser };
-    public enum PostAuthLoginResult { Success, Failure };
+    public class PostUsersResult {
+        public enum PostUsersStatusCode { Success, InvalidParams, ExistingUser, UnknownError };
+        public PostUsersStatusCode StatusCode;
+    }
+    public class PostAuthLoginResult {
+        public enum PostAuthLoginStatusCode { Success, Failure, UnknownError };
+        public PostAuthLoginStatusCode StatusCode;
+        public string jwt;
+    }
 }
