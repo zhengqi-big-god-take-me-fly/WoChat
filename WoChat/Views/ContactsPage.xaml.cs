@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -23,26 +24,63 @@ namespace WoChat.Views {
     /// </summary>
     public sealed partial class ContactsPage : Page {
         private StubViewModel model;
+        private ObservableCollection<friendObserve> friends;
         public ContactsPage() {
             this.InitializeComponent();
         }
 
+
+        // Needs to be Show in the Page
+        class friendObserve
+        {
+            public string name { get; set; }
+            public string icon { get; set; }
+            public string id { get; set; }
+            public string chatid { get; set; }
+            public friendObserve(string name, string icon , string id , string chatid)
+            {
+                this.name = name;
+                this.icon = icon;
+                this.id = id;
+                this.chatid = chatid;
+            }
+        }
+
+        private void initFriendObservableCollection()
+        {
+            ObservableCollection<UserModel> friendList;
+            if (model.getCurrentUser() == null) return;
+            // Get the normal friendList
+            friendList = model.getFriends();
+            UserModel temp;
+            for (int i = 0; i < friendList.Count; i++)
+            {
+                temp = friendList.ElementAt(i);
+                this.friends.Add(new friendObserve(temp.getName(), temp.getInfo().icon, temp.getID(), model.getChatByFriend(temp.getID()).getID()));
+            }
+        }
+
+
+
+
+
+
         //OpenChatLogic:
 
         //Step 1: Find A friend by id then find the ChatList
-        private ChatModel getChatIDByFriendID(string fid)
+        public ChatModel getChatIDByFriendID(string fid)
         {
             return model.getChatByFriend(fid);
         }
 
         //Step 2: open a specified Chat 
-        private List<MessageModel> getMessagesFromChat(ChatModel s)
+        public List<MessageModel> getMessagesFromChat(ChatModel s)
         {
             return s.getChat();
         }
 
         //Step3 : Show MEssages
-        private void showMessage(List<MessageModel> messages)
+        public void showMessage(List<MessageModel> messages)
         {
             for (int i = 0; i < messages.Count; i++)
             {
