@@ -96,7 +96,7 @@ namespace WoChat.ViewModels {
 
 
         /**
-         * 
+         * Log Out User
          */
         public bool logout()
         {
@@ -110,13 +110,8 @@ namespace WoChat.ViewModels {
 
         /**
          *
-         *
-         *
-         *
-         *
-         *
-         *
-         *
+         * Fetch 3 Lists from server (Models)
+         * And then update Local ObservableCollection
          * 
          */
         private bool initDatas()
@@ -219,7 +214,7 @@ namespace WoChat.ViewModels {
             if (!isLogin) return null;
             // If we Can find At Local
             // Certainly should be found at local!
-
+            // A chat will be removed only when we delete a friend
             for (int i = 0; i < chats.Count; i++)
             {
                 if (this.chats.ElementAt(i).getChaterID() == this.currentUser.getID() && this.chats.ElementAt(i).getChateeID() == fid)

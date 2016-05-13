@@ -571,6 +571,8 @@ namespace WoChat.Models
                  */
                 users.ElementAt(index).addFriend(fid);
                 users.ElementAt(findex).addFriend(id);
+
+                // Then we create a Chat for them
                 return true;
             }
             else return false;

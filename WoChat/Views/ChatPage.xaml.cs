@@ -48,7 +48,7 @@ namespace WoChat.Views {
 
         private void initObserveModel(string cid)
         {
-            Models.ChatModel c = 
+            //Models.ChatModel c = model.get
         }
 
 
