@@ -1,22 +1,94 @@
-﻿using Windows.UI.Popups;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using WoChat.Net;
 using WoChat.ViewModels;
 
 namespace WoChat.Views {
     public sealed partial class RegLogPage : Page {
-        private LocalUserViewModel LocalUserVM = App.LocalUserVM;
+        //private LocalUserViewModel LocalUserVM = App.LocalUserVM;
         private RegLogPageUIViewModel RegLogPageUIVM = new RegLogPageUIViewModel();
+        private StubViewModel localUserVM = App.LocalUserVM;
         //private StubViewModel tester;
         //private bool isLogin;
         public RegLogPage() {
             this.InitializeComponent();
+            //TODO: Any other better choice to check user login state?
+            if (localUserVM.getCurrentUser() == null) {     // Not login
+                RegLogPageUIVM.IsLoading = false;
+            } else {                                        // Already logged in
+                UserAlreadyLoggedIn();
+            }
             //tester = new StubViewModel();
             //isLogin = false;
         }
 
+        private async void RegisterButton_Click(object sender, RoutedEventArgs e) {
+            if (RegLogPageUIVM.Password.Equals("") || RegLogPageUIVM.Username.Equals("")) {
+                RegLogPageUIVM.HintText = "用户名或密码不能为空！";
+                return;
+            }
+            RegLogPageUIVM.HintText = "正在注册，请稍候…";
+            RegLogPageUIVM.IsLoading = true;
+            PostUsersResult result = await HTTP.PostUsers(RegLogPageUIVM.Username, RegLogPageUIVM.Password);
+            RegLogPageUIVM.IsLoading = false;
+            switch (result.StatusCode) {
+                case PostUsersResult.PostUsersStatusCode.Success:
+                    RegLogPageUIVM.HintText = "";
+                    PerformLogin();
+                    break;
+                case PostUsersResult.PostUsersStatusCode.InvalidParams:
+                    RegLogPageUIVM.HintText = "用户名或密码不符合规范，请修改后重试！";
+                    break;
+                case PostUsersResult.PostUsersStatusCode.ExistingUser:
+                    RegLogPageUIVM.HintText = "用户已存在，请登录！";
+                    break;
+                default:
+                    RegLogPageUIVM.HintText = "未知错误，请稍后重试！";
+                    break;
+            }
+        }
 
+        private void LoginButton_Click(object sender, RoutedEventArgs e) {
+            if (RegLogPageUIVM.Password.Equals("") || RegLogPageUIVM.Username.Equals("")) {
+                RegLogPageUIVM.HintText = "用户名或密码不能为空！";
+                return;
+            }
+            PerformLogin();
+        }
 
+        private async void PerformLogin() {
+            RegLogPageUIVM.HintText = "正在登录，请稍候…";
+            RegLogPageUIVM.IsLoading = true;
+            PostAuthLoginResult result = await HTTP.PostAuthLogin(RegLogPageUIVM.Username, RegLogPageUIVM.Password);
+            RegLogPageUIVM.IsLoading = false;
+            switch (result.StatusCode) {
+                case PostAuthLoginResult.PostAuthLoginStatusCode.Success:
+                    RegLogPageUIVM.HintText = "";
+                    //TODO: Store jwt, username and userId
+                    UserAlreadyLoggedIn();
+                    break;
+                case PostAuthLoginResult.PostAuthLoginStatusCode.Failure:
+                    RegLogPageUIVM.HintText = "用户名或密码错误，请重试！";
+                    break;
+                default:
+                    RegLogPageUIVM.HintText = "未知错误，请稍后重试！";
+                    break;
+            }
+        }
+
+        private void UserAlreadyLoggedIn() {
+            RegLogPageUIVM.HintText = "正在登录，请稍候…";
+            RegLogPageUIVM.IsLoading = true;
+            //TODO: Retrieve new data from server
+
+            Frame rootFrame = Window.Current.Content as Frame;
+            if (rootFrame != null) {
+                rootFrame.Navigate(typeof(MainPage));
+            }
+        }
 
         /**
          *
@@ -68,13 +140,14 @@ namespace WoChat.Views {
 
     }
 
-    class RegLogPageUIViewModel {
+    class RegLogPageUIViewModel : INotifyPropertyChanged {
         public bool IsLoading {
             get {
                 return isLoading;
             }
             set {
                 isLoading = value;
+                OnPropertyChanged();
             }
         }
         public bool AcceptInput {
@@ -88,10 +161,37 @@ namespace WoChat.Views {
             }
             set {
                 hintText = value;
+                OnPropertyChanged();
+            }
+        }
+        public string Username {
+            get {
+                return username;
+            }
+            set {
+                username = value;
+                OnPropertyChanged();
+            }
+        }
+        public string Password {
+            get {
+                return password;
+            }
+            set {
+                password = value;
+                OnPropertyChanged();
             }
         }
 
         private bool isLoading = false;
         private string hintText = "";
+        private string username = "";
+        private string password = "";
+
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

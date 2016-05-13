@@ -5,7 +5,7 @@ using System.Linq;
 using WoChat.Models;
 
 namespace WoChat.ViewModels {
-    class StubViewModel {
+    public class StubViewModel {
         private UserModel currentUser;
         private bool isLogin;
 

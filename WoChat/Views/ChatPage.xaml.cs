@@ -5,7 +5,7 @@ using WoChat.ViewModels;
 
 namespace WoChat.Views {
     public sealed partial class ChatPage : Page {
-        private LocalUserViewModel LocalUserVM = App.LocalUserVM;
+        //private LocalUserViewModel LocalUserVM = App.LocalUserVM;
         private StubViewModel svm = new StubViewModel();
 
         class messageObserve
