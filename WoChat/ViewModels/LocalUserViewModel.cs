@@ -1,13 +1,38 @@
-﻿using WoChat.Models;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using WoChat.Models;
 
 namespace WoChat.ViewModels {
     /// <summary>
     /// For the user information of this client
     /// </summary>
     public class LocalUserViewModel {
-        public UserModel LocalUser {
+        //public UserModel LocalUser {
+        //    get {
+        //        return localUser;
+        //    }
+        //}
+
+        public LocalUserViewModel() {
+            chats.CollectionChanged += ChatsOnCollectionChanged;
+
+            Load();
+        }
+
+        private void ChatsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
+            //TODO: Call DataModel to change list
+            switch (e.Action) {
+                case NotifyCollectionChangedAction.Add:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public ObservableCollection<ChatModel> Chats {
             get {
-                return localUser;
+                return chats;
             }
         }
 
@@ -40,5 +65,6 @@ namespace WoChat.ViewModels {
         private UserModel localUser = new UserModel("User1", "gggg", "User Haha", "a@b.com");
         private string jwt;
         private bool isLogin;
+        private ObservableCollection<ChatModel> chats = new ObservableCollection<ChatModel>();
     }
 }
