@@ -1,6 +1,9 @@
 ﻿using System;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.Foundation.Metadata;
+using Windows.UI;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -36,6 +39,15 @@ namespace WoChat {
                 DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
+            // Change TitleBar color
+            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.ApplicationView")) {
+                var titleBar = ApplicationView.GetForCurrentView().TitleBar;
+                if (titleBar != null) {
+                    titleBar.ButtonBackgroundColor = Current.Resources["SystemAccentColor"] as Color?;
+                    titleBar.ButtonForegroundColor = Colors.White;
+                    titleBar.BackgroundColor = Current.Resources["SystemAccentColor"] as Color?;
+                }
+            }
             Frame rootFrame = Window.Current.Content as Frame;
 
             // Do not repeat app initialization when the Window already has content,

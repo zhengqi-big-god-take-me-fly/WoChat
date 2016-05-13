@@ -106,7 +106,7 @@
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
     </Page.Resources>
-    <SplitView x:Name="MainSplitView" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" DisplayMode="CompactOverlay"  IsPaneOpen="False" CompactPaneLength="48" OpenPaneLength="240">
+    <SplitView x:Name="MainSplitView" DisplayMode="CompactOverlay"  IsPaneOpen="False" CompactPaneLength="48" OpenPaneLength="240" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <SplitView.Pane>
             <StackPanel>
                 <Button Content="&#xE700;" FontFamily="Segoe MDL2 Assets" Width="48" Height="48" Background="Transparent" Click="MainPaneMenuButton_Click"/>
