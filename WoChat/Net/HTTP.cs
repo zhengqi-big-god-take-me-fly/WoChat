@@ -9,7 +9,6 @@ using WoChat.Utils;
 namespace WoChat.Net {
     class HTTP {
         // Host
-        //TODO: Should be change to Internet IP address
         public static string API_HOST = "http://tidyzq.com:3000";
 
         // Uri
@@ -19,6 +18,7 @@ namespace WoChat.Net {
         public static string URI_CONTACTS = "/contacts";
         public static string URI_CONTACTS_ = "/contacts/";
         public static string URI_INVITATION = "/invitation";
+        public static string URI_MESSAGE = "/message";
 
         public static async Task<PostUsersResult> PostUsers(string un, string pw) {
             PostUsersResult result;
@@ -238,6 +238,102 @@ namespace WoChat.Net {
             }
             return result;
         }
+
+        public static async Task<PutUsers_InvitationResult> PutUsers_Invitation(string jwt, string un, string tk) {
+            PutUsers_InvitationResult result;
+            if (jwt.Equals("") || un.Equals("") || tk.Equals("")) {
+                return new PutUsers_InvitationResult() { StatusCode = PutUsers_InvitationResult.PutUsers_InvitationStatusCode.UnknownError };
+            }
+            HttpClient client = new HttpClient();
+            HttpRequestMessage req = new HttpRequestMessage() {
+                Content = new HttpStringContent(JsonConvert.SerializeObject(new PutUsers_InvitationParams() {
+                    invitation = tk
+                })),
+                Method = HttpMethod.Put,
+                RequestUri = new Uri(API_HOST + URI_USERS_ + un + URI_INVITATION)
+            };
+            req.Headers["Authorization"] = jwt;
+            HttpResponseMessage res = await client.SendRequestAsync(req);
+            try {
+                result = JsonConvert.DeserializeObject<PutUsers_InvitationResult>(res.Content.ToString());
+                switch (res.StatusCode) {
+                    case HttpStatusCode.Ok:
+                        result.StatusCode = PutUsers_InvitationResult.PutUsers_InvitationStatusCode.Success;
+                        break;
+                    case HttpStatusCode.BadRequest:
+                        result.StatusCode = PutUsers_InvitationResult.PutUsers_InvitationStatusCode.InvalidInvitation;
+                        break;
+                    case HttpStatusCode.Unauthorized:
+                        result.StatusCode = PutUsers_InvitationResult.PutUsers_InvitationStatusCode.InvalidToken;
+                        break;
+                    case HttpStatusCode.NotFound:
+                        result.StatusCode = PutUsers_InvitationResult.PutUsers_InvitationStatusCode.NoThisUser;
+                        break;
+                    case HttpStatusCode.Conflict:
+                        result.StatusCode = PutUsers_InvitationResult.PutUsers_InvitationStatusCode.AlreadyContact;
+                        break;
+                    default:
+                        result.StatusCode = PutUsers_InvitationResult.PutUsers_InvitationStatusCode.UnknownError;
+                        break;
+                }
+#pragma warning disable CS0168 // Variable is declared but never used
+            } catch (JsonException e) {
+#pragma warning restore CS0168 // Variable is declared but never used
+                result = new PutUsers_InvitationResult() { StatusCode = PutUsers_InvitationResult.PutUsers_InvitationStatusCode.UnknownError };
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Send message
+        /// </summary>
+        /// <param name="jwt">JWT token</param>
+        /// <param name="cn">Contact username</param>
+        /// <param name="t">Message type. 0 is for plain text</param>
+        /// <param name="c">Message content in string.</param>
+        /// <returns>PostUsers_MessageResult</returns>
+        public static async Task<PostUsers_MessageResult> PostUsers_Message(string jwt, string cn, int t, string c) {
+            PostUsers_MessageResult result;
+            if (jwt.Equals("") || cn.Equals("") || c.Equals("")) {
+                return new PostUsers_MessageResult() { StatusCode = PostUsers_MessageResult.PostUsers_MessageStatusCode.UnknownError };
+            }
+            HttpClient client = new HttpClient();
+            HttpRequestMessage req = new HttpRequestMessage() {
+                Content = new HttpStringContent(JsonConvert.SerializeObject(new PostUsers_MessageParams() {
+                    type = t,
+                    content = c
+                })),
+                Method = HttpMethod.Post,
+                RequestUri = new Uri(API_HOST + URI_USERS_ + cn + URI_MESSAGE)
+            };
+            req.Headers["Authorization"] = jwt;
+            HttpResponseMessage res = await client.SendRequestAsync(req);
+            try {
+                result = JsonConvert.DeserializeObject<PostUsers_MessageResult>(res.Content.ToString());
+                switch (res.StatusCode) {
+                    case HttpStatusCode.Created:
+                        result.StatusCode = PostUsers_MessageResult.PostUsers_MessageStatusCode.Success;
+                        break;
+                    case HttpStatusCode.BadRequest:
+                        result.StatusCode = PostUsers_MessageResult.PostUsers_MessageStatusCode.InvalidParams;
+                        break;
+                    case HttpStatusCode.Unauthorized:
+                        result.StatusCode = PostUsers_MessageResult.PostUsers_MessageStatusCode.InvalidToken;
+                        break;
+                    case HttpStatusCode.NotFound:
+                        result.StatusCode = PostUsers_MessageResult.PostUsers_MessageStatusCode.NoThisUser;
+                        break;
+                    default:
+                        result.StatusCode = PostUsers_MessageResult.PostUsers_MessageStatusCode.UnknownError;
+                        break;
+                }
+#pragma warning disable CS0168 // Variable is declared but never used
+            } catch (JsonException e) {
+#pragma warning restore CS0168 // Variable is declared but never used
+                result = new PostUsers_MessageResult() { StatusCode = PostUsers_MessageResult.PostUsers_MessageStatusCode.UnknownError };
+            }
+            return result;
+        }
     }
 
     // Parameter models for request
@@ -255,6 +351,13 @@ namespace WoChat.Net {
     }
     public class PostUsers_InvitationParams {
         public string message;
+    }
+    public class PutUsers_InvitationParams {
+        public string invitation;
+    }
+    public class PostUsers_MessageParams {
+        public int type;
+        public string content;
     }
 
     // Result for functions' returns
@@ -294,5 +397,20 @@ namespace WoChat.Net {
     public class PostUsers_InvitationResult {
         public enum PostUsers_InvitationStatusCode { Success, InvalidToken, NoThisUser, AlreadyContact, UnknownError };
         public PostUsers_InvitationStatusCode StatusCode;
+    }
+    public class PutUsers_InvitationResult {
+        public enum PutUsers_InvitationStatusCode { Success, InvalidInvitation, InvalidToken, NoThisUser, AlreadyContact, UnknownError };
+        public PutUsers_InvitationStatusCode StatusCode;
+    }
+    public class PostUsers_MessageResult {
+        public enum PostUsers_MessageStatusCode { Success, InvalidParams, InvalidToken, NoThisUser, UnknownError };
+        public PostUsers_MessageStatusCode StatusCode;
+        public string _id;
+        public string sender;
+        public string receiver;
+        public bool to_group;
+        public int type;
+        public int time;
+        public string content;
     }
 }
