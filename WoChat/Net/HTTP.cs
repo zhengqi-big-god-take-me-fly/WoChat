@@ -20,6 +20,7 @@ namespace WoChat.Net {
         public static string URI_INVITATION = "/invitation";
         public static string URI_MESSAGE = "/message";
 
+        // Test pass in success situation
         public static async Task<PostUsersResult> PostUsers(string un, string pw) {
             PostUsersResult result;
             if (un.Equals("") || pw.Equals("")) {
@@ -53,6 +54,7 @@ namespace WoChat.Net {
             return result;
         }
 
+        // Test pass in success situation
         public static async Task<PostAuthLoginResult> PostAuthLogin(string un, string pw) {
             PostAuthLoginResult result;
             if (un.Equals("") || pw.Equals("")) {
@@ -89,7 +91,8 @@ namespace WoChat.Net {
             return result;
         }
 
-        public static async Task<GetUsers_ContactsResult> Getusers_Contacts(string jwt, string un) {
+        // Test pass in success situation
+        public static async Task<GetUsers_ContactsResult> GetUsers_Contacts(string jwt, string un) {
             GetUsers_ContactsResult result;
             if (jwt.Equals("") || un.Equals("")) {
                 return new GetUsers_ContactsResult() { StatusCode = GetUsers_ContactsResult.GetUsers0ContactsStatusCode.UnknownError };
