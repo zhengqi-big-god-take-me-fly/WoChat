@@ -82,6 +82,7 @@ namespace WoChat.Views {
         private void UserAlreadyLoggedIn() {
             RegLogPageUIVM.HintText = "正在登录，请稍候…";
             RegLogPageUIVM.IsLoading = true;
+            App.PushSocket.Connect();
             //TODO: Retrieve new data from server
 
             Frame rootFrame = Window.Current.Content as Frame;
