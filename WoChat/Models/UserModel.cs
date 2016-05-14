@@ -79,7 +79,11 @@ namespace WoChat.Models
         }
 
 
-
+        public bool resetID(string newID)
+        {
+            this.uid = newID;
+            return true;
+        }
 
 
         /**
@@ -107,6 +111,16 @@ namespace WoChat.Models
             this.upassword = newpassword;
         }
 
+
+
+        /// <summary>
+        /// FXXK the BXXCH of SQlitePCL
+        /// </summary>
+        /// <returns></returns>
+        public string storePassword()
+        {
+            return this.upassword;
+        }
 
 
 

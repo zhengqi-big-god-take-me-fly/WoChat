@@ -50,7 +50,7 @@
             <TextBlock Text="Username" HorizontalAlignment="Center" TextAlignment="Center"/>
             <TextBlock Text="Person Statement" HorizontalAlignment="Center" Width="160" TextAlignment="Center"/>
             <TextBlock Text="微信号：XXX" HorizontalAlignment="Center" TextAlignment="Center"/>
-            <Button Content="发送消息" HorizontalAlignment="Center" Width="96"/>
+            <Button x:Name="test" Content="发送消息" HorizontalAlignment="Center" Width="96" Click="testDB"/>
         </StackPanel>
     </Grid>
 </Page>

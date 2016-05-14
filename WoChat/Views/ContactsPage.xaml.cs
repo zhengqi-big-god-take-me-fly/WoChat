@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -27,6 +28,7 @@ namespace WoChat.Views {
         private ObservableCollection<friendObserve> friends;
         public ContactsPage() {
             this.InitializeComponent();
+            this.model = new StubViewModel();
         }
 
 
@@ -46,21 +48,53 @@ namespace WoChat.Views {
             }
         }
 
-        private void initFriendObservableCollection()
+        //private void initFriendObservableCollection()
+        //{
+        //    ObservableCollection<FriendViewModel> friendList;
+        //    if (model.getCurrentUser() == null) return;
+        //    // Get the normal friendList
+        //    friendList = model.getFriends();
+        //    UserModel temp;
+        //}
+
+        public void testDB(object sender, RoutedEventArgs e)
         {
-            ObservableCollection<UserModel> friendList;
-            if (model.getCurrentUser() == null) return;
-            // Get the normal friendList
-            friendList = model.getFriends();
-            UserModel temp;
-            for (int i = 0; i < friendList.Count; i++)
-            {
-                temp = friendList.ElementAt(i);
-                this.friends.Add(new friendObserve(temp.getName(), temp.getInfo().icon, temp.getID(), model.getChatByFriend(temp.getID()).getID()));
-            }
+            List<UserModel> myModel =  model.showTestDatabases();
+            List<string> refr;
+            //for (int i = 0; i < myModel.Count; i++)
+            //{
+                string res = "The User is : \n";
+                res += "UserName: " + myModel.ElementAt(0).getName() + "\n";
+                res += "NickName: " + myModel.ElementAt(0).getNick() + "\n";
+                res += "Email: " + myModel.ElementAt(0).getInfo().email + "\n";
+                // Show Friends
+                res += "Friends: ";
+                refr = myModel.ElementAt(0).getFriends();
+                for (int ii = 0; ii < refr.Count; ii++)
+                {
+                    res += refr.ElementAt(ii) + " ";
+                }
+                res += "\n";
+
+                res += "Groups: ";
+                refr = myModel.ElementAt(0).getGroups();
+                for (int ii = 0; ii < refr.Count; ii++)
+                {
+                    res += refr.ElementAt(ii) + " ";
+                }
+                res += "\n";
+
+                res += "Chats: ";
+                refr = myModel.ElementAt(0).getChats();
+                for (int ii = 0; ii < refr.Count; ii++)
+                {
+                    res += refr.ElementAt(ii) + " ";
+                }
+                res += "\n";
+
+                var c = new MessageDialog(res).ShowAsync();
+            //}
         }
-
-
 
 
 
@@ -68,7 +102,7 @@ namespace WoChat.Views {
         //OpenChatLogic:
 
         //Step 1: Find A friend by id then find the ChatList
-        public ChatModel getChatIDByFriendID(string fid)
+        public ChatViewModel getChatIDByFriendID(string fid)
         {
             return model.getChatByFriend(fid);
         }
@@ -89,7 +123,7 @@ namespace WoChat.Views {
                 // Get Receiver By getReceiver() method
                 string receiver = messages.ElementAt(i).getReceiver();
                 // Get Send/Receive Time By getTime()
-                DateTimeOffset messageTime = messages.ElementAt(i).getTime();
+                string messageTime = messages.ElementAt(i).getTime();
                 // Get Content by GetContent() Method
                 string content = messages.ElementAt(i).getContent();
                 // Get isGroupMessage by getFlag() method

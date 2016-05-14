@@ -287,6 +287,7 @@ namespace WoChat.Net {
             return result;
         }
 
+
         /// <summary>
         /// Send message
         /// </summary>

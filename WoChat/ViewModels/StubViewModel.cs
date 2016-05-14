@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Windows.UI.Popups;
 using WoChat.Models;
 
 namespace WoChat.ViewModels {
@@ -15,9 +16,13 @@ namespace WoChat.ViewModels {
          * Type: ObservableCollection
          * All models have the function for Getters and Setters
          */
-        private ObservableCollection<UserModel> friends;
-        private ObservableCollection<GroupModel> groups;
-        private ObservableCollection<ChatModel> chats;
+        //private ObservableCollection<UserModel> friends;
+        //private ObservableCollection<GroupModel> groups;
+        //private ObservableCollection<ChatModel> chats;
+
+        public ObservableCollection<FriendViewModel> friends;
+        public ObservableCollection<GroupViewModel> groups;
+        public ObservableCollection<ChatViewModel> chats;
 
 
 
@@ -25,17 +30,17 @@ namespace WoChat.ViewModels {
          * The 3 datas that return to the Page Renderer
          * just Open the Api for the Xaml Page cs files
          */
-        public ObservableCollection<UserModel> getFriends()
+        public ObservableCollection<FriendViewModel> getFriends()
         {
             return this.friends;
         }
        
-        public ObservableCollection<GroupModel> getGroups()
+        public ObservableCollection<GroupViewModel> getGroups()
         {
             return this.groups;
         }
 
-        public ObservableCollection<ChatModel> getChats()
+        public ObservableCollection<ChatViewModel> getChats()
         {
             return this.chats;
         }
@@ -66,6 +71,13 @@ namespace WoChat.ViewModels {
             if (currentUser.getID() == userid) return false;
             return DataModel.isUserExist(userid);
         }
+
+
+        public List<UserModel> showTestDatabases()
+        {
+            List<UserModel> myModel = DataModel.readAndCreateUsers();
+            return myModel;
+        } 
 
 
 
@@ -122,27 +134,45 @@ namespace WoChat.ViewModels {
              * @type {[type]}
              */
             List<string> friendList = currentUser.getFriends();
+            UserModel tempUserModel;
+            string currentChatID;
             for (int i = 0; i < friendList.Count; i++)
             {
-                this.friends.Add(fetchFriend(friendList.ElementAt(i)));
+                tempUserModel = fetchFriend(friendList.ElementAt(i));
+                currentChatID = getChatByFriend(tempUserModel.getID()).chatID;
+                this.friends.Add(new FriendViewModel(tempUserModel.getID(), tempUserModel.getName(), tempUserModel.getInfo().icon , tempUserModel.getInfo().stylish , tempUserModel.getInfo().email , currentChatID));
             }
             /**
              * [groupList description]
              * @type {[type]}
              */
             List<string> groupList = currentUser.getGroups();
+            GroupModel tempGroupModel;
             for (int i = 0; i < groupList.Count; i++)
             {
-                this.groups.Add(fetchGroup(groupList.ElementAt(i)));
+                tempGroupModel = fetchGroup(groupList.ElementAt(i));
+                this.groups.Add(new GroupViewModel(tempGroupModel.getName() , tempGroupModel.getID() , tempGroupModel.getChatID() ,  tempGroupModel.getMembers().ElementAt(0) , tempGroupModel.getMembers()));
             }
             /**
              * [chatList description]
              * @type {[type]}
              */
             List<string> chatList = currentUser.getChats();
+            ChatModel tempChatModel;
+            List<MessageViewModel> tempMessage;
+            List<MessageModel> msgModel;
+            MessageModel helper;
             for (int i = 0; i < chatList.Count; i++)
             {
-                this.chats.Add(fetchChat(chatList.ElementAt(i)));
+                tempChatModel = fetchChat(chatList.ElementAt(i));
+                tempMessage = new List<MessageViewModel>();
+                msgModel = tempChatModel.getChat();
+                for (int ii = 0; ii < msgModel.Count; ii++)
+                {
+                    helper = msgModel.ElementAt(ii);
+                    tempMessage.Add(new MessageViewModel(helper.getSenderID(), helper.getSender(), helper.getReceiverID(), helper.getReceiver(), helper.getContent(), helper.getTime()));
+                }
+                this.chats.Add(new ChatViewModel(tempChatModel.getID() , tempChatModel.getChaterID() , tempChatModel.getChateeID() , tempChatModel.getChaterName() , tempChatModel.getChateeName() ,tempChatModel.getGroupChatFlag() , tempMessage));
             }
             return true;
         }
@@ -192,24 +222,35 @@ namespace WoChat.ViewModels {
         private void syncLocalFriend(string newFriendID)
         {
             UserModel newFriend = DataModel.getFriendObjectById(newFriendID);
-            this.friends.Add(newFriend);
+            FriendViewModel friend = new FriendViewModel(newFriendID, newFriend.getName(), newFriend.getIcon(), newFriend.getStyle() ,newFriend.getInfo().email,getChatByFriend(newFriendID).chatID);
+            this.friends.Add(friend);
         }
         private void syncLocalGroup(string newGroupID)
         {
             GroupModel newGroup = DataModel.getGroupObjectById(newGroupID);
-            this.groups.Add(newGroup);
+            GroupViewModel group = new GroupViewModel(newGroup.getName(), newGroupID, newGroup.getChatID(), newGroup.getMembers().ElementAt(0), newGroup.getMembers());
+            this.groups.Add(group);
         }
         private void syncLocalChat(string newChatID)
         {
             ChatModel newChat = DataModel.getChatObjectById(newChatID);
-            this.chats.Add(newChat);
+            List<MessageViewModel> tempMessage = new List<MessageViewModel>();
+            List<MessageModel> msgModel = newChat.getChat();
+            MessageModel helper;
+            for (int i = 0; i < msgModel.Count; i++)
+            {
+                helper = msgModel.ElementAt(i);
+                tempMessage.Add(new MessageViewModel(helper.getSenderID() , helper.getSender() , helper.getReceiverID() , helper.getReceiver() , helper.getContent() , helper.getTime()));
+            }
+            ChatViewModel chat = new ChatViewModel(newChatID, newChat.getChaterID(), newChat.getChateeID(), newChat.getChaterName(), newChat.getChateeName(), newChat.getGroupChatFlag(), tempMessage);
+            this.chats.Add(chat);
         }
 
 
 
 
         // Should Be Modified
-        public ChatModel getChatByFriend(string fid)
+        public ChatViewModel getChatByFriend(string fid)
         {
             if (!isLogin) return null;
             // If we Can find At Local
@@ -217,10 +258,10 @@ namespace WoChat.ViewModels {
             // A chat will be removed only when we delete a friend
             for (int i = 0; i < chats.Count; i++)
             {
-                if (this.chats.ElementAt(i).getChaterID() == this.currentUser.getID() && this.chats.ElementAt(i).getChateeID() == fid)
+                if (this.chats.ElementAt(i).hostID == this.currentUser.getID() && this.chats.ElementAt(i).participantID == fid)
                 {
                     return this.chats.ElementAt(i);
-                } else if (this.chats.ElementAt(i).getChaterID() == fid && this.chats.ElementAt(i).getChateeID() == this.currentUser.getID())
+                } else if (this.chats.ElementAt(i).hostID == fid && this.chats.ElementAt(i).participantID == this.currentUser.getID())
                 {
                     return this.chats.ElementAt(i);
                 }
@@ -400,9 +441,9 @@ namespace WoChat.ViewModels {
             isLogin = false;
             DataModel.init();
             //在通讯录显示的（离线数据）
-            this.groups = new ObservableCollection<GroupModel>();
-            this.friends = new ObservableCollection<UserModel>();
-            this.chats = new ObservableCollection<ChatModel>();
+            this.groups = new ObservableCollection<GroupViewModel>();
+            this.friends = new ObservableCollection<FriendViewModel>();
+            this.chats = new ObservableCollection<ChatViewModel>();
 
         }
     }

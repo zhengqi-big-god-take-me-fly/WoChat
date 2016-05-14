@@ -108,6 +108,10 @@
     <Compile Include="Net\HTTP.cs" />
     <Compile Include="Utils\Converters.cs" />
     <Compile Include="Utils\MD5.cs" />
+    <Compile Include="ViewModels\ChatViewModel.cs" />
+    <Compile Include="ViewModels\FriendViewModel.cs" />
+    <Compile Include="ViewModels\GroupViewModel.cs" />
+    <Compile Include="ViewModels\MessageViewModel.cs" />
     <Compile Include="ViewModels\StubViewModel.cs" />
     <Compile Include="ViewModels\LocalUserViewModel.cs" />
     <Compile Include="Views\ChatPage.xaml.cs">
@@ -173,6 +177,11 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <SDKReference Include="SQLite.UWP.2015, Version=3.12.0">
+      <Name>SQLite for Universal Windows Platform</Name>
+    </SDKReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
