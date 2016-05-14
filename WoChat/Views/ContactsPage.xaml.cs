@@ -123,7 +123,7 @@ namespace WoChat.Views {
                 // Get Receiver By getReceiver() method
                 string receiver = messages.ElementAt(i).getReceiver();
                 // Get Send/Receive Time By getTime()
-                DateTimeOffset messageTime = messages.ElementAt(i).getTime();
+                string messageTime = messages.ElementAt(i).getTime();
                 // Get Content by GetContent() Method
                 string content = messages.ElementAt(i).getContent();
                 // Get isGroupMessage by getFlag() method

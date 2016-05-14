@@ -158,6 +158,11 @@ namespace WoChat.Models
         {
            return messageList;
         }
+        public void setChat(List<MessageModel> newChat)
+        {
+            this.messageList = newChat;
+        }
+
 
 
         //Get if it's a group Chat
@@ -165,6 +170,13 @@ namespace WoChat.Models
         {
             return this.isGroupChat;
         }
+
+        public bool resetID(string newID)
+        {
+            this.chatid = newID;
+            return true;
+        }
+
 
 
 
@@ -182,7 +194,7 @@ namespace WoChat.Models
                 this.messageList = new List<MessageModel>();
             }
             // Start pushing process
-            MessageModel newMessage = new MessageModel(schater , schatee , message , this.isGroupChat);
+            MessageModel newMessage = new MessageModel(schater , schatee , message , this.chatid ,this.isGroupChat);
             this.messageList.Add(newMessage);
             return true;
         }

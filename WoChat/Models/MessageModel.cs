@@ -31,7 +31,8 @@ namespace WoChat.Models
         private string receiverId;
         private bool isGroupMessage;
         private string content;
-        private DateTimeOffset time;
+        private string time;
+        private string chatid;
 
 
         /**
@@ -68,12 +69,30 @@ namespace WoChat.Models
         }
 
 
+        public string getChatID()
+        {
+            return this.chatid;
+        }
+        public void setChatID(string newChatID)
+        {
+            this.chatid = newChatID;
+        }
+
+
+
         /**
          * getter for time
          */
-        public DateTimeOffset getTime()
+        public string getTime()
         {
             return this.time;
+        }
+        public bool setSendingTime(string timeFromDatabase)
+        {
+            //DateTime times = new DateTime(long.Parse(timeFromDatabase));
+            //DateTimeOffset time = new DateTimeOffset(long.Parse(timeFromDatabase) , TimeSpan.Zero);
+            this.time = timeFromDatabase;
+            return true;
         }
 
         /**
@@ -91,20 +110,25 @@ namespace WoChat.Models
          *     message: the Content
          *     _isGroupMessage: the flag variable
          */
-        public MessageModel(string _sender , string _receiver , string message , bool _isGroupMessage = false)
+        public MessageModel(string _sender , string _receiver , string message , string chatID , bool _isGroupMessage = false)
         {
-            this.sender = _sender;
-            this.senderId = DataModel.getFriendByName(_sender).getID();
-            this.receiver = _receiver;
-            this.receiverId = DataModel.getFriendByName(_receiver).getID();
+            //this.sender = _sender;
+            this.senderId = _sender;
+            //this.receiver = _receiver;
+            this.receiverId = _receiver;
             this.content = message;
             this.isGroupMessage = _isGroupMessage;
+            this.chatid = chatID;
             /**
              * Auto Generate of time
              * [time description]
              * @type {[type]}
              */
-            this.time = DateTimeOffset.Now;
+            this.time = DateTimeOffset.Now.ToLocalTime().ToString();
+            //setTime();
         }
+
+
+
     }
 }

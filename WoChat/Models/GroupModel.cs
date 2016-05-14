@@ -160,6 +160,23 @@ namespace WoChat.Models
             return uid == this.admin;
         }
 
+        public string getAdmin()
+        {
+            return this.admin;
+        }
+
+        public bool setMember(List<string> newMember)
+        {
+            this.members = newMember;
+            return true;
+        }
+
+        public bool resetID(string newID)
+        {
+            this.gid = newID;
+            return true;
+        }
+
 
         /**
          * Constructer:

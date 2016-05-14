@@ -237,6 +237,7 @@ namespace WoChat.Models
                     }
 
                     temp = new UserModel((string)getBareUser[2], (string)getBareUser[3], (string)getBareUser[4], (string)getBareUser[7], (string)getBareUser[5], (string)getBareUser[6]);
+                    temp.resetID((string)getBareUser[1]);
                     temp.setFriend(friendList);
                     temp.setGroup(groupList);
                     temp.setChat(chatList);
@@ -248,6 +249,267 @@ namespace WoChat.Models
             }
             return userList;
         }
+
+
+        public static List<GroupModel> readAndCreateGroups()
+        {
+            List<GroupModel> groupList = new List<GroupModel>();
+            List<string> memberList;
+            GroupModel temp;
+            string tmpcid;
+
+            string sql = "SELECT * FROM Groups";
+            string sqlGrouper = "SELECT * FROM GroupRelation where gid = ?";
+            using (var getBareGroup = syncConnection.Prepare(sql))
+            {
+                while (getBareGroup.Step() == SQLiteResult.ROW)
+                {
+                    memberList = new List<string>();
+                    tmpcid = "NULL";
+                    // This Is the Group We want;
+                    // Therefore we get the gid
+                    using (var getGrouper = syncConnection.Prepare(sqlGrouper))
+                    {
+                        getGrouper.Bind(1, (string)getBareGroup[1]);
+                        while (getGrouper.Step() == SQLiteResult.ROW)
+                        {
+                            memberList.Add((string)getGrouper[2]);
+                            if (tmpcid == "NULL")
+                            {
+                                tmpcid = (string)getGrouper[3];
+                            }
+                        }
+                    }
+                    temp = new GroupModel((string)getBareGroup[3] , (string)getBareGroup[3] , (string)getBareGroup[2] , tmpcid , (string)getBareGroup[4] , (string)getBareGroup[5]);
+                    temp.resetID((string)getBareGroup[1]);
+                    temp.setMember(memberList);
+                    groupList.Add(temp);
+                }
+            }
+            return groupList;
+        }
+
+
+        public static List<ChatModel> readAndCreateChats()
+        {
+            List<ChatModel> chatList = new List<ChatModel>();
+            ChatModel temp;
+            List<MessageModel> messages;
+            MessageModel singleMessage;
+            string cid;
+
+
+            string sql = "SELECT * FROM Chats";
+            string sqlMessageList = "SELECT * From MsgRelation WHERE cid = ?";
+
+            using (var getChat = syncConnection.Prepare(sql))
+            {
+                while (getChat.Step() == SQLiteResult.ROW)
+                {
+                    // Now we Got this Chat record;
+                    cid = (string)getChat[1];
+                    messages = new List<MessageModel>();
+                    bool reference = (string)getChat[7] == "true" ? true : false;
+
+                    using (var getMessages = syncConnection.Prepare(sqlMessageList))
+                    {
+                        getMessages.Bind(1, cid);
+                        while (getMessages.Step() == SQLiteResult.ROW)
+                        {
+                            
+                            // Now we can safelyCreate the Messages!
+                            singleMessage = new MessageModel((string)getMessages[3], (string)getMessages[4], (string)getMessages[5], cid , reference);
+                            singleMessage.setSendingTime((string)getMessages[6]);
+                            // Add to MessageList
+                            messages.Add(singleMessage);
+                        }
+                    }
+                    // Now adding Completed , we can create ChatModel
+                    temp = new ChatModel((string)getChat[2], (string)getChat[4], (string)getChat[3], (string)getChat[5], reference);
+                    // Need To Modify ID!!!!!!
+                    temp.resetID(cid);
+
+                    temp.setChat(messages);
+                    chatList.Add(temp);
+                }
+            }
+            return chatList;
+        }
+
+
+
+        //ADD To DATABASE;
+        private static bool addNewUserToDatabase(string uid , int index = -1)
+        {
+            if (index == -1) index = getUserIndexByID(uid);
+            if (index == -1) return false;
+
+            UserModel temp = users.ElementAt(index);
+            string sql = "INSERT INTO Users (id , uid , name , pass , nick , icon , style , email) VALUES (? , ? , ? , ? , ? , ? , ? , ?)";
+            try {
+                using (var addUser = syncConnection.Prepare(sql))
+                {
+                    addUser.Bind(1, null);
+                    addUser.Bind(2, temp.getID());
+                    addUser.Bind(3, temp.getName());
+                    addUser.Bind(4, temp.storePassword());
+                    addUser.Bind(5, temp.getNick());
+                    addUser.Bind(6, temp.getIcon());
+                    addUser.Bind(7, temp.getStyle());
+                    addUser.Bind(8, temp.getInfo().email);
+
+                    // Ok We Store This Record!
+                    addUser.Step();
+                }
+
+                return true;
+            } catch(Exception ex)
+            {
+                return false;
+            }
+        }
+
+        private static bool addNewGroupToDatabase(string gid, int index = -1)
+        {
+            if (index == -1) index = getGroupIndexByID(gid);
+            if (index == -1) return false;
+            // Start
+            GroupModel gm = groups.ElementAt(index);
+            string sql = "INSERT INTO Groups (id , gid , gname , admin , icon , style , chat) VALUES (? , ? , ? , ? , ? , ? , ?)";
+            try
+            {
+                using (var addGroup = syncConnection.Prepare(sql))
+                {
+                    addGroup.Bind(1, null);
+                    addGroup.Bind(2, gm.getID());
+                    addGroup.Bind(3, gm.getName());
+                    addGroup.Bind(4, gm.getAdmin());
+                    addGroup.Bind(5, gm.getInfo().icon);
+                    addGroup.Bind(6, gm.getInfo().stylish);
+                    addGroup.Bind(7, gm.getChatID());
+                    addGroup.Step();
+                }
+                return true;
+            } catch (Exception e)
+            {
+                return false;
+            }
+        }
+
+
+        private static bool addNewChatToDatabase(string cid, int index = -1)
+        {
+            if (index == -1) index = getChatIndexByID(cid);
+            if (index == -1) return false;
+            // Start
+            ChatModel cm = chats.ElementAt(index);
+            string sql = "INSERT INTO Chats (id , cid , host , part , hostID , partID , message , isGroup) VALUES (? , ? , ? , ? , ? , ? , ? , ?)";
+            try
+            {
+                using (var addChat = syncConnection.Prepare(sql))
+                {
+                    addChat.Bind(1, null);
+                    addChat.Bind(2, cm.getID());
+                    addChat.Bind(3, cm.getChaterName());
+                    addChat.Bind(4, cm.getChateeName());
+                    addChat.Bind(5, cm.getChaterID());
+                    addChat.Bind(6, cm.getChateeID());
+                    addChat.Bind(7, cm.getGroupID());
+                    addChat.Bind(8 , cm.getGroupChatFlag() == false ? "false" : "true");
+                    addChat.Step();
+                }
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+
+
+
+        // ADD RELATIONS
+        // Must Provide MyChatID
+        private static bool addNewFriendRelationToDataBase(string uid , string fid, int myChatID)
+        {
+            string sql = "INSERT INTO FriendRelation (id , aid , bid , chat) VALUES (? , ? , ? , ?)";
+            try
+            {
+                using (var newFriend = syncConnection.Prepare(sql))
+                {
+                    newFriend.Bind(1, null);
+                    newFriend.Bind(2, uid);
+                    newFriend.Bind(3, fid);
+                    newFriend.Bind(4, myChatID);
+                    newFriend.Step();
+                }
+                return true;
+            } catch(Exception e)
+            {
+                return false;
+            }
+        }
+
+        private static bool addNewGroupRelationToDataBase(string uid, string gid, int groupChatID)
+        {
+            string sql = "INSERT INTO GroupRelation (id , gid , pid , chat) VALUES (? , ? , ? , ?)";
+            try
+            {
+                using (var newGroup = syncConnection.Prepare(sql))
+                {
+                    newGroup.Bind(1, null);
+                    newGroup.Bind(2, gid);
+                    newGroup.Bind(3, uid);
+                    newGroup.Bind(4, groupChatID);
+                    newGroup.Step();
+                }
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+
+        private static bool addNewMsgRelationToDataBase(string uid, string fid, int chatid , string message , string time)
+        {
+            string sql = "INSERT INTO ChatRelation (id , mid , cid , sid , rid , message , time) VALUES (? , ? , ? , ? , ? , ? , ?)";
+            try
+            {
+                using (var newMessage = syncConnection.Prepare(sql))
+                {
+                    newMessage.Bind(1, null);
+                    newMessage.Bind(2, null);
+                    newMessage.Bind(3, chatid);
+                    newMessage.Bind(4, uid);
+                    newMessage.Bind(5, fid);
+                    newMessage.Bind(6, message);
+                    newMessage.Bind(7, time);
+                    newMessage.Step();
+                }
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

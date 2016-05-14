@@ -15,14 +15,14 @@ namespace WoChat.ViewModels
         public string content { get; set; }
         public string timeString { get; set; }
 
-        public MessageViewModel(string sid , string sname , string rid , string rname , string body , DateTimeOffset time)
+        public MessageViewModel(string sid , string sname , string rid , string rname , string body , string time)
         {
             this.senderID = sid;
             this.senderName = sname;
             this.receiverID = rid;
             this.receiverName = rname;
             this.content = body;
-            this.timeString = time.ToLocalTime().ToString();
+            this.timeString = time;
         }
     }
 }
