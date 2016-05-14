@@ -34,7 +34,7 @@ namespace WoChat.Models
          * We use all kinds of Static items,so we no need constructers
          */
         public DataModel() {
-            
+
         }
 
 
@@ -62,38 +62,21 @@ namespace WoChat.Models
 
 
 
-        //Database Load functions 
+        //Database Load functions
         private static void loadFriends()
         {
-            // Get a reference to the SQLite database    
+            // Get a reference to the SQLite database
             //var conn = new SQLiteConnection("sqlitepcldemo.db");
-            string sql = @"CREATE TABLE IF NOT EXISTS
-                           Users   (id  INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
-                                    uid     VARCHAR( 140 ), 
-                                    name    VARCHAR( 140 ), 
-                                    pass    VARCHAR( 1024 ), 
-                                    nick    VARCHAR( 140 ), 
-                                    icon    VARCHAR( 140 ), 
-                                    style   VARCHAR( 140 ), 
-                                    email   VARCHAR( 140 ) 
-                                    );";
+            string sql = "CREATE TABLE IF NOT EXISTS Users   (id  INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, uid     VARCHAR( 140 ), name    VARCHAR( 140 ), pass    VARCHAR( 1024 ), nick    VARCHAR( 140 ), icon    VARCHAR( 140 ), style   VARCHAR( 140 ), email   VARCHAR( 140 ) );";
             using (var statement = syncConnection.Prepare(sql))
             {
                 statement.Step();
             }
-            
-        }
+
+        }
         private static void loadGroups()
         {
-            string sql = @"CREATE TABLE IF NOT EXISTS
-                           Groups   (id     INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                                    gid     VARCHAR( 140 ),
-                                    gname   VARCHAR( 140 ),
-                                    admin   VARCHAR( 1024 ),
-                                    icon    VARCHAR( 140 ),
-                                    style   VARCHAR( 140 ),
-                                    chat    VARCHAR( 140 ),
-                                    );";
+            string sql = "CREATE TABLE IF NOT EXISTS Groups   (id     INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, gid     VARCHAR( 140 ), gname   VARCHAR( 140 ), admin   VARCHAR( 1024 ), icon    VARCHAR( 140 ), style   VARCHAR( 140 ), chat    VARCHAR( 140 ));";
             using (var statement = syncConnection.Prepare(sql))
             {
                 statement.Step();
@@ -101,16 +84,7 @@ namespace WoChat.Models
         }
         private static void loadChats()
         {
-            string sql = @"CREATE TABLE IF NOT EXISTS
-                           Chats   (id      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                                    cid     VARCHAR( 140 ),
-                                    host    VARCHAR( 140 ),
-                                    part    VARCHAR( 140 ),
-                                    hostID  VARCHAR( 140 ),
-                                    partID  VARCHAR( 140 ),
-                                    message VARCHAR( 140 ),
-                                    isGroup VARCHAR( 140 )
-                                    );";
+            string sql = "CREATE TABLE IF NOT EXISTS Chats   (id      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, cid     VARCHAR( 140 ), host    VARCHAR( 140 ), part    VARCHAR( 140 ), hostID  VARCHAR( 140 ), partID  VARCHAR( 140 ), message VARCHAR( 140 ), isGroup VARCHAR( 140 ) );";
             using (var statement = syncConnection.Prepare(sql))
             {
                 statement.Step();
@@ -118,27 +92,9 @@ namespace WoChat.Models
         }
         private static void loadRelations()
         {
-            string sqlFriend = @"CREATE TABLE IF NOT EXISTS
-                           FriendRelation   (id     INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                                            aid     VARCHAR( 140 ),
-                                            bid     VARCHAR( 140 ),
-                                            chat    VARCHAR( 140 ),
-                                    );";
-            string sqlGrouper = @"CREATE TABLE IF NOT EXISTS
-                           GroupRelation   (id      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                                            gid     VARCHAR( 140 ),
-                                            pid     VARCHAR( 140 ),
-                                            chat    VARCHAR( 140 ),
-                                    );";
-            string sqlMessage = @"CREATE TABLE IF NOT EXISTS
-                           MsgRelation   (id      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                                          mid     VARCHAR( 140 ),
-                                          cid     VARCHAR( 140 ),
-                                          sid     VARCHAR( 140 ),
-                                          rid     VARCHAR( 140 ),
-                                          message VARCHAR( 2048 ),
-                                          time    VARCHAR( 140 ),
-                                    );";
+            string sqlFriend = "CREATE TABLE IF NOT EXISTS FriendRelation   (id     INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, aid     VARCHAR( 140 ), bid     VARCHAR( 140 ), chat    VARCHAR( 140 ));";
+            string sqlGrouper = "CREATE TABLE IF NOT EXISTS GroupRelation   (id      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, gid     VARCHAR( 140 ), pid     VARCHAR( 140 ), chat    VARCHAR( 140 ));";
+            string sqlMessage = "CREATE TABLE IF NOT EXISTS MsgRelation   (id      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, mid     VARCHAR( 140 ), cid     VARCHAR( 140 ), sid     VARCHAR( 140 ), rid     VARCHAR( 140 ), message VARCHAR( 2048 ), time    VARCHAR( 140 ));";
             using (var statementFriend = syncConnection.Prepare(sqlFriend)) {
                 statementFriend.Step();
                 using (var statementGrouper = syncConnection.Prepare(sqlGrouper)) {
@@ -191,13 +147,13 @@ namespace WoChat.Models
         }
 
 
- 
+
 
         /**
          * Login Module
          * return a Specified Model of User.
          * (To the Client)
-         * 
+         *
          * If no such user
          * Then return null
          */
@@ -217,12 +173,12 @@ namespace WoChat.Models
         /**
          * User Register Module
          * return true if Create User Success.
-         * 
+         *
          * --------------Updated 11th May----------------------
          * We now use the Server(DataModel) For Encryption
          * Therefore encryptCreator before Create a user is needed
          * ----------------------------------------------------
-         * 
+         *
          * @type {String}
          */
         public static bool userRegister(string name, string password, string _nick, string _email, string _icon = "default", string _style = "None Yet!")
@@ -246,11 +202,11 @@ namespace WoChat.Models
          * --------------Updated 11th May----------------------
          * User Change Password
          * return true if Change Success
-         * 
+         *
          * We now use the Server(DataModel) For Encryption
          * Therefore encryptCreator before change a password is needed
          * ----------------------------------------------------
-         * 
+         *
          * @type {String}
          */
         public bool updatePassword(string username , string originalPassword , string newPassword)
@@ -345,7 +301,7 @@ namespace WoChat.Models
 
 
 
- 
+
         /**
          * Index Getters for chats
          * To get the Specified index from the Database
@@ -510,7 +466,7 @@ namespace WoChat.Models
          * Index Getters for a specified Chat
          * ByID: search by group id
          * ByName: search by group name(First Value)
-         * 
+         *
          */
         private static int getGroupIndexByID(string gid)
         {
@@ -541,7 +497,7 @@ namespace WoChat.Models
         }
 
 
- 
+
         /**
          * Create a Group if the Group & GroupChat not Exist
          * params:
@@ -637,7 +593,7 @@ namespace WoChat.Models
         /**
          * Getters of the User Database
          * Should be depreciated.
-         * 
+         *
          */
         public static List<UserModel> getUsers()
         {
@@ -717,7 +673,7 @@ namespace WoChat.Models
         }
 
 
-  
+
         /**
          * Sinple Add Chat for a user
          * params:
@@ -813,7 +769,7 @@ namespace WoChat.Models
             }
             else return false;
         }
-        
+
 
 
         /**
@@ -821,7 +777,7 @@ namespace WoChat.Models
          * Remember that the group will be explosed
          * if the owner exit the group
          *
-         * params: 
+         * params:
          *     uid: user id;
          *     gid: group id;
          *
@@ -834,7 +790,7 @@ namespace WoChat.Models
             int gindex = getGroupIndexByID(gid);
             if (index == -1 || gindex == -1) return false;
             /**
-             * Only permits quitting for the 
+             * Only permits quitting for the
              * chrrent group members
              */
             if (groups.ElementAt(gindex).hasMember(uid))
@@ -940,7 +896,7 @@ namespace WoChat.Models
                 return chats.ElementAt(cindex).pushMessage(message , chaterID , chateeID);
             }
         }
-        
+
 
 
 
