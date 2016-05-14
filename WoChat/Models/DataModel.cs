@@ -66,7 +66,16 @@ namespace WoChat.Models
         private static void loadFriends()
         {
             // Get a reference to the SQLite database
-            //var conn = new SQLiteConnection("sqlitepcldemo.db");
+            //string sql = @"CREATE TABLE IF NOT EXISTS
+            //               Users   (id  INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+            //                        uid     VARCHAR( 140 ), 
+            //                        name    VARCHAR( 140 ), 
+            //                        pass    VARCHAR( 1024 ), 
+            //                        nick    VARCHAR( 140 ), 
+            //                        icon    VARCHAR( 140 ), 
+            //                        style   VARCHAR( 140 ), 
+            //                        email   VARCHAR( 140 ) 
+            //                        );";
             string sql = "CREATE TABLE IF NOT EXISTS Users   (id  INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, uid     VARCHAR( 140 ), name    VARCHAR( 140 ), pass    VARCHAR( 1024 ), nick    VARCHAR( 140 ), icon    VARCHAR( 140 ), style   VARCHAR( 140 ), email   VARCHAR( 140 ) );";
             using (var statement = syncConnection.Prepare(sql))
             {
@@ -76,6 +85,15 @@ namespace WoChat.Models
         }
         private static void loadGroups()
         {
+            //string sql = @"CREATE TABLE IF NOT EXISTS
+            //               Groups   (id     INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+            //                        gid     VARCHAR( 140 ),
+            //                        gname   VARCHAR( 140 ),
+            //                        admin   VARCHAR( 1024 ),
+            //                        icon    VARCHAR( 140 ),
+            //                        style   VARCHAR( 140 ),
+            //                        chat    VARCHAR( 140 ）
+            //                        );";
             string sql = "CREATE TABLE IF NOT EXISTS Groups   (id     INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, gid     VARCHAR( 140 ), gname   VARCHAR( 140 ), admin   VARCHAR( 1024 ), icon    VARCHAR( 140 ), style   VARCHAR( 140 ), chat    VARCHAR( 140 ));";
             using (var statement = syncConnection.Prepare(sql))
             {
@@ -84,6 +102,16 @@ namespace WoChat.Models
         }
         private static void loadChats()
         {
+            //string sql = @"CREATE TABLE IF NOT EXISTS
+            //               Chats   (id      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+            //                        cid     VARCHAR( 140 ),
+            //                        host    VARCHAR( 140 ),
+            //                        part    VARCHAR( 140 ),
+            //                        hostID  VARCHAR( 140 ),
+            //                        partID  VARCHAR( 140 ),
+            //                        message VARCHAR( 140 ),
+            //                        isGroup VARCHAR( 140 )
+            //                        );";
             string sql = "CREATE TABLE IF NOT EXISTS Chats   (id      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, cid     VARCHAR( 140 ), host    VARCHAR( 140 ), part    VARCHAR( 140 ), hostID  VARCHAR( 140 ), partID  VARCHAR( 140 ), message VARCHAR( 140 ), isGroup VARCHAR( 140 ) );";
             using (var statement = syncConnection.Prepare(sql))
             {
@@ -92,6 +120,29 @@ namespace WoChat.Models
         }
         private static void loadRelations()
         {
+
+            //string sqlFriend = @"CREATE TABLE IF NOT EXISTS
+            //               FriendRelation   (id     INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+            //                                aid     VARCHAR( 140 ),
+            //                                bid     VARCHAR( 140 ),
+            //                                chat    VARCHAR( 140 ),
+            //                        );";
+            //string sqlGrouper = @"CREATE TABLE IF NOT EXISTS
+            //               GroupRelation   (id      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+            //                                gid     VARCHAR( 140 ),
+            //                                pid     VARCHAR( 140 ),
+            //                                chat    VARCHAR( 140 ),
+            //                        );";
+            //string sqlMessage = @"CREATE TABLE IF NOT EXISTS
+            //               MsgRelation   (id      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+            //                              mid     VARCHAR( 140 ),
+            //                              cid     VARCHAR( 140 ),
+            //                              sid     VARCHAR( 140 ),
+            //                              rid     VARCHAR( 140 ),
+            //                              message VARCHAR( 2048 ),
+            //                              time    VARCHAR( 140 ),
+            //                        );";
+
             string sqlFriend = "CREATE TABLE IF NOT EXISTS FriendRelation   (id     INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, aid     VARCHAR( 140 ), bid     VARCHAR( 140 ), chat    VARCHAR( 140 ));";
             string sqlGrouper = "CREATE TABLE IF NOT EXISTS GroupRelation   (id      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, gid     VARCHAR( 140 ), pid     VARCHAR( 140 ), chat    VARCHAR( 140 ));";
             string sqlMessage = "CREATE TABLE IF NOT EXISTS MsgRelation   (id      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, mid     VARCHAR( 140 ), cid     VARCHAR( 140 ), sid     VARCHAR( 140 ), rid     VARCHAR( 140 ), message VARCHAR( 2048 ), time    VARCHAR( 140 ));";
@@ -106,8 +157,97 @@ namespace WoChat.Models
             }
         }
 
+        //public async static List<string> readAndProcessStringLists(string uid , string sqlSentence , int requirePosition)
+        //{
+        //    List<string> ret = new List<string>();
+        //    using (var process = syncConnection.Prepare(sqlSentence))
+        //    {
+        //        process.Bind(1, uid);
+        //        while (process.Step() == SQLiteResult.DONE)
+        //        {
+        //            ret.Add((string)process[requirePosition]);
+        //        }
+        //    }
+        //    return ret;
+        //}
+
+        public static List<UserModel> readAndCreateUsers()
+        {
+            List<UserModel> userList = new List<UserModel>();
+            List<string> friendList;
+            List<string> groupList;
+            List<string> chatList;
+
+            UserModel temp;
+            string usersql = "SELECT * FROM Users";
+            string friendRelationSQL = "SELECT * FROM FriendRelation WHERE aid = ?";
+            string friendRelationSQL2 = "SELECT * FROM FriendRelation WHERE bid = ?";
+            string groupRelationSQL = "SELECT * FROM GroupRelation WHERE pid = ?";
+            // ChatRelation Is Ignored Since we only need to add Chat IDs.(fetch from FriendRelation and GroupRelation)
 
 
+            
+            // Read From Database
+            using (var getBareUser = syncConnection.Prepare(usersql))
+            {
+                while (getBareUser.Step() == SQLiteResult.ROW)
+                {
+                    //Initialize the 3 string Lists
+                    friendList = new List<string>();
+                    groupList = new List<string>();
+                    chatList = new List<string>();
+
+                    // Find his friend IDs(As host)
+                    using (var getFriendIDStringList1 = syncConnection.Prepare(friendRelationSQL))
+                    {
+                        getFriendIDStringList1.Bind(1, (string)getBareUser[1]);
+                        // Bind the User id as host
+                        while (getFriendIDStringList1.Step() == SQLiteResult.ROW)
+                        {
+                            //Add participant id into Friend(id) List
+                            friendList.Add((string)getFriendIDStringList1[2]);
+                            //Add chat id into Chat(id) list
+                            chatList.Add((string)getFriendIDStringList1[3]);
+                        }
+                        // returns the Relation if the relation contains him as host
+                    }
+
+                    using (var getFriendIDStringList2 = syncConnection.Prepare(friendRelationSQL2))
+                    {
+                        getFriendIDStringList2.Bind(1, (string)getBareUser[1]);
+                        // Bind the User id as Participant
+                        while (getFriendIDStringList2.Step() == SQLiteResult.ROW)
+                        {
+                            //Add host id into Friend(id) List
+                            friendList.Add((string)getFriendIDStringList2[1]);
+                            //Add chat id into Chat(id) list
+                            chatList.Add((string)getFriendIDStringList2[3]);
+                        }
+                        // returns the Relation if the relation contains him as Participant
+                    }
+
+                    using (var getGroupList = syncConnection.Prepare(groupRelationSQL))
+                    {
+                        getGroupList.Bind(1, (string)getBareUser[1]);
+                        while (getGroupList.Step() == SQLiteResult.ROW)
+                        {
+                            groupList.Add((string)getGroupList[1]);
+                            chatList.Add((string)getGroupList[3]);
+                        }
+                    }
+
+                    temp = new UserModel((string)getBareUser[2], (string)getBareUser[3], (string)getBareUser[4], (string)getBareUser[7], (string)getBareUser[5], (string)getBareUser[6]);
+                    temp.setFriend(friendList);
+                    temp.setGroup(groupList);
+                    temp.setChat(chatList);
+
+                    userList.Add(temp);
+
+                   // Here we get a bare user we still need to get his/her friend Lists
+                }
+            }
+            return userList;
+        }
 
 
 

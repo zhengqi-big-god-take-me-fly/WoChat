@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -27,6 +28,7 @@ namespace WoChat.Views {
         private ObservableCollection<friendObserve> friends;
         public ContactsPage() {
             this.InitializeComponent();
+            this.model = new StubViewModel();
         }
 
 
@@ -55,7 +57,44 @@ namespace WoChat.Views {
         //    UserModel temp;
         //}
 
+        public void testDB(object sender, RoutedEventArgs e)
+        {
+            List<UserModel> myModel =  model.showTestDatabases();
+            List<string> refr;
+            //for (int i = 0; i < myModel.Count; i++)
+            //{
+                string res = "The User is : \n";
+                res += "UserName: " + myModel.ElementAt(0).getName() + "\n";
+                res += "NickName: " + myModel.ElementAt(0).getNick() + "\n";
+                res += "Email: " + myModel.ElementAt(0).getInfo().email + "\n";
+                // Show Friends
+                res += "Friends: ";
+                refr = myModel.ElementAt(0).getFriends();
+                for (int ii = 0; ii < refr.Count; ii++)
+                {
+                    res += refr.ElementAt(ii) + " ";
+                }
+                res += "\n";
 
+                res += "Groups: ";
+                refr = myModel.ElementAt(0).getGroups();
+                for (int ii = 0; ii < refr.Count; ii++)
+                {
+                    res += refr.ElementAt(ii) + " ";
+                }
+                res += "\n";
+
+                res += "Chats: ";
+                refr = myModel.ElementAt(0).getChats();
+                for (int ii = 0; ii < refr.Count; ii++)
+                {
+                    res += refr.ElementAt(ii) + " ";
+                }
+                res += "\n";
+
+                var c = new MessageDialog(res).ShowAsync();
+            //}
+        }
 
 
 

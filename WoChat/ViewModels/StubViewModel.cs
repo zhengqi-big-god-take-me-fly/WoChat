@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Windows.UI.Popups;
 using WoChat.Models;
 
 namespace WoChat.ViewModels {
@@ -70,6 +71,13 @@ namespace WoChat.ViewModels {
             if (currentUser.getID() == userid) return false;
             return DataModel.isUserExist(userid);
         }
+
+
+        public List<UserModel> showTestDatabases()
+        {
+            List<UserModel> myModel = DataModel.readAndCreateUsers();
+            return myModel;
+        } 
 
 
 
