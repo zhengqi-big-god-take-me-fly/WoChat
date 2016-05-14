@@ -285,6 +285,7 @@ namespace WoChat.Net {
             }
             return result;
         }
+
         /// <summary>
         /// Send message
         /// </summary>
@@ -305,7 +306,7 @@ namespace WoChat.Net {
                     content = c
                 })),
                 Method = HttpMethod.Post,
-                RequestUri = new Uri(API_HOST + "/chat_group/:group_id")
+                RequestUri = new Uri(API_HOST + URI_USERS_ + cn + URI_MESSAGE)
             };
             req.Headers["Authorization"] = jwt;
             HttpResponseMessage res = await client.SendRequestAsync(req);
@@ -335,6 +336,7 @@ namespace WoChat.Net {
             }
             return result;
         }
+
         public static async Task<PostChatGroupResult> PostChatGroup(string jwt, string gn)
         {
             PostChatGroupResult result;
@@ -382,22 +384,19 @@ namespace WoChat.Net {
             }
             return result;
         }
-        public static async Task<GetChatGroup_Result> GetChatGroup_(string jwt, string gi, string id, string gn)
+
+        public static async Task<GetChatGroup_Result> GetChatGroup_(string jwt, string gi)
         {
             GetChatGroup_Result result;
-            if (jwt.Equals("") || gi.Equals("") || gn.Equals("") || id.Equals(""))
+            if (jwt.Equals("") || gi.Equals(""))
             {
                 return new GetChatGroup_Result() { StatusCode = GetChatGroup_Result.GetChatGroup_StatusCode.UnknownError };
             }
             HttpClient client = new HttpClient();
             HttpRequestMessage req = new HttpRequestMessage()
             {
-                Content = new HttpStringContent(JsonConvert.SerializeObject(new PostChatGroupParams()
-                {
-                    groupname = gn
-                })),
                 Method = HttpMethod.Get,
-                RequestUri = new Uri(API_HOST + "/chat_group/:group_id")
+                RequestUri = new Uri(API_HOST + "/chat_group/" + gi)
             };
             req.Headers["Authorization"] = jwt;
             HttpResponseMessage res = await client.SendRequestAsync(req);
@@ -429,6 +428,7 @@ namespace WoChat.Net {
             }
             return result;
         }
+
         public static async Task<PutChatGroup_Result> PutChatGroup_(string jwt, string gi, string gn)
         {
             PutChatGroup_Result result;
@@ -444,7 +444,7 @@ namespace WoChat.Net {
                     groupname = gn
                 })),
                 Method = HttpMethod.Put,
-                RequestUri = new Uri(API_HOST + "/chat_group/:group_id")
+                RequestUri = new Uri(API_HOST + "/chat_group/" + gi)
             };
             req.Headers["Authorization"] = jwt;
             HttpResponseMessage res = await client.SendRequestAsync(req);
@@ -478,6 +478,7 @@ namespace WoChat.Net {
             }
             return result;
         }
+
         public static async Task<GetChatGrouup_MembersResult> GetChatGroup_Members(string jwt, string gi)
         {
 
@@ -485,14 +486,14 @@ namespace WoChat.Net {
                 GetChatGrouup_MembersResult result;
                 if (jwt.Equals("") || gi.Equals(""))
                 {
-                    return new GetChatGrouup_MembersResult() { StatusCode = GetChatGrouup_MembersResult.GetChatGroup_StatusCode.UnknownError };
+                    return new GetChatGrouup_MembersResult() { StatusCode = GetChatGrouup_MembersResult.GetChatGrouup_MembersStatusCode.UnknownError };
                 }
                 HttpClient client = new HttpClient();
                 HttpRequestMessage req = new HttpRequestMessage()
                 {
                     
                     Method = HttpMethod.Get,
-                    RequestUri = new Uri(API_HOST + "/chat_group/:group_id/members")
+                    RequestUri = new Uri(API_HOST + "/chat_group/" + gi + "/members")
                 };
                 req.Headers["Authorization"] = jwt;
                 HttpResponseMessage res = await client.SendRequestAsync(req);
@@ -502,17 +503,17 @@ namespace WoChat.Net {
                     switch (res.StatusCode)
                     {
                         case HttpStatusCode.Ok:
-                            result.StatusCode = GetChatGrouup_MembersResult.PostChatGroupStatusCode.Success;
+                            result.StatusCode = GetChatGrouup_MembersResult.GetChatGrouup_MembersStatusCode.Success;
                             break;
                      
                         case HttpStatusCode.Unauthorized:
-                            result.StatusCode = GetChatGrouup_MembersResult.PostChatGroupStatusCode.InvalidToken;
+                            result.StatusCode = GetChatGrouup_MembersResult.GetChatGrouup_MembersStatusCode.InvalidToken;
                             break;
                         case HttpStatusCode.NotFound:
-                            result.StatusCode = GetChatGrouup_MembersResult.PostChatGroupStatusCode.NoThisGroup;
+                            result.StatusCode = GetChatGrouup_MembersResult.GetChatGrouup_MembersStatusCode.NoThisGroup;
                             break;
                         default:
-                            result.StatusCode = GetChatGrouup_MembersResult.PostChatGroupStatusCode.UnknownError;
+                            result.StatusCode = GetChatGrouup_MembersResult.GetChatGrouup_MembersStatusCode.UnknownError;
                             break;
                     }
 #pragma warning disable CS0168 // Variable is declared but never used
@@ -520,63 +521,55 @@ namespace WoChat.Net {
                 catch (JsonException e)
                 {
 #pragma warning restore CS0168 // Variable is declared but never used
-                    result = new GetChatGrouup_MembersResult() { StatusCode = GetChatGrouup_MembersResult.PostChatGroupStatusCode.UnknownError };
+                    result = new GetChatGrouup_MembersResult() { StatusCode = GetChatGrouup_MembersResult.GetChatGrouup_MembersStatusCode.UnknownError };
                 }
                 return result;
             }
 
         }
-        public static async Task<PostChatGroup_MembersResult> PostChatGroup_Members(string jwt, string gi, List<string> ms)
-        {
+
+        public static async Task<PostChatGroup_MembersResult> PostChatGroup_Members(string jwt, string gi, List<string> ms) {
             PostChatGroup_MembersResult result;
-                if (jwt.Equals("") || gi.Equals("") || ms == null)
-                {
-                    return new PostChatGroup_MembersResult() { StatusCode = PostChatGroup_MembersResult.PostChatGroup_MembersStatusCode.UnknownError };
-                }
-                HttpClient client = new HttpClient();
-            HttpRequestMessage req = new HttpRequestMessage()
-            {
-                Content = new HttpStringContent(JsonConvert.SerializeObject(new PostChatGroup_MembersParams()
-                {
+            if (jwt.Equals("") || gi.Equals("") || ms == null) {
+                return new PostChatGroup_MembersResult() { StatusCode = PostChatGroup_MembersResult.PostChatGroup_MembersStatusCode.UnknownError };
+            }
+            HttpClient client = new HttpClient();
+            HttpRequestMessage req = new HttpRequestMessage() {
+                Content = new HttpStringContent(JsonConvert.SerializeObject(new PostChatGroup_MembersParams() {
                     members = ms
-                    })),
-                    Method = HttpMethod.Post,
-                    RequestUri = new Uri(API_HOST + "/chat_group/:group_id/members")
-                };
-                req.Headers["Authorization"] = jwt;
-                HttpResponseMessage res = await client.SendRequestAsync(req);
-                try
-                {
-                    result = JsonConvert.DeserializeObject<PostChatGroup_MembersResult>(res.Content.ToString());
-                    switch (res.StatusCode)
-                    {
-                        case HttpStatusCode.Created:
-                            result.StatusCode = PostChatGroup_MembersResult.PostChatGroup_MembersStatusCode.Success;
-                            break;
-                        case HttpStatusCode.BadRequest:
-                            result.StatusCode = PostChatGroup_MembersResult.PostChatGroup_MembersStatusCode.InvalidParams;
-                            break;
-                        case HttpStatusCode.Unauthorized:
-                            result.StatusCode = PostChatGroup_MembersResult.PostChatGroup_MembersStatusCode.InvalidToken;
-                            break;
-                        case HttpStatusCode.NotFound:
-                            result.StatusCode = PostChatGroup_MembersResult.PostChatGroup_MembersStatusCode.NoThisGroup;
-                            break;
-                        default:
-                            result.StatusCode = PostChatGroup_MembersResult.PostChatGroup_MembersStatusCode.UnknownError;
-                            break;
-                    }
+                })),
+                Method = HttpMethod.Post,
+                RequestUri = new Uri(API_HOST + "/chat_group/" + gi + "/members")
+            };
+            req.Headers["Authorization"] = jwt;
+            HttpResponseMessage res = await client.SendRequestAsync(req);
+            try {
+                result = JsonConvert.DeserializeObject<PostChatGroup_MembersResult>(res.Content.ToString());
+                switch (res.StatusCode) {
+                    case HttpStatusCode.Created:
+                        result.StatusCode = PostChatGroup_MembersResult.PostChatGroup_MembersStatusCode.Success;
+                        break;
+                    case HttpStatusCode.BadRequest:
+                        result.StatusCode = PostChatGroup_MembersResult.PostChatGroup_MembersStatusCode.InvalidParams;
+                        break;
+                    case HttpStatusCode.Unauthorized:
+                        result.StatusCode = PostChatGroup_MembersResult.PostChatGroup_MembersStatusCode.InvalidToken;
+                        break;
+                    case HttpStatusCode.NotFound:
+                        result.StatusCode = PostChatGroup_MembersResult.PostChatGroup_MembersStatusCode.NoThisGroup;
+                        break;
+                    default:
+                        result.StatusCode = PostChatGroup_MembersResult.PostChatGroup_MembersStatusCode.UnknownError;
+                        break;
+                }
 #pragma warning disable CS0168 // Variable is declared but never used
-                }
-                catch (JsonException e)
-                {
+            } catch (JsonException e) {
 #pragma warning restore CS0168 // Variable is declared but never used
-                    result = new PostChatGroup_MembersResult() { StatusCode = PostChatGroup_MembersResult.PostChatGroup_MembersStatusCode.UnknownError };
-                }
-                return result;
-
-
+                result = new PostChatGroup_MembersResult() { StatusCode = PostChatGroup_MembersResult.PostChatGroup_MembersStatusCode.UnknownError };
+            }
+            return result;
         }
+
         public static async Task<PutChatGroup_Members_Result> PutChatGroup_Members_(string jwt, string gi, string mn, string gn)
         {
             PutChatGroup_Members_Result result;
@@ -592,7 +585,7 @@ namespace WoChat.Net {
                     group_nick = gn
                 })),
                 Method = HttpMethod.Put,
-                RequestUri = new Uri(API_HOST + "/chat_group/:group_id/members/:member_name")
+                RequestUri = new Uri(API_HOST + "/chat_group/" + gi + "/members/" + mn)
             };
             req.Headers["Authorization"] = jwt;
             HttpResponseMessage res = await client.SendRequestAsync(req);
@@ -626,6 +619,7 @@ namespace WoChat.Net {
             }
             return result;
         }
+
         public static async Task<PostChatGroup_MessagesResult> PostChatGroup_Messages(string jwt, string gi, int tp, string ct)
         {
             PostChatGroup_MessagesResult result;
@@ -642,7 +636,7 @@ namespace WoChat.Net {
                     content = ct
                 })),
                 Method = HttpMethod.Post,
-                RequestUri = new Uri(API_HOST + "/chat_group/:group_id/messages")
+                RequestUri = new Uri(API_HOST + "/chat_group/" + gi + "/messages")
             };
             req.Headers["Authorization"] = jwt;
             HttpResponseMessage res = await client.SendRequestAsync(req);
@@ -676,51 +670,11 @@ namespace WoChat.Net {
             }
             return result;
         }
-        public static async Task<GetUser_Result>  GetUser_(string jwt, string un)
-        {
-            GetUser_Result result;
-            if (jwt.Equals("") || un.Equals(""))
-            {
-                return new GetUser_Result() { StatusCode = GetUser_Result.GetUser_StatusCode.UnknownError };
-            }
-            HttpClient client = new HttpClient();
-            HttpRequestMessage req = new HttpRequestMessage()
-            {
-                
-                Method = HttpMethod.Get,
-                RequestUri = new Uri(API_HOST + "/user/:username")
-            };
-            req.Headers["Authorization"] = jwt;
-            HttpResponseMessage res = await client.SendRequestAsync(req);
-            try
-            {
-                result = JsonConvert.DeserializeObject<GetUser_Result>(res.Content.ToString());
-                switch (res.StatusCode)
-                {
-                    case HttpStatusCode.Ok:
-                        result.StatusCode = GetUser_Result.GetUser_StatusCode.Success;
-                        break;
-                   
-                    case HttpStatusCode.NotFound:
-                        result.StatusCode = GetUser_Result.GetUser_StatusCode.NoThisGroup;
-                        break;
-                    default:
-                        result.StatusCode = GetUser_Result.GetUser_StatusCode.UnknownError;
-                        break;
-                }
-#pragma warning disable CS0168 // Variable is declared but never used
-            }
-            catch (JsonException e)
-            {
-#pragma warning restore CS0168 // Variable is declared but never used
-                result = new GetUser_Result() { StatusCode = GetUser_Result.GetUser_StatusCode.UnknownError };
-            }
-            return result;
-        }
-        public static async Task<PutUser_Result> PutUser_(string jwt, string nn, string pw, string opw, string at, int gd, int rg)
+        
+        public static async Task<PutUser_Result> PutUsers_(string jwt, string un, string nn, string pw, string opw, string at, int gd, int rg)
         {
             PutUser_Result result;
-            if (jwt.Equals("") || nn.Equals("") || pw.Equals("") || opw.Equals("") || at.Equals(""))
+            if (jwt.Equals("") || un.Equals("") || nn.Equals("") || pw.Equals("") || opw.Equals("") || at.Equals(""))
             {
                 return new PutUser_Result() { StatusCode = PutUser_Result.PutUser_StatusCode.UnknownError };
             }
@@ -737,7 +691,7 @@ namespace WoChat.Net {
                     region = rg
                 })),
                 Method = HttpMethod.Put,
-                RequestUri = new Uri(API_HOST + "/user/:username")
+                RequestUri = new Uri(API_HOST + "/users/" + un)
             };
             req.Headers["Authorization"] = jwt;
             HttpResponseMessage res = await client.SendRequestAsync(req);
@@ -906,8 +860,8 @@ namespace WoChat.Net {
     }
     public class GetChatGrouup_MembersResult
     {
-        public enum PostChatGroupStatusCode { Success, InvalidToken, NoThisGroup, UnknownError };
-        public PostChatGroupStatusCode StatusCode;
+        public enum GetChatGrouup_MembersStatusCode { Success, InvalidToken, NoThisGroup, UnknownError };
+        public GetChatGrouup_MembersStatusCode StatusCode;
        
         public List<Member> members;
         public class Member
