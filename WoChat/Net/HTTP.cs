@@ -22,7 +22,7 @@ namespace WoChat.Net {
 
         // Test pass in success situation
         public static async Task<PostUsersResult> PostUsers(string un, string pw) {
-            PostUsersResult result;
+            PostUsersResult result = new PostUsersResult();
             if (un.Equals("") || pw.Equals("")) {
                 return new PostUsersResult() { StatusCode = PostUsersResult.PostUsersStatusCode.InvalidParams };
             }
@@ -36,7 +36,6 @@ namespace WoChat.Net {
                 RequestUri = new Uri(API_HOST + URI_USERS)
             };
             HttpResponseMessage res = await client.SendRequestAsync(req);
-            result = new PostUsersResult();
             switch (res.StatusCode) {
                 case HttpStatusCode.Created:
                     result.StatusCode = PostUsersResult.PostUsersStatusCode.Success;
@@ -56,7 +55,7 @@ namespace WoChat.Net {
 
         // Test pass in success situation
         public static async Task<PostAuthLoginResult> PostAuthLogin(string un, string pw) {
-            PostAuthLoginResult result;
+            PostAuthLoginResult result = new PostAuthLoginResult();
             if (un.Equals("") || pw.Equals("")) {
                 return new PostAuthLoginResult() { StatusCode = PostAuthLoginResult.PostAuthLoginStatusCode.UnknownError };
             }
@@ -71,9 +70,9 @@ namespace WoChat.Net {
             };
             HttpResponseMessage res = await client.SendRequestAsync(req);
             try {
-                result = JsonConvert.DeserializeObject<PostAuthLoginResult>(res.Content.ToString());
                 switch (res.StatusCode) {
                     case HttpStatusCode.Ok:
+                        result = JsonConvert.DeserializeObject<PostAuthLoginResult>(res.Content.ToString());
                         result.StatusCode = PostAuthLoginResult.PostAuthLoginStatusCode.Success;
                         break;
                     case HttpStatusCode.Unauthorized:
