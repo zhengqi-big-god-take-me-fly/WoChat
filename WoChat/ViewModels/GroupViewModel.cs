@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WoChat.ViewModels
 {
-    class GroupViewModel
+    public class GroupViewModel
     {
         public string groupName { get; set; }
         public string groupID { get; set; }
