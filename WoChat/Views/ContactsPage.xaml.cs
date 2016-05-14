@@ -46,19 +46,14 @@ namespace WoChat.Views {
             }
         }
 
-        private void initFriendObservableCollection()
-        {
-            ObservableCollection<UserModel> friendList;
-            if (model.getCurrentUser() == null) return;
-            // Get the normal friendList
-            friendList = model.getFriends();
-            UserModel temp;
-            for (int i = 0; i < friendList.Count; i++)
-            {
-                temp = friendList.ElementAt(i);
-                this.friends.Add(new friendObserve(temp.getName(), temp.getInfo().icon, temp.getID(), model.getChatByFriend(temp.getID()).getID()));
-            }
-        }
+        //private void initFriendObservableCollection()
+        //{
+        //    ObservableCollection<FriendViewModel> friendList;
+        //    if (model.getCurrentUser() == null) return;
+        //    // Get the normal friendList
+        //    friendList = model.getFriends();
+        //    UserModel temp;
+        //}
 
 
 
@@ -68,7 +63,7 @@ namespace WoChat.Views {
         //OpenChatLogic:
 
         //Step 1: Find A friend by id then find the ChatList
-        public ChatModel getChatIDByFriendID(string fid)
+        public ChatViewModel getChatIDByFriendID(string fid)
         {
             return model.getChatByFriend(fid);
         }

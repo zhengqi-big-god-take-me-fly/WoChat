@@ -131,7 +131,7 @@ namespace WoChat.ViewModels {
             for (int i = 0; i < friendList.Count; i++)
             {
                 tempUserModel = fetchFriend(friendList.ElementAt(i));
-                currentChatID = getChatByFriend(tempUserModel.getID()).getID();
+                currentChatID = getChatByFriend(tempUserModel.getID()).chatID;
                 this.friends.Add(new FriendViewModel(tempUserModel.getID(), tempUserModel.getName(), tempUserModel.getInfo().icon , tempUserModel.getInfo().stylish , tempUserModel.getInfo().email , currentChatID));
             }
             /**
@@ -159,9 +159,9 @@ namespace WoChat.ViewModels {
                 tempChatModel = fetchChat(chatList.ElementAt(i));
                 tempMessage = new List<MessageViewModel>();
                 msgModel = tempChatModel.getChat();
-                for (int i = 0; i < msgModel.Count; i++)
+                for (int ii = 0; ii < msgModel.Count; ii++)
                 {
-                    helper = msgModel.ElementAt(i);
+                    helper = msgModel.ElementAt(ii);
                     tempMessage.Add(new MessageViewModel(helper.getSenderID(), helper.getSender(), helper.getReceiverID(), helper.getReceiver(), helper.getContent(), helper.getTime()));
                 }
                 this.chats.Add(new ChatViewModel(tempChatModel.getID() , tempChatModel.getChaterID() , tempChatModel.getChateeID() , tempChatModel.getChaterName() , tempChatModel.getChateeName() ,tempChatModel.getGroupChatFlag() , tempMessage));
@@ -214,24 +214,35 @@ namespace WoChat.ViewModels {
         private void syncLocalFriend(string newFriendID)
         {
             UserModel newFriend = DataModel.getFriendObjectById(newFriendID);
-            this.friends.Add(newFriend);
+            FriendViewModel friend = new FriendViewModel(newFriendID, newFriend.getName(), newFriend.getIcon(), newFriend.getStyle() ,newFriend.getInfo().email,getChatByFriend(newFriendID).chatID);
+            this.friends.Add(friend);
         }
         private void syncLocalGroup(string newGroupID)
         {
             GroupModel newGroup = DataModel.getGroupObjectById(newGroupID);
-            this.groups.Add(newGroup);
+            GroupViewModel group = new GroupViewModel(newGroup.getName(), newGroupID, newGroup.getChatID(), newGroup.getMembers().ElementAt(0), newGroup.getMembers());
+            this.groups.Add(group);
         }
         private void syncLocalChat(string newChatID)
         {
             ChatModel newChat = DataModel.getChatObjectById(newChatID);
-            this.chats.Add(newChat);
+            List<MessageViewModel> tempMessage = new List<MessageViewModel>();
+            List<MessageModel> msgModel = newChat.getChat();
+            MessageModel helper;
+            for (int i = 0; i < msgModel.Count; i++)
+            {
+                helper = msgModel.ElementAt(i);
+                tempMessage.Add(new MessageViewModel(helper.getSenderID() , helper.getSender() , helper.getReceiverID() , helper.getReceiver() , helper.getContent() , helper.getTime()));
+            }
+            ChatViewModel chat = new ChatViewModel(newChatID, newChat.getChaterID(), newChat.getChateeID(), newChat.getChaterName(), newChat.getChateeName(), newChat.getGroupChatFlag(), tempMessage);
+            this.chats.Add(chat);
         }
 
 
 
 
         // Should Be Modified
-        public ChatModel getChatByFriend(string fid)
+        public ChatViewModel getChatByFriend(string fid)
         {
             if (!isLogin) return null;
             // If we Can find At Local
@@ -239,10 +250,10 @@ namespace WoChat.ViewModels {
             // A chat will be removed only when we delete a friend
             for (int i = 0; i < chats.Count; i++)
             {
-                if (this.chats.ElementAt(i).getChaterID() == this.currentUser.getID() && this.chats.ElementAt(i).getChateeID() == fid)
+                if (this.chats.ElementAt(i).hostID == this.currentUser.getID() && this.chats.ElementAt(i).participantID == fid)
                 {
                     return this.chats.ElementAt(i);
-                } else if (this.chats.ElementAt(i).getChaterID() == fid && this.chats.ElementAt(i).getChateeID() == this.currentUser.getID())
+                } else if (this.chats.ElementAt(i).hostID == fid && this.chats.ElementAt(i).participantID == this.currentUser.getID())
                 {
                     return this.chats.ElementAt(i);
                 }
@@ -422,9 +433,9 @@ namespace WoChat.ViewModels {
             isLogin = false;
             DataModel.init();
             //在通讯录显示的（离线数据）
-            this.groups = new ObservableCollection<GroupModel>();
-            this.friends = new ObservableCollection<UserModel>();
-            this.chats = new ObservableCollection<ChatModel>();
+            this.groups = new ObservableCollection<GroupViewModel>();
+            this.friends = new ObservableCollection<FriendViewModel>();
+            this.chats = new ObservableCollection<ChatViewModel>();
 
         }
     }
