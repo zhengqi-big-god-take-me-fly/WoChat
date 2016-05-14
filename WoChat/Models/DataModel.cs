@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SQLitePCL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,9 +22,13 @@ namespace WoChat.Models
          * The "Database Tables" of Users , Groups and Chats
          * @type {List}
          */
+        private static SQLiteConnection syncConnection;
         private static List<UserModel> users = new List<UserModel>();
         private static List<GroupModel> groups = new List<GroupModel>();
         private static List<ChatModel> chats = new List<ChatModel>();
+
+
+
 
         /**
          * We use all kinds of Static items,so we no need constructers
@@ -33,7 +38,122 @@ namespace WoChat.Models
         }
 
 
- 
+
+
+
+        /**
+         * Read From Database
+         * Sync for Local UserDatas
+         */
+        private static bool loadLocalDatabases()
+        {
+            if (syncConnection == null)
+            {
+                syncConnection = new SQLiteConnection("wochat.db");
+            }
+
+            loadFriends();
+            loadGroups();
+            loadChats();
+            loadRelations();
+            return true;
+        }
+
+
+
+
+        //Database Load functions 
+        private static void loadFriends()
+        {
+            // Get a reference to the SQLite database    
+            //var conn = new SQLiteConnection("sqlitepcldemo.db");
+            string sql = @"CREATE TABLE IF NOT EXISTS
+                           Users   (id  INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                                    uid     VARCHAR( 140 ), 
+                                    name    VARCHAR( 140 ), 
+                                    pass    VARCHAR( 1024 ), 
+                                    nick    VARCHAR( 140 ), 
+                                    icon    VARCHAR( 140 ), 
+                                    style   VARCHAR( 140 ), 
+                                    email   VARCHAR( 140 ) 
+                                    );";
+            using (var statement = syncConnection.Prepare(sql))
+            {
+                statement.Step();
+            }
+            
+        }
+        private static void loadGroups()
+        {
+            string sql = @"CREATE TABLE IF NOT EXISTS
+                           Groups   (id     INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                                    gid     VARCHAR( 140 ),
+                                    gname   VARCHAR( 140 ),
+                                    admin   VARCHAR( 1024 ),
+                                    icon    VARCHAR( 140 ),
+                                    style   VARCHAR( 140 ),
+                                    chat    VARCHAR( 140 ),
+                                    );";
+            using (var statement = syncConnection.Prepare(sql))
+            {
+                statement.Step();
+            }
+        }
+        private static void loadChats()
+        {
+            string sql = @"CREATE TABLE IF NOT EXISTS
+                           Chats   (id      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                                    cid     VARCHAR( 140 ),
+                                    host    VARCHAR( 140 ),
+                                    part    VARCHAR( 140 ),
+                                    hostID  VARCHAR( 140 ),
+                                    partID  VARCHAR( 140 ),
+                                    message VARCHAR( 140 ),
+                                    isGroup VARCHAR( 140 )
+                                    );";
+            using (var statement = syncConnection.Prepare(sql))
+            {
+                statement.Step();
+            }
+        }
+        private static void loadRelations()
+        {
+            string sqlFriend = @"CREATE TABLE IF NOT EXISTS
+                           FriendRelation   (id     INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                                            aid     VARCHAR( 140 ),
+                                            bid     VARCHAR( 140 ),
+                                            chat    VARCHAR( 140 ),
+                                    );";
+            string sqlGrouper = @"CREATE TABLE IF NOT EXISTS
+                           GroupRelation   (id      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                                            gid     VARCHAR( 140 ),
+                                            pid     VARCHAR( 140 ),
+                                            chat    VARCHAR( 140 ),
+                                    );";
+            string sqlMessage = @"CREATE TABLE IF NOT EXISTS
+                           MsgRelation   (id      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                                          mid     VARCHAR( 140 ),
+                                          cid     VARCHAR( 140 ),
+                                          sid     VARCHAR( 140 ),
+                                          rid     VARCHAR( 140 ),
+                                          message VARCHAR( 2048 ),
+                                          time    VARCHAR( 140 ),
+                                    );";
+            using (var statementFriend = syncConnection.Prepare(sqlFriend)) {
+                statementFriend.Step();
+                using (var statementGrouper = syncConnection.Prepare(sqlGrouper)) {
+                    statementGrouper.Step();
+                    using (var statementMessage = syncConnection.Prepare(sqlMessage)) {
+                        statementMessage.Step();
+                    }
+                }
+            }
+        }
+
+
+
+
+
         /**
          * Initialize of the "Databases"
          * Needed to Sync with Server
@@ -46,6 +166,8 @@ namespace WoChat.Models
              * --------------------------------------------------------
              */
 
+
+            loadLocalDatabases();
             UserModel testUser = new UserModel("a20185", encryptCreator("52013142"), "Souler" , "ou@souler.me");
             UserModel testUser2 = new UserModel("tidyzq", encryptCreator("zqdashen"), "BigGod Qi Zheng", "tidyzq@tidyzq.com");
             UserModel testUser3 = new UserModel("perqin", encryptCreator("changlaoshi"), "Teacher Aoi", "perqin@perqin.com");
