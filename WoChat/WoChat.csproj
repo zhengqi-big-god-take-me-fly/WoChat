@@ -108,6 +108,10 @@
     <Compile Include="Net\HTTP.cs" />
     <Compile Include="Utils\Converters.cs" />
     <Compile Include="Utils\MD5.cs" />
+    <Compile Include="ViewModels\ChatViewModel.cs" />
+    <Compile Include="ViewModels\FriendViewModel.cs" />
+    <Compile Include="ViewModels\GroupViewModel.cs" />
+    <Compile Include="ViewModels\MessageViewModel.cs" />
     <Compile Include="ViewModels\StubViewModel.cs" />
     <Compile Include="ViewModels\UserViewModel.cs" />
     <Compile Include="Views\ChatPage.xaml.cs">

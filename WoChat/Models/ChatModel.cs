@@ -18,7 +18,7 @@ namespace WoChat.Models
          * id of a specified chat
          */
         private string chatid;
-
+         
         /**
          * chater/chatee's names and ids
          */
@@ -158,6 +158,14 @@ namespace WoChat.Models
         {
            return messageList;
         }
+
+
+        //Get if it's a group Chat
+        public bool getGroupChatFlag()
+        {
+            return this.isGroupChat;
+        }
+
 
 
 

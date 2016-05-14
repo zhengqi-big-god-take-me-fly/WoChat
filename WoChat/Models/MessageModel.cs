@@ -42,12 +42,21 @@ namespace WoChat.Models
             return this.sender;
         }
 
+        public string getSenderID()
+        {
+            return this.senderId;
+        }
+
         /**
          * getter for receiver
          */
         public string getReceiver()
         {
             return this.receiver;
+        }
+        public string getReceiverID()
+        {
+            return this.receiverId;
         }
 
         /**

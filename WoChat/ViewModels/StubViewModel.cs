@@ -15,9 +15,13 @@ namespace WoChat.ViewModels {
          * Type: ObservableCollection
          * All models have the function for Getters and Setters
          */
-        private ObservableCollection<UserModel> friends;
-        private ObservableCollection<GroupModel> groups;
-        private ObservableCollection<ChatModel> chats;
+        //private ObservableCollection<UserModel> friends;
+        //private ObservableCollection<GroupModel> groups;
+        //private ObservableCollection<ChatModel> chats;
+
+        public ObservableCollection<FriendViewModel> friends;
+        public ObservableCollection<GroupViewModel> groups;
+        public ObservableCollection<ChatViewModel> chats;
 
 
 
@@ -25,17 +29,17 @@ namespace WoChat.ViewModels {
          * The 3 datas that return to the Page Renderer
          * just Open the Api for the Xaml Page cs files
          */
-        public ObservableCollection<UserModel> getFriends()
+        public ObservableCollection<FriendViewModel> getFriends()
         {
             return this.friends;
         }
        
-        public ObservableCollection<GroupModel> getGroups()
+        public ObservableCollection<GroupViewModel> getGroups()
         {
             return this.groups;
         }
 
-        public ObservableCollection<ChatModel> getChats()
+        public ObservableCollection<ChatViewModel> getChats()
         {
             return this.chats;
         }
@@ -122,27 +126,45 @@ namespace WoChat.ViewModels {
              * @type {[type]}
              */
             List<string> friendList = currentUser.getFriends();
+            UserModel tempUserModel;
+            string currentChatID;
             for (int i = 0; i < friendList.Count; i++)
             {
-                this.friends.Add(fetchFriend(friendList.ElementAt(i)));
+                tempUserModel = fetchFriend(friendList.ElementAt(i));
+                currentChatID = getChatByFriend(tempUserModel.getID()).getID();
+                this.friends.Add(new FriendViewModel(tempUserModel.getID(), tempUserModel.getName(), tempUserModel.getInfo().icon , tempUserModel.getInfo().stylish , tempUserModel.getInfo().email , currentChatID));
             }
             /**
              * [groupList description]
              * @type {[type]}
              */
             List<string> groupList = currentUser.getGroups();
+            GroupModel tempGroupModel;
             for (int i = 0; i < groupList.Count; i++)
             {
-                this.groups.Add(fetchGroup(groupList.ElementAt(i)));
+                tempGroupModel = fetchGroup(groupList.ElementAt(i));
+                this.groups.Add(new GroupViewModel(tempGroupModel.getName() , tempGroupModel.getID() , tempGroupModel.getChatID() ,  tempGroupModel.getMembers().ElementAt(0) , tempGroupModel.getMembers()));
             }
             /**
              * [chatList description]
              * @type {[type]}
              */
             List<string> chatList = currentUser.getChats();
+            ChatModel tempChatModel;
+            List<MessageViewModel> tempMessage;
+            List<MessageModel> msgModel;
+            MessageModel helper;
             for (int i = 0; i < chatList.Count; i++)
             {
-                this.chats.Add(fetchChat(chatList.ElementAt(i)));
+                tempChatModel = fetchChat(chatList.ElementAt(i));
+                tempMessage = new List<MessageViewModel>();
+                msgModel = tempChatModel.getChat();
+                for (int i = 0; i < msgModel.Count; i++)
+                {
+                    helper = msgModel.ElementAt(i);
+                    tempMessage.Add(new MessageViewModel(helper.getSenderID(), helper.getSender(), helper.getReceiverID(), helper.getReceiver(), helper.getContent(), helper.getTime()));
+                }
+                this.chats.Add(new ChatViewModel(tempChatModel.getID() , tempChatModel.getChaterID() , tempChatModel.getChateeID() , tempChatModel.getChaterName() , tempChatModel.getChateeName() ,tempChatModel.getGroupChatFlag() , tempMessage));
             }
             return true;
         }
