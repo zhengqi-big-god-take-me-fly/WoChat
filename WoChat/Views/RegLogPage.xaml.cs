@@ -66,6 +66,7 @@ namespace WoChat.Views {
             RegLogPageUIVM.IsLoading = false;
             switch (result.StatusCode) {
                 case PostAuthLoginResult.PostAuthLoginStatusCode.Success:
+                    App.LocalUserVM.login(RegLogPageUIVM.Username, RegLogPageUIVM.Password);
                     RegLogPageUIVM.HintText = "";
                     //TODO: Store jwt, username and userId
                     UserAlreadyLoggedIn();

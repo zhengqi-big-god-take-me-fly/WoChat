@@ -76,6 +76,31 @@ namespace WoChat.ViewModels {
         public List<UserModel> showTestDatabases()
         {
             List<UserModel> myModel = DataModel.readAndCreateUsers();
+            List<GroupModel> myGroups = DataModel.readAndCreateGroups();
+            List<ChatModel> myChats = DataModel.readAndCreateChats();
+
+            UserModel tempUser;
+            GroupModel tempGroup;
+            ChatModel tc;
+
+
+
+
+            //for (int i = 0; i < myModel.Count; i++) {
+            //    tempUser = myModel.ElementAt(i);
+            //    this.friends.Add(new FriendViewModel(tempUser.getID(), tempUser.getName(), tempUser.getIcon(), tempUser.getStyle(), tempUser.getInfo().email, ""));
+
+            //}
+            //for (int i = 0; i < myChats.Count; i++) {
+            //    tc = myChats.ElementAt(i);
+            //    List<MessageModel> myModel = tc.getChat();
+            //    List<MessageViewModel> myView = new List<MessageViewModel();
+            //    for (int ii = 0; ii < )
+            //    this.chats.Add(new ChatViewModel(tc.getID() , tc.getChaterID() , tc.getChateeID() , tc.getChaterName() , tc.getChateeName() ,tc.getGroupChatFlag() , tc.));
+
+            //}
+
+
             return myModel;
         } 
 
@@ -86,10 +111,10 @@ namespace WoChat.ViewModels {
          */
         public bool login(string uname , string password)
         {
-            if (isLogin) return false;
-            this.currentUser = DataModel.userLogin(uname, password);
-            if (this.currentUser == null) return false;
-            isLogin = true;
+            //if (isLogin) return false;
+            //this.currentUser = DataModel.userLogin(uname, password);
+            //if (this.currentUser == null) return false;
+            //isLogin = true;
             /**
              * 
              */

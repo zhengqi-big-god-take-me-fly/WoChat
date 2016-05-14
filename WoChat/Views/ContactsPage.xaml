@@ -4,42 +4,44 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:WoChat.Views"
     xmlns:models="using:WoChat.Models"
+    xmlns:viewmodels="using:WoChat.ViewModels"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="256"/>
+            <ColumnDefinition x:Name="LeftColumn" Width="256"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <ListView Grid.Column="0">
+        <ListView Grid.Column="0" ItemsSource="{x:Bind model.chats}">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                 </Style>
             </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="viewmodels:ChatViewModel">
                     <UserControl>
                         <Grid Height="64">
-                            <!--<VisualStateManager.VisualStateGroups>
+                            <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup>
                                     <VisualState>
                                         <VisualState.Setters>
-                                            <Setter Target="TextBlock.Visibility" Value="Visible"/>
+                                            <Setter Target="ContactsNicknameText.Visibility" Value="Visible"/>
+                                            <Setter Target="LeftColumn.Width" Value="64"/>
                                         </VisualState.Setters>
                                         <VisualState.StateTriggers>
-                                            <AdaptiveTrigger MinWindowWidth="500"/>
+                                            <AdaptiveTrigger MinWindowWidth="640"/>
                                         </VisualState.StateTriggers>
                                     </VisualState>
                                 </VisualStateGroup>
-                            </VisualStateManager.VisualStateGroups>-->
+                            </VisualStateManager.VisualStateGroups>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="64"/>
                                 <ColumnDefinition Width="1*"/>
                             </Grid.ColumnDefinitions>
-                            <Image Grid.Column="0" Source="../Assets/image.jpg" Width="56" Height="56" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
-                            <TextBlock Grid.Column="1" HorizontalAlignment="Left" Text="username" VerticalAlignment="Center"/>
+                            <Image x:Name="CoontactsAvatarImage" Grid.Column="0" Source="../Assets/image.jpg" Width="56" Height="56" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
+                            <TextBlock x:Name="ContactsNicknameText" Grid.Column="1" HorizontalAlignment="Left" Text="username" VerticalAlignment="Center" Visibility="Collapsed"/>
                         </Grid>
                     </UserControl>
                 </DataTemplate>

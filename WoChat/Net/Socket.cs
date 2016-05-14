@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Networking;
 using Windows.Networking.Sockets;
+using Windows.Storage.Streams;
 
 namespace WoChat.Net {
     /// <summary>
@@ -32,17 +33,19 @@ namespace WoChat.Net {
         public async void Connect() {
             await socket.ConnectAsync(new HostName(Hostname), Port);
             IsConnected = true;
+            await Task.Factory.StartNew(() => ListenForData());
             await Login();
             //TODO: Heart package
-            await Task.Factory.StartNew(() => ListenForData());
         }
 
         public async void ListenForData() {
             string res;
             while (IsConnected) {
                 res = await ReadData();
-                Debug.Write("==============================================" + res);
-                RouteResponse(JObject.Parse(res));
+                if (res == null) continue;
+                Debug.WriteLine("SOCKET_RECEIVED-----------" + res);
+                //TODO: Finish protocal parsing
+                //RouteResponse(JObject.Parse(res));
             }
         }
 
@@ -99,7 +102,19 @@ namespace WoChat.Net {
 
         public async Task<string> ReadData() {
             StreamReader reader = new StreamReader(socket.InputStream.AsStreamForRead());
-            return await reader.ReadToEndAsync();
+            char[] ch = new char[65536];
+            int st = 0;
+            int i = 0;
+            StringBuilder sb = new StringBuilder();
+            while (st != 2) {
+                await reader.ReadAsync(ch, i++, 1);
+                if (st == 0) {
+                    if (reader.Peek() == 10) st = 1;
+                } else if (st == 1) {
+                    st = reader.Peek() == 10 ? 2 : 0;
+                }
+            }
+            return sb.Append(ch, 0, i).ToString();
         }
 
         public string Hostname {

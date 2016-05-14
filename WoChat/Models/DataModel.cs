@@ -642,25 +642,23 @@ namespace WoChat.Models
          * If no such user
          * Then return null
          */
-        //public static UserModel userLogin(string username, string password)
-        //{
-        //    UserModel uml = null;
-        //    int index = getUserIndexByName(username);
-        //    if (index != -1 && users.ElementAt(index).comparePassword(encryptCreator(password)))
-        //    {
-        //        uml = users.ElementAt(index);
+        public static UserModel userLogin(string username, string password) {
+            UserModel uml = null;
+            int index = getUserIndexByName(username);
+            if (index != -1 && users.ElementAt(index).comparePassword(encryptCreator(password))) {
+                uml = users.ElementAt(index);
 
-        //        // if not found the user from local datatbase , then we fetch the users from the remote
-        //        // Server and then add to local databases
+                // if not found the user from local datatbase , then we fetch the users from the remote
+                // Server and then add to local databases
 
-        //        addNewUserToDatabase(uml.getID() , index);
-               
-        //    }
+                addNewUserToDatabase(uml.getID(), index);
+
+            }
 
 
-            
-        //    return uml;
-        //}
+
+            return uml;
+        }
 
 
         //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -680,22 +678,21 @@ namespace WoChat.Models
          *
          * @type {String}
          */
-        //public static bool userRegister(string name, string password, string _nick, string _email, string _icon = "default", string _style = "None Yet!")
-        //{
-        //    /**
-        //     * Query First
-        //     */
-        //    if (searchForUser(name, _nick, _email) != "Pass!") return false;
-        //    UserModel um = new UserModel(name, encryptCreator(password), _nick, _email, _icon, _style);
-        //    /**
-        //     * Append to user database
-        //     */
-        //    users.Add(um);
+        public static bool userRegister(string name, string password, string _nick, string _email, string _icon = "default", string _style = "None Yet!") {
+            /**
+             * Query First
+             */
+            if (searchForUser(name, _nick, _email) != "Pass!") return false;
+            UserModel um = new UserModel(name, encryptCreator(password), _nick, _email, _icon, _style);
+            /**
+             * Append to user database
+             */
+            users.Add(um);
 
-        //    // Add to database
-        //    addNewUserToDatabase(um.getID(), users.Count - 1);
-        //    return true;
-        //}
+            // Add to database
+            addNewUserToDatabase(um.getID(), users.Count - 1);
+            return true;
+        }
 
 
 
@@ -716,12 +713,11 @@ namespace WoChat.Models
          *
          * @type {String}
          */
-        //public bool updatePassword(string username , string originalPassword , string newPassword)
-        //{
-        //    int index = getUserIndexByName(username);
-        //    if (index == -1) return false;
-        //    else return users.ElementAt(index).changePassword(encryptCreator(originalPassword), encryptCreator(newPassword));
-        //}
+        public bool updatePassword(string username, string originalPassword, string newPassword) {
+            int index = getUserIndexByName(username);
+            if (index == -1) return false;
+            else return users.ElementAt(index).changePassword(encryptCreator(originalPassword), encryptCreator(newPassword));
+        }
 
 
 
@@ -736,32 +732,26 @@ namespace WoChat.Models
          * Judge if the User term is duplicate
          * return a warning Message
          */
-        //public static string searchForUser(string name , string _nick , string _email)
-        //{
-        //    string warningMessage = "";
-        //    for (int i = 0; i < users.Count; i++)
-        //    {
-        //        if (users.ElementAt(i).getName() == name)
-        //        {
-        //            warningMessage += "\n该用户名已经被占用，无法使用。\n";
-        //        }
+        public static string searchForUser(string name, string _nick, string _email) {
+            string warningMessage = "";
+            for (int i = 0; i < users.Count; i++) {
+                if (users.ElementAt(i).getName() == name) {
+                    warningMessage += "\n该用户名已经被占用，无法使用。\n";
+                }
 
-        //        if (users.ElementAt(i).getInfo().email == _email)
-        //        {
-        //            warningMessage += "\n该邮件已经被占用，无法使用。\n";
-        //        }
+                if (users.ElementAt(i).getInfo().email == _email) {
+                    warningMessage += "\n该邮件已经被占用，无法使用。\n";
+                }
 
-        //        if (users.ElementAt(i).getInfo().nickname == _nick)
-        //        {
-        //            warningMessage += "\n该呢称已经被占用，无法使用。\n";
-        //        }
-        //    }
-        //    if (warningMessage == "")
-        //    {
-        //        warningMessage = "Pass!";
-        //    }
-        //    return warningMessage;
-        //}
+                if (users.ElementAt(i).getInfo().nickname == _nick) {
+                    warningMessage += "\n该呢称已经被占用，无法使用。\n";
+                }
+            }
+            if (warningMessage == "") {
+                warningMessage = "Pass!";
+            }
+            return warningMessage;
+        }
 
 
 
@@ -772,20 +762,17 @@ namespace WoChat.Models
         //-----------------------------------------------------------------------NEEDS TO CHANGEBY HTTP MODULE !!!!--------------------------------------------------------------------------
         //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        //public UserModel fetchUserFromServer(string uname)
-        //{
+        //public UserModel fetchUserFromServer(string uname) {
         //    // Get user From server
-        //   // And then Push In Local Array, and Save in Database
-        //   // And then return
+        //    // And then Push In Local Array, and Save in Database
+        //    // And then return
         //}
-        //public GroupModel fetchGroupFromServer(string groupName)
-        //{
+        //public GroupModel fetchGroupFromServer(string groupName) {
         //    //Get Group From Server
         //    // And Then Push in Local Array and save in database
         //    //ant then return
         //}
-        //public GroupModel fetchChatFromServer(string ChatName)
-        //{
+        //public GroupModel fetchChatFromServer(string ChatName) {
         //    //Get Chat From Server
         //    // And Then Push in Local Array and save in database
         //    //ant then return
@@ -1058,58 +1045,55 @@ namespace WoChat.Models
          * return true if creation success
          * @type {String}
          */
-        //private static bool createGroup(int uindex, string gname, string _gicon = "default", string _gstyle = "None Yet!")
-        //{
+        private static bool createGroup(int uindex, string gname, string _gicon = "default", string _gstyle = "None Yet!") {
 
-        //    /**
-        //     * Get UID and UNAME by user Index
-        //     * @type {[type]}
-        //     */
-        //    string uid = users.ElementAt(uindex).getID();
-        //    string uname = users.ElementAt(uindex).getName();
+            /**
+             * Get UID and UNAME by user Index
+             * @type {[type]}
+             */
+            string uid = users.ElementAt(uindex).getID();
+            string uname = users.ElementAt(uindex).getName();
 
-        //    /**
-        //     * Create Chatmodel First
-        //     * @type {ChatModel}
-        //     */
-        //    ChatModel cm = new ChatModel(uname, true);
-
-
-        //    if (cm == null) return false;
-        //    chats.Add(cm);
-
-        //    // Add To Database
-        //    addNewChatToDatabase(cm.getID(), getChatIndexByID(cm.getID()));
+            /**
+             * Create Chatmodel First
+             * @type {ChatModel}
+             */
+            ChatModel cm = new ChatModel(uname, true);
 
 
+            if (cm == null) return false;
+            chats.Add(cm);
 
-        //    /**
-        //     * Create GroupModel
-        //     * @type {GroupModel}
-        //     */
-        //    GroupModel gm = new GroupModel(uid, uname, gname, cm.getID(), _gicon, _gstyle);
-
-        //    if (gm != null)
-        //    {
-        //        groups.Add(gm);
-
-        //        //Add to database
-        //        addNewGroupToDatabase(gm.getID(), getGroupIndexByID(gm.getID()));
+            // Add To Database
+            addNewChatToDatabase(cm.getID(), getChatIndexByID(cm.getID()));
 
 
-        //        /**
-        //         * Append the new Group & GroupChat to the Current User(Founder).
-        //         */
-        //        users.ElementAt(uindex).addGroup(gm.getID());
+
+            /**
+             * Create GroupModel
+             * @type {GroupModel}
+             */
+            GroupModel gm = new GroupModel(uid, uname, gname, cm.getID(), _gicon, _gstyle);
+
+            if (gm != null) {
+                groups.Add(gm);
+
+                //Add to database
+                addNewGroupToDatabase(gm.getID(), getGroupIndexByID(gm.getID()));
 
 
-        //        // Add to Relation Database
-        //        addNewGroupRelationToDataBase(users.ElementAt(uindex).getID(), gm.getID(), cm.getID());
-        //        users.ElementAt(uindex).addChat(cm.getID());
-        //        return true;
-        //    }
-        //    else return false;
-        //}
+                /**
+                 * Append the new Group & GroupChat to the Current User(Founder).
+                 */
+                users.ElementAt(uindex).addGroup(gm.getID());
+
+
+                // Add to Relation Database
+                addNewGroupRelationToDataBase(users.ElementAt(uindex).getID(), gm.getID(), cm.getID());
+                users.ElementAt(uindex).addChat(cm.getID());
+                return true;
+            } else return false;
+        }
 
 
 
@@ -1128,25 +1112,24 @@ namespace WoChat.Models
          *
          * return true if creating successfully.
          */
-        //private static bool joinGroupByIndex(int uindex, int gindex)
-        //{
-        //    /**
-        //     * Step 1: add the group id to the groupList of the current User
-        //     */
-        //    users.ElementAt(uindex).addGroup(groups.ElementAt(gindex).getID());
-        //    /**
-        //     * Step2: add the current user to the memberList of the object Group
-        //     */
-        //    groups.ElementAt(gindex).addMember(users.ElementAt(uindex).getID());
-        //    /**
-        //     * Step3: add the groupChat to the chatList of the Current User
-        //     */
-        //    users.ElementAt(uindex).addChat(groups.ElementAt(gindex).getChatID());
+        private static bool joinGroupByIndex(int uindex, int gindex) {
+            /**
+             * Step 1: add the group id to the groupList of the current User
+             */
+            users.ElementAt(uindex).addGroup(groups.ElementAt(gindex).getID());
+            /**
+             * Step2: add the current user to the memberList of the object Group
+             */
+            groups.ElementAt(gindex).addMember(users.ElementAt(uindex).getID());
+            /**
+             * Step3: add the groupChat to the chatList of the Current User
+             */
+            users.ElementAt(uindex).addChat(groups.ElementAt(gindex).getChatID());
 
-        //    //The simply add a Relation of (GroupRelation into Local Databases)
-        //    addNewGroupRelationToDataBase(users.ElementAt(uindex).getID(), groups.ElementAt(gindex).getID(), groups.ElementAt(gindex).getChatID());
-        //    return true;
-        //}
+            //The simply add a Relation of (GroupRelation into Local Databases)
+            addNewGroupRelationToDataBase(users.ElementAt(uindex).getID(), groups.ElementAt(gindex).getID(), groups.ElementAt(gindex).getChatID());
+            return true;
+        }
 
 
 
@@ -1160,18 +1143,17 @@ namespace WoChat.Models
          * returns a string of creating process successful or not.
          * @type {Boolean}
          */
-        //public static string createChatForUser(string hostID, string participantID, bool isGroupChat = false)
-        //{
-        //    if (getUserIndexByID(hostID) == -1 || getUserIndexByID(participantID) == -1) return "No User!";
-        //    string hostName = users.ElementAt(getUserIndexByID(hostID)).getName();
-        //    string participantName = users.ElementAt(getUserIndexByID(participantID)).getName();
-        //    ChatModel cm = new ChatModel(hostName, hostID, participantName, participantID, isGroupChat);
-        //    chats.Add(cm);
-        //    // Append Chat to Database
-        //    //addNewFriendRelationToDataBase(hostID, participantID, cm.getID());
-        //    addNewChatToDatabase(cm.getID(), chats.Count - 1);
-        //    return cm.getID();
-        //}
+        public static string createChatForUser(string hostID, string participantID, bool isGroupChat = false) {
+            if (getUserIndexByID(hostID) == -1 || getUserIndexByID(participantID) == -1) return "No User!";
+            string hostName = users.ElementAt(getUserIndexByID(hostID)).getName();
+            string participantName = users.ElementAt(getUserIndexByID(participantID)).getName();
+            ChatModel cm = new ChatModel(hostName, hostID, participantName, participantID, isGroupChat);
+            chats.Add(cm);
+            // Append Chat to Database
+            //addNewFriendRelationToDataBase(hostID, participantID, cm.getID());
+            addNewChatToDatabase(cm.getID(), chats.Count - 1);
+            return cm.getID();
+        }
 
 
 
@@ -1223,26 +1205,23 @@ namespace WoChat.Models
         /**
          * Add Friend Method
          */
-        //public static bool addFriend(string id , string fid)
-        //{
-        //    int index = getUserIndexByID(id);
-        //    int findex = getUserIndexByID(fid);
-        //    if (index != -1 && findex != -1)
-        //    {
-        //        /**
-        //         * Add a friend is Double Binding
-        //         */
-        //        users.ElementAt(index).addFriend(fid);
-        //        users.ElementAt(findex).addFriend(id);
-        //        string cid = createChatForUser(id, fid);
-        //        // Create relation
-        //        addNewFriendRelationToDataBase(id, fid, cid);
+        public static bool addFriend(string id, string fid) {
+            int index = getUserIndexByID(id);
+            int findex = getUserIndexByID(fid);
+            if (index != -1 && findex != -1) {
+                /**
+                 * Add a friend is Double Binding
+                 */
+                users.ElementAt(index).addFriend(fid);
+                users.ElementAt(findex).addFriend(id);
+                string cid = createChatForUser(id, fid);
+                // Create relation
+                addNewFriendRelationToDataBase(id, fid, cid);
 
-        //        // Then we create a Chat for them
-        //        return true;
-        //    }
-        //    else return false;
-        //}
+                // Then we create a Chat for them
+                return true;
+            } else return false;
+        }
 
 
 
@@ -1254,20 +1233,17 @@ namespace WoChat.Models
         /**
          * Remove a friend Method
          */
-        //public static bool removeFriend(string id , string fid)
-        //{
-        //    int index = getUserIndexByID(id);
-        //    if (index != -1)
-        //    {
-        //        /**
-        //         * But Delete a friend is just Single-deletion
-        //         */
-        //        users.ElementAt(index).deleteFriend(fid);
-        //        // Sync Local Database
-        //        return removeFriendRelationFromDataBase(id, fid);
-        //    }
-        //    else return false;
-        //}
+        public static bool removeFriend(string id, string fid) {
+            int index = getUserIndexByID(id);
+            if (index != -1) {
+                /**
+                 * But Delete a friend is just Single-deletion
+                 */
+                users.ElementAt(index).deleteFriend(fid);
+                // Sync Local Database
+                return removeFriendRelationFromDataBase(id, fid);
+            } else return false;
+        }
 
 
         //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1284,26 +1260,23 @@ namespace WoChat.Models
          * return true if adding success.
          * @type {Boolean}
          */
-        //public bool addChatForUser(string id , string fid , bool isGroupChat = false)
-        //{
-        //    /**
-        //     * A chat should be create once.
-        //     * But use many times
-        //     * @type {[type]}
-        //     */
-        //    string cid = createChatForUser(id, fid, isGroupChat);
+        public bool addChatForUser(string id, string fid, bool isGroupChat = false) {
+            /**
+             * A chat should be create once.
+             * But use many times
+             * @type {[type]}
+             */
+            string cid = createChatForUser(id, fid, isGroupChat);
 
-        //    int index = getUserIndexByID(id);
-        //    int findex = getUserIndexByID(fid);
-        //    //addChat to their listWa
-        //    if (index != -1 && findex != -1)
-        //    {
-        //        users.ElementAt(index).addChat(cid);
-        //        users.ElementAt(findex).addChat(cid);
-        //        return true;
-        //    }
-        //    else return false;
-        //}
+            int index = getUserIndexByID(id);
+            int findex = getUserIndexByID(fid);
+            //addChat to their listWa
+            if (index != -1 && findex != -1) {
+                users.ElementAt(index).addChat(cid);
+                users.ElementAt(findex).addChat(cid);
+                return true;
+            } else return false;
+        }
 
 
 
@@ -1323,20 +1296,17 @@ namespace WoChat.Models
          *
          * return true if removal successful
          */
-        //public bool removeChatForUser(string id , string cid)
-        //{
-        //    /**
-        //     * Not remove the records(MessageList)
-        //     * @type {[type]}
-        //     */
-        //    int index = getUserIndexByID(id);
-        //    if (index != -1)
-        //    {
+        public bool removeChatForUser(string id, string cid) {
+            /**
+             * Not remove the records(MessageList)
+             * @type {[type]}
+             */
+            int index = getUserIndexByID(id);
+            if (index != -1) {
 
-        //        return users.ElementAt(index).deleteChat(cid);
-        //    }
-        //    else return false;
-        //}
+                return users.ElementAt(index).deleteChat(cid);
+            } else return false;
+        }
 
         //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1351,20 +1321,17 @@ namespace WoChat.Models
          *
          * return a List of corresponding group ids
          */
-        //public static List<string> searchGroups(string gname)
-        //{
-        //    List<string> res = new List<string>();
-        //    for (int i = 0; i < groups.Count; i++)
-        //    {
-        //        if (groups.ElementAt(i).getName() == gname)
-        //        {
-        //            res.Add(groups.ElementAt(i).getID());
-        //        }
-        //    }
-        //    // Append To local Array and then sync to local databases
-        //    // Search From Server And we save the results into the database()
-        //    return res;
-        //}
+        public static List<string> searchGroups(string gname) {
+            List<string> res = new List<string>();
+            for (int i = 0; i < groups.Count; i++) {
+                if (groups.ElementAt(i).getName() == gname) {
+                    res.Add(groups.ElementAt(i).getID());
+                }
+            }
+            // Append To local Array and then sync to local databases
+            // Search From Server And we save the results into the database()
+            return res;
+        }
 
 
 
@@ -1377,17 +1344,14 @@ namespace WoChat.Models
          *
          * return true if add Successfully
          */
-        //public static bool addToGroupByID(string uid , string gid , string gname)
-        //{
-        //    int index = getUserIndexByID(uid);
-        //    int gindex = getGroupIndexByID(gid);
-        //    if (index != -1)
-        //    {
-        //        if (gindex != -1) return joinGroupByIndex(index, gindex);
-        //        else return createGroup(index, gname);
-        //    }
-        //    else return false;
-        //}
+        public static bool addToGroupByID(string uid, string gid, string gname) {
+            int index = getUserIndexByID(uid);
+            int gindex = getGroupIndexByID(gid);
+            if (index != -1) {
+                if (gindex != -1) return joinGroupByIndex(index, gindex);
+                else return createGroup(index, gname);
+            } else return false;
+        }
 
 
 
@@ -1408,61 +1372,56 @@ namespace WoChat.Models
          *
          * return true if exitation success
          */
-        //public static bool quitGroupByID(string uid , string gid)
-        //{
-        //    int index = getUserIndexByID(uid);
-        //    int gindex = getGroupIndexByID(gid);
-        //    if (index == -1 || gindex == -1) return false;
-        //    /**
-        //     * Only permits quitting for the
-        //     * chrrent group members
-        //     */
-        //    if (groups.ElementAt(gindex).hasMember(uid))
-        //    {
-        //        if (groups.ElementAt(gindex).isAdmin(uid))
-        //        {
-        //            /**
-        //             * batch removal for the group members
-        //             */
-        //            int userIndex;
-        //            List<string> allMembers = groups.ElementAt(gindex).getMembers();
-        //            string chatID = groups.ElementAt(gindex).getChatID();
-        //            string groupID = groups.ElementAt(gindex).getID();
-        //            for (int i = 0; i < allMembers.Count; i++)
-        //            {
-        //                userIndex = getUserIndexByID(allMembers.ElementAt(i));
-        //                users.ElementAt(userIndex).deleteChat(chatID);
-        //                users.ElementAt(userIndex).deleteGroup(groupID);
-        //                groups.ElementAt(gindex).deleteMember(allMembers.ElementAt(i));
-        //                // Remove a certain person from a specified group
-        //                removeGroupRelationFromDatabase(users.ElementAt(userIndex).getID() , groupID);
-        //            }
+        public static bool quitGroupByID(string uid, string gid) {
+            int index = getUserIndexByID(uid);
+            int gindex = getGroupIndexByID(gid);
+            if (index == -1 || gindex == -1) return false;
+            /**
+             * Only permits quitting for the
+             * chrrent group members
+             */
+            if (groups.ElementAt(gindex).hasMember(uid)) {
+                if (groups.ElementAt(gindex).isAdmin(uid)) {
+                    /**
+                     * batch removal for the group members
+                     */
+                    int userIndex;
+                    List<string> allMembers = groups.ElementAt(gindex).getMembers();
+                    string chatID = groups.ElementAt(gindex).getChatID();
+                    string groupID = groups.ElementAt(gindex).getID();
+                    for (int i = 0; i < allMembers.Count; i++) {
+                        userIndex = getUserIndexByID(allMembers.ElementAt(i));
+                        users.ElementAt(userIndex).deleteChat(chatID);
+                        users.ElementAt(userIndex).deleteGroup(groupID);
+                        groups.ElementAt(gindex).deleteMember(allMembers.ElementAt(i));
+                        // Remove a certain person from a specified group
+                        removeGroupRelationFromDatabase(users.ElementAt(userIndex).getID(), groupID);
+                    }
 
-        //            /**
-        //             * Finally release chatid and itself
-        //             */
-        //            chats.RemoveAt(getChatIndexByID(chatID));
-        //            groups.RemoveAt(gindex);
-        //            // Remove Group And Remove Chat will be realized in the future
-        //            return true;
-        //        } else
-        //        {
-        //            /**
-        //             * remove chat and group for the ordinary group members
-        //             */
-        //            users.ElementAt(index).deleteChat(groups.ElementAt(gindex).getChatID());
-        //            users.ElementAt(index).deleteGroup(groups.ElementAt(gindex).getID());
-        //            //Remove Relation from Database;
-        //            removeGroupRelationFromDatabase(users.ElementAt(index).getID(), groups.ElementAt(gindex).getID());
-        //            /**
-        //             * And simply dismiss the user from the group
-        //             */
-        //            groups.ElementAt(gindex).deleteMember(uid);
-        //            return true;
-        //        }
-        //    }
-        //    return false;
-        //}
+                    /**
+                     * Finally release chatid and itself
+                     */
+                    chats.RemoveAt(getChatIndexByID(chatID));
+                    groups.RemoveAt(gindex);
+                    // Remove Group And Remove Chat will be realized in the future
+                    return true;
+                } else {
+                    /**
+                     * remove chat and group for the ordinary group members
+                     */
+                    users.ElementAt(index).deleteChat(groups.ElementAt(gindex).getChatID());
+                    users.ElementAt(index).deleteGroup(groups.ElementAt(gindex).getID());
+                    //Remove Relation from Database;
+                    removeGroupRelationFromDatabase(users.ElementAt(index).getID(), groups.ElementAt(gindex).getID());
+                    /**
+                     * And simply dismiss the user from the group
+                     */
+                    groups.ElementAt(gindex).deleteMember(uid);
+                    return true;
+                }
+            }
+            return false;
+        }
 
 
 
@@ -1508,37 +1467,34 @@ namespace WoChat.Models
          * warning!!!
          * @type {String}
          */
-        //public static bool pushMessageToChat(string message , string chaterID , string chatID , string chateeID = "NULL")
-        //{
-        //    int cindex = getChatIndexByID(chatID);
-        //    int aindex = getUserIndexByID(chaterID);
-        //    if (cindex == -1)
-        //    {
-        //        if (chateeID == "NULL" || getUserIndexByID(chateeID) == -1) return false;
-        //        /**
-        //         * if chat not exists , then we create a new Chat
-        //         * @type {[type]}
-        //         */
-        //        string cid = createChatForUser(chaterID, chateeID);
-        //        //Sync this chat Relation To database
-        //        addNewChatToDatabase(cid, getChatIndexByID(cid));
+        public static bool pushMessageToChat(string message, string chaterID, string chatID, string chateeID = "NULL") {
+            int cindex = getChatIndexByID(chatID);
+            int aindex = getUserIndexByID(chaterID);
+            if (cindex == -1) {
+                if (chateeID == "NULL" || getUserIndexByID(chateeID) == -1) return false;
+                /**
+                 * if chat not exists , then we create a new Chat
+                 * @type {[type]}
+                 */
+                string cid = createChatForUser(chaterID, chateeID);
+                //Sync this chat Relation To database
+                addNewChatToDatabase(cid, getChatIndexByID(cid));
 
-        //        users.ElementAt(aindex).addChat(cid);
-        //        users.ElementAt(getUserIndexByID(chateeID)).addChat(cid);
-        //        /**
-        //         * Append the Message
-        //         */
-        //         // Add to new relation
-        //        addNewMsgRelationToDataBase(chaterID, chateeID, cid, message, DateTimeOffset.Now.ToLocalTime().ToString());
-        //        return chats.ElementAt(getChatIndexByID(cid)).pushMessage(message , chaterID , chateeID);
-        //    } else
-        //    {
-        //        // Add a new Relation
-        //        addNewMsgRelationToDataBase(chaterID, chateeID, chatID, message, DateTimeOffset.Now.ToLocalTime().ToString());
+                users.ElementAt(aindex).addChat(cid);
+                users.ElementAt(getUserIndexByID(chateeID)).addChat(cid);
+                /**
+                 * Append the Message
+                 */
+                // Add to new relation
+                addNewMsgRelationToDataBase(chaterID, chateeID, cid, message, DateTimeOffset.Now.ToLocalTime().ToString());
+                return chats.ElementAt(getChatIndexByID(cid)).pushMessage(message, chaterID, chateeID);
+            } else {
+                // Add a new Relation
+                addNewMsgRelationToDataBase(chaterID, chateeID, chatID, message, DateTimeOffset.Now.ToLocalTime().ToString());
 
-        //        return chats.ElementAt(cindex).pushMessage(message , chaterID , chateeID);
-        //    }
-        //}
+                return chats.ElementAt(cindex).pushMessage(message, chaterID, chateeID);
+            }
+        }
 
 
         //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1550,19 +1506,18 @@ namespace WoChat.Models
         /**
          * Push Message to an existing group
          */
-        //public static bool pushMessageToGroup(string message , string uid , string gid)
-        //{
-        //    int gindex = getGroupIndexByID(gid);
-        //    if (gindex == -1) return false;
+        public static bool pushMessageToGroup(string message, string uid, string gid) {
+            int gindex = getGroupIndexByID(gid);
+            if (gindex == -1) return false;
 
-        //    string cid = groups.ElementAt(gindex).getChatID();
-        //    int cindex = getChatIndexByID(cid);
-        //    if (cindex == -1) return false;
+            string cid = groups.ElementAt(gindex).getChatID();
+            int cindex = getChatIndexByID(cid);
+            if (cindex == -1) return false;
 
-        //    // Append To Database
-        //    addNewMsgRelationToDataBase(uid, gid, cid, message, DateTimeOffset.Now.ToLocalTime().ToString());
-        //    return chats.ElementAt(cindex).pushMessage(message , uid , gid);
-        //}
+            // Append To Database
+            addNewMsgRelationToDataBase(uid, gid, cid, message, DateTimeOffset.Now.ToLocalTime().ToString());
+            return chats.ElementAt(cindex).pushMessage(message, uid, gid);
+        }
 
 
         /**
