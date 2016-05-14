@@ -286,7 +286,6 @@ namespace WoChat.Net {
             }
             return result;
         }
-
         /// <summary>
         /// Send message
         /// </summary>
@@ -307,7 +306,7 @@ namespace WoChat.Net {
                     content = c
                 })),
                 Method = HttpMethod.Post,
-                RequestUri = new Uri(API_HOST + URI_USERS_ + cn + URI_MESSAGE)
+                RequestUri = new Uri(API_HOST + "/chat_group/:group_id")
             };
             req.Headers["Authorization"] = jwt;
             HttpResponseMessage res = await client.SendRequestAsync(req);
@@ -337,6 +336,442 @@ namespace WoChat.Net {
             }
             return result;
         }
+        public static async Task<PostChatGroupResult> PostChatGroup(string jwt, string gn)
+        {
+            PostChatGroupResult result;
+            if (jwt.Equals("") || gn.Equals(""))
+            {
+                return new PostChatGroupResult() { StatusCode = PostChatGroupResult.PostChatGroupStatusCode.UnknownError };
+            }
+            HttpClient client = new HttpClient();
+            HttpRequestMessage req = new HttpRequestMessage()
+            {
+                Content = new HttpStringContent(JsonConvert.SerializeObject(new PostChatGroupParams()
+                {
+                    groupname = gn
+                })),
+                Method = HttpMethod.Post,
+                RequestUri = new Uri(API_HOST + "/chat_group")
+            };
+            req.Headers["Authorization"] = jwt;
+            HttpResponseMessage res = await client.SendRequestAsync(req);
+            try
+            {
+                result = JsonConvert.DeserializeObject<PostChatGroupResult>(res.Content.ToString());
+                switch (res.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        result.StatusCode = PostChatGroupResult.PostChatGroupStatusCode.Success;
+                        break;
+                    case HttpStatusCode.BadRequest:
+                        result.StatusCode = PostChatGroupResult.PostChatGroupStatusCode.InvalidParams;
+                        break;
+                    case HttpStatusCode.Unauthorized:
+                        result.StatusCode = PostChatGroupResult.PostChatGroupStatusCode.InvalidToken;
+                        break;
+
+                    default:
+                        result.StatusCode = PostChatGroupResult.PostChatGroupStatusCode.UnknownError;
+                        break;
+                }
+#pragma warning disable CS0168 // Variable is declared but never used
+            }
+            catch (JsonException e)
+            {
+#pragma warning restore CS0168 // Variable is declared but never used
+                result = new PostChatGroupResult() { StatusCode = PostChatGroupResult.PostChatGroupStatusCode.UnknownError };
+            }
+            return result;
+        }
+        public static async Task<GetChatGroup_Result> GetChatGroup_(string jwt, string gi, string id, string gn)
+        {
+            GetChatGroup_Result result;
+            if (jwt.Equals("") || gi.Equals("") || gn.Equals("") || id.Equals(""))
+            {
+                return new GetChatGroup_Result() { StatusCode = GetChatGroup_Result.GetChatGroup_StatusCode.UnknownError };
+            }
+            HttpClient client = new HttpClient();
+            HttpRequestMessage req = new HttpRequestMessage()
+            {
+                Content = new HttpStringContent(JsonConvert.SerializeObject(new PostChatGroupParams()
+                {
+                    groupname = gn
+                })),
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(API_HOST + "/chat_group/:group_id")
+            };
+            req.Headers["Authorization"] = jwt;
+            HttpResponseMessage res = await client.SendRequestAsync(req);
+            try
+            {
+                result = JsonConvert.DeserializeObject<GetChatGroup_Result>(res.Content.ToString());
+                switch (res.StatusCode)
+                {
+                    case HttpStatusCode.Ok:
+                        result.StatusCode = GetChatGroup_Result.GetChatGroup_StatusCode.Success;
+                        break;
+                   
+                    case HttpStatusCode.Unauthorized:
+                        result.StatusCode = GetChatGroup_Result.GetChatGroup_StatusCode.InvalidToken;
+                        break;
+                    case HttpStatusCode.NotFound:
+                        result.StatusCode = GetChatGroup_Result.GetChatGroup_StatusCode.NoThisGroup;
+                        break;
+                    default:
+                        result.StatusCode = GetChatGroup_Result.GetChatGroup_StatusCode.UnknownError;
+                        break;
+                }
+#pragma warning disable CS0168 // Variable is declared but never used
+            }
+            catch (JsonException e)
+            {
+#pragma warning restore CS0168 // Variable is declared but never used
+                result = new GetChatGroup_Result() { StatusCode = GetChatGroup_Result.GetChatGroup_StatusCode.UnknownError };
+            }
+            return result;
+        }
+        public static async Task<PutChatGroup_Result> PutChatGroup_(string jwt, string gi, string gn)
+        {
+            PutChatGroup_Result result;
+            if (jwt.Equals("") || gi.Equals("") || gn.Equals(""))
+            {
+                return new PutChatGroup_Result() { StatusCode = PutChatGroup_Result.PutChatGroup_StatusCode.UnknownError };
+            }
+            HttpClient client = new HttpClient();
+            HttpRequestMessage req = new HttpRequestMessage()
+            {
+                Content = new HttpStringContent(JsonConvert.SerializeObject(new PutChatGroup_Params()
+                {
+                    groupname = gn
+                })),
+                Method = HttpMethod.Put,
+                RequestUri = new Uri(API_HOST + "/chat_group/:group_id")
+            };
+            req.Headers["Authorization"] = jwt;
+            HttpResponseMessage res = await client.SendRequestAsync(req);
+            try
+            {
+                result = JsonConvert.DeserializeObject<PutChatGroup_Result>(res.Content.ToString());
+                switch (res.StatusCode)
+                {
+                    case HttpStatusCode.Ok:
+                        result.StatusCode = PutChatGroup_Result.PutChatGroup_StatusCode.Success;
+                        break;
+                    case HttpStatusCode.BadRequest:
+                        result.StatusCode = PutChatGroup_Result.PutChatGroup_StatusCode.InvalidParams;
+                        break;
+                    case HttpStatusCode.Unauthorized:
+                        result.StatusCode = PutChatGroup_Result.PutChatGroup_StatusCode.InvalidToken;
+                        break;
+                    case HttpStatusCode.NotFound:
+                        result.StatusCode = PutChatGroup_Result.PutChatGroup_StatusCode.NoThisGroup;
+                        break;
+                    default:
+                        result.StatusCode = PutChatGroup_Result.PutChatGroup_StatusCode.UnknownError;
+                        break;
+                }
+#pragma warning disable CS0168 // Variable is declared but never used
+            }
+            catch (JsonException e)
+            {
+#pragma warning restore CS0168 // Variable is declared but never used
+                result = new PutChatGroup_Result() { StatusCode = PutChatGroup_Result.PutChatGroup_StatusCode.UnknownError };
+            }
+            return result;
+        }
+        public static async Task<GetChatGrouup_MembersResult> GetChatGroup_Members(string jwt, string gi)
+        {
+
+            {
+                GetChatGrouup_MembersResult result;
+                if (jwt.Equals("") || gi.Equals(""))
+                {
+                    return new GetChatGrouup_MembersResult() { StatusCode = GetChatGrouup_MembersResult.GetChatGroup_StatusCode.UnknownError };
+                }
+                HttpClient client = new HttpClient();
+                HttpRequestMessage req = new HttpRequestMessage()
+                {
+                    
+                    Method = HttpMethod.Get,
+                    RequestUri = new Uri(API_HOST + "/chat_group/:group_id/members")
+                };
+                req.Headers["Authorization"] = jwt;
+                HttpResponseMessage res = await client.SendRequestAsync(req);
+                try
+                {
+                    result = JsonConvert.DeserializeObject<GetChatGrouup_MembersResult>(res.Content.ToString());
+                    switch (res.StatusCode)
+                    {
+                        case HttpStatusCode.Ok:
+                            result.StatusCode = GetChatGrouup_MembersResult.PostChatGroupStatusCode.Success;
+                            break;
+                     
+                        case HttpStatusCode.Unauthorized:
+                            result.StatusCode = GetChatGrouup_MembersResult.PostChatGroupStatusCode.InvalidToken;
+                            break;
+                        case HttpStatusCode.NotFound:
+                            result.StatusCode = GetChatGrouup_MembersResult.PostChatGroupStatusCode.NoThisGroup;
+                            break;
+                        default:
+                            result.StatusCode = GetChatGrouup_MembersResult.PostChatGroupStatusCode.UnknownError;
+                            break;
+                    }
+#pragma warning disable CS0168 // Variable is declared but never used
+                }
+                catch (JsonException e)
+                {
+#pragma warning restore CS0168 // Variable is declared but never used
+                    result = new GetChatGrouup_MembersResult() { StatusCode = GetChatGrouup_MembersResult.PostChatGroupStatusCode.UnknownError };
+                }
+                return result;
+            }
+
+        }
+        public static async Task<PostChatGroup_MembersResult> PostChatGroup_Members(string jwt, string gi, List<string> ms)
+        {
+            PostChatGroup_MembersResult result;
+                if (jwt.Equals("") || gi.Equals("") || ms == null)
+                {
+                    return new PostChatGroup_MembersResult() { StatusCode = PostChatGroup_MembersResult.PostChatGroup_MembersStatusCode.UnknownError };
+                }
+                HttpClient client = new HttpClient();
+            HttpRequestMessage req = new HttpRequestMessage()
+            {
+                Content = new HttpStringContent(JsonConvert.SerializeObject(new PostChatGroup_MembersParams()
+                {
+                    members = ms
+                    })),
+                    Method = HttpMethod.Post,
+                    RequestUri = new Uri(API_HOST + "/chat_group/:group_id/members")
+                };
+                req.Headers["Authorization"] = jwt;
+                HttpResponseMessage res = await client.SendRequestAsync(req);
+                try
+                {
+                    result = JsonConvert.DeserializeObject<PostChatGroup_MembersResult>(res.Content.ToString());
+                    switch (res.StatusCode)
+                    {
+                        case HttpStatusCode.Created:
+                            result.StatusCode = PostChatGroup_MembersResult.PostChatGroup_MembersStatusCode.Success;
+                            break;
+                        case HttpStatusCode.BadRequest:
+                            result.StatusCode = PostChatGroup_MembersResult.PostChatGroup_MembersStatusCode.InvalidParams;
+                            break;
+                        case HttpStatusCode.Unauthorized:
+                            result.StatusCode = PostChatGroup_MembersResult.PostChatGroup_MembersStatusCode.InvalidToken;
+                            break;
+                        case HttpStatusCode.NotFound:
+                            result.StatusCode = PostChatGroup_MembersResult.PostChatGroup_MembersStatusCode.NoThisGroup;
+                            break;
+                        default:
+                            result.StatusCode = PostChatGroup_MembersResult.PostChatGroup_MembersStatusCode.UnknownError;
+                            break;
+                    }
+#pragma warning disable CS0168 // Variable is declared but never used
+                }
+                catch (JsonException e)
+                {
+#pragma warning restore CS0168 // Variable is declared but never used
+                    result = new PostChatGroup_MembersResult() { StatusCode = PostChatGroup_MembersResult.PostChatGroup_MembersStatusCode.UnknownError };
+                }
+                return result;
+
+
+        }
+        public static async Task<PutChatGroup_Members_Result> PutChatGroup_Members_(string jwt, string gi, string mn, string gn)
+        {
+            PutChatGroup_Members_Result result;
+            if (jwt.Equals("") || gi.Equals("") || mn.Equals("") || gn.Equals(""))
+            {
+                return new PutChatGroup_Members_Result() { StatusCode = PutChatGroup_Members_Result.PutChatGroup_Members_StatusCode.UnknownError };
+            }
+            HttpClient client = new HttpClient();
+            HttpRequestMessage req = new HttpRequestMessage()
+            {
+                Content = new HttpStringContent(JsonConvert.SerializeObject(new PutChatGroup_Members_Params()
+                {
+                    group_nick = gn
+                })),
+                Method = HttpMethod.Put,
+                RequestUri = new Uri(API_HOST + "/chat_group/:group_id/members/:member_name")
+            };
+            req.Headers["Authorization"] = jwt;
+            HttpResponseMessage res = await client.SendRequestAsync(req);
+            try
+            {
+                result = JsonConvert.DeserializeObject<PutChatGroup_Members_Result>(res.Content.ToString());
+                switch (res.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        result.StatusCode = PutChatGroup_Members_Result.PutChatGroup_Members_StatusCode.Success;
+                        break;
+                    case HttpStatusCode.BadRequest:
+                        result.StatusCode = PutChatGroup_Members_Result.PutChatGroup_Members_StatusCode.InvalidParams;
+                        break;
+                    case HttpStatusCode.Unauthorized:
+                        result.StatusCode = PutChatGroup_Members_Result.PutChatGroup_Members_StatusCode.InvalidToken;
+                        break;
+                    case HttpStatusCode.NotFound:
+                        result.StatusCode = PutChatGroup_Members_Result.PutChatGroup_Members_StatusCode.NoThisGroup;
+                        break;
+                    default:
+                        result.StatusCode = PutChatGroup_Members_Result.PutChatGroup_Members_StatusCode.UnknownError;
+                        break;
+                }
+#pragma warning disable CS0168 // Variable is declared but never used
+            }
+            catch (JsonException e)
+            {
+#pragma warning restore CS0168 // Variable is declared but never used
+                result = new PutChatGroup_Members_Result() { StatusCode = PutChatGroup_Members_Result.PutChatGroup_Members_StatusCode.UnknownError };
+            }
+            return result;
+        }
+        public static async Task<PostChatGroup_MessagesResult> PostChatGroup_Messages(string jwt, string gi, int tp, string ct)
+        {
+            PostChatGroup_MessagesResult result;
+            if (jwt.Equals("") || gi.Equals("") || ct.Equals(""))
+            {
+                return new PostChatGroup_MessagesResult() { StatusCode = PostChatGroup_MessagesResult.PostChatGroup_MessagesStatusCode.UnknownError };
+            }
+            HttpClient client = new HttpClient();
+            HttpRequestMessage req = new HttpRequestMessage()
+            {
+                Content = new HttpStringContent(JsonConvert.SerializeObject(new PostChatGroup_MessagesParams()
+                {
+                    type = tp,
+                    content = ct
+                })),
+                Method = HttpMethod.Post,
+                RequestUri = new Uri(API_HOST + "/chat_group/:group_id/messages")
+            };
+            req.Headers["Authorization"] = jwt;
+            HttpResponseMessage res = await client.SendRequestAsync(req);
+            try
+            {
+                result = JsonConvert.DeserializeObject<PostChatGroup_MessagesResult>(res.Content.ToString());
+                switch (res.StatusCode)
+                {
+                    case HttpStatusCode.Created:
+                        result.StatusCode = PostChatGroup_MessagesResult.PostChatGroup_MessagesStatusCode.Success;
+                        break;
+                    case HttpStatusCode.BadRequest:
+                        result.StatusCode = PostChatGroup_MessagesResult.PostChatGroup_MessagesStatusCode.InvalidParams;
+                        break;
+                    case HttpStatusCode.Unauthorized:
+                        result.StatusCode = PostChatGroup_MessagesResult.PostChatGroup_MessagesStatusCode.InvalidToken;
+                        break;
+                    case HttpStatusCode.NotFound:
+                        result.StatusCode = PostChatGroup_MessagesResult.PostChatGroup_MessagesStatusCode.NoThisGroup;
+                        break;
+                    default:
+                        result.StatusCode = PostChatGroup_MessagesResult.PostChatGroup_MessagesStatusCode.UnknownError;
+                        break;
+                }
+#pragma warning disable CS0168 // Variable is declared but never used
+            }
+            catch (JsonException e)
+            {
+#pragma warning restore CS0168 // Variable is declared but never used
+                result = new PostChatGroup_MessagesResult() { StatusCode = PostChatGroup_MessagesResult.PostChatGroup_MessagesStatusCode.UnknownError };
+            }
+            return result;
+        }
+        public static async Task<GetUser_Result>  GetUser_(string jwt, string un)
+        {
+            GetUser_Result result;
+            if (jwt.Equals("") || un.Equals(""))
+            {
+                return new GetUser_Result() { StatusCode = GetUser_Result.GetUser_StatusCode.UnknownError };
+            }
+            HttpClient client = new HttpClient();
+            HttpRequestMessage req = new HttpRequestMessage()
+            {
+                
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(API_HOST + "/user/:username")
+            };
+            req.Headers["Authorization"] = jwt;
+            HttpResponseMessage res = await client.SendRequestAsync(req);
+            try
+            {
+                result = JsonConvert.DeserializeObject<GetUser_Result>(res.Content.ToString());
+                switch (res.StatusCode)
+                {
+                    case HttpStatusCode.Ok:
+                        result.StatusCode = GetUser_Result.GetUser_StatusCode.Success;
+                        break;
+                   
+                    case HttpStatusCode.NotFound:
+                        result.StatusCode = GetUser_Result.GetUser_StatusCode.NoThisGroup;
+                        break;
+                    default:
+                        result.StatusCode = GetUser_Result.GetUser_StatusCode.UnknownError;
+                        break;
+                }
+#pragma warning disable CS0168 // Variable is declared but never used
+            }
+            catch (JsonException e)
+            {
+#pragma warning restore CS0168 // Variable is declared but never used
+                result = new GetUser_Result() { StatusCode = GetUser_Result.GetUser_StatusCode.UnknownError };
+            }
+            return result;
+        }
+        public static async Task<PutUser_Result> PutUser_(string jwt, string nn, string pw, string opw, string at, int gd, int rg)
+        {
+            PutUser_Result result;
+            if (jwt.Equals("") || nn.Equals("") || pw.Equals("") || opw.Equals("") || at.Equals(""))
+            {
+                return new PutUser_Result() { StatusCode = PutUser_Result.PutUser_StatusCode.UnknownError };
+            }
+            HttpClient client = new HttpClient();
+            HttpRequestMessage req = new HttpRequestMessage()
+            {
+                Content = new HttpStringContent(JsonConvert.SerializeObject(new PutUser_Params()
+                {
+                    nickname = nn,
+                    password = pw,
+                    old_password = opw,
+                    avatar = at,
+                    gender = gd,
+                    region = rg
+                })),
+                Method = HttpMethod.Put,
+                RequestUri = new Uri(API_HOST + "/user/:username")
+            };
+            req.Headers["Authorization"] = jwt;
+            HttpResponseMessage res = await client.SendRequestAsync(req);
+            try
+            {
+                result = JsonConvert.DeserializeObject<PutUser_Result>(res.Content.ToString());
+                switch (res.StatusCode)
+                {
+                    case HttpStatusCode.Ok:
+                        result.StatusCode = PutUser_Result.PutUser_StatusCode.Success;
+                        break;
+                    case HttpStatusCode.BadRequest:
+                        result.StatusCode = PutUser_Result.PutUser_StatusCode.InvalidParams;
+                        break;
+                    case HttpStatusCode.Unauthorized:
+                        result.StatusCode = PutUser_Result.PutUser_StatusCode.InvalidToken;
+                        break;
+                    case HttpStatusCode.NotFound:
+                        result.StatusCode = PutUser_Result.PutUser_StatusCode.NoThisGroup;
+                        break;
+                    default:
+                        result.StatusCode = PutUser_Result.PutUser_StatusCode.UnknownError;
+                        break;
+                }
+#pragma warning disable CS0168 // Variable is declared but never used
+            }
+            catch (JsonException e)
+            {
+#pragma warning restore CS0168 // Variable is declared but never used
+                result = new PutUser_Result() { StatusCode = PutUser_Result.PutUser_StatusCode.UnknownError };
+            }
+            return result;
+        }
     }
 
     // Parameter models for request
@@ -362,7 +797,44 @@ namespace WoChat.Net {
         public int type;
         public string content;
     }
-
+    public class PostChatGroupParams {
+        public string groupname;
+    }
+    public  class GetChatGroup_Params
+    {
+        public string _id;
+        public string groupname;
+    }
+    public class PostChatGroup_MembersParams
+    {
+        public List<string> members;
+    }
+    public class PutChatGroup_Params
+    {
+        public string groupname;
+    }
+    public class PutChatGroup_Members_Params
+    {
+        public string group_nick;
+    }
+    public class PostChatGroup_MessagesParams
+    {
+        public int type;
+        public string content;
+    }
+    public class PutUser_Params
+    {
+        public string nickname;
+        public string password;
+        public string old_password;
+        public string avatar;
+        public int gender;
+        public int region;
+    }
+    //public class GetUser_Param
+    //{
+       
+    //}
     // Result for functions' returns
     public class PostUsersResult {
         public enum PostUsersStatusCode { Success, InvalidParams, ExistingUser, UnknownError };
@@ -415,5 +887,84 @@ namespace WoChat.Net {
         public int type;
         public int time;
         public string content;
+    }
+    public class PostChatGroupResult {
+        public enum PostChatGroupStatusCode { Success, InvalidParams, InvalidToken, UnknownError};
+        public PostChatGroupStatusCode StatusCode;
+        public string _id;
+        public string group_name;
+        public List<Member> members;
+        public class Member
+        {
+            public string member;
+            public string group_nick;
+        }
+    }
+    public class GetChatGroup_Result
+    {
+        public enum GetChatGroup_StatusCode { Success, InvalidToken, NoThisGroup, UnknownError};
+        public GetChatGroup_StatusCode StatusCode;
+    }
+    public class GetChatGrouup_MembersResult
+    {
+        public enum PostChatGroupStatusCode { Success, InvalidToken, NoThisGroup, UnknownError };
+        public PostChatGroupStatusCode StatusCode;
+       
+        public List<Member> members;
+        public class Member
+        {
+            public member1 member;
+            public class member1
+            {
+                string _id;
+                string username;
+                string nickname;
+                string avatar;
+            }
+            public string group_nick;
+        }
+    }
+    public class PostChatGroup_MembersResult
+    {
+        public enum PostChatGroup_MembersStatusCode { Success, InvalidParams, InvalidToken, NoThisGroup, UnknownError };
+        public PostChatGroup_MembersStatusCode StatusCode;
+    }
+    public class PutChatGroup_Result
+    {
+        public enum PutChatGroup_StatusCode { Success, InvalidParams, InvalidToken, NoThisGroup, UnknownError };
+        public PutChatGroup_StatusCode StatusCode;
+    }
+    public class PutChatGroup_Members_Result
+    {
+        public enum PutChatGroup_Members_StatusCode { Success, InvalidParams, InvalidToken, NoThisGroup, UnknownError };
+        public PutChatGroup_Members_StatusCode StatusCode;
+    }
+    public class PostChatGroup_MessagesResult
+    {
+        public enum PostChatGroup_MessagesStatusCode { Success, InvalidParams, InvalidToken, NoThisGroup, UnknownError };
+        public PostChatGroup_MessagesStatusCode StatusCode;
+        public string _id;
+        public string sender;
+        public string reeiver;
+        public bool to_group;
+        public int type;
+        public string time;
+        public string content;
+    }
+    public class GetUser_Result
+    {
+        public enum GetUser_StatusCode { Success, NoThisGroup, UnknownError };
+        public GetUser_StatusCode StatusCode;
+        public string _id;
+        public string username;
+        public string nickname;
+        public string avatar;
+        public int gender;
+        public int region;
+    }
+    public class PutUser_Result
+    {
+        public enum PutUser_StatusCode { Success, InvalidParams, InvalidToken, NoThisGroup, UnknownError };
+        public PutUser_StatusCode StatusCode;
     }
 }
