@@ -499,7 +499,79 @@ namespace WoChat.Models
 
 
 
+        // Remove From Database
+        
+        //Cannot Remove A Certain User/Group Or Chat
+        //Just Provide Removal of Relations
+        private static bool removeFriendRelationFromDataBase(string uid, string fid)
+        {
+            string sql1 = "SELECT * FROM FriendRelation WHERE aid = ? AND bid = ?";
+            string remove1 = "DELETE FROM FriendRelation WHERE chat = ?";
+            string remove2 = "DELETE FROM Chats WHERE cid = ?";
+            string chatids = "NULL";
+            try
+            {
+                using (var removeFriend = syncConnection.Prepare(sql1))
+                {
+                    removeFriend.Bind(1, uid);
+                    removeFriend.Bind(2, fid);
+                    if (removeFriend.Step() != SQLiteResult.ROW)
+                    {
+                        removeFriend.Bind(1, fid);
+                        removeFriend.Bind(2, uid);
+                        if (removeFriend.Step() != SQLiteResult.ROW)
+                        {
+                            // Cannot find current Users
+                            return false;
+                        }
+                        chatids = (string)removeFriend[3];
+                    }
+                    chatids = (string)removeFriend[3];
 
+                    using (var deleteFriend = syncConnection.Prepare(remove1))
+                    {
+                        deleteFriend.Bind(1, chatids);
+                        deleteFriend.Step();
+                    }
+                    using (var deleteChat = syncConnection.Prepare(remove2))
+                    {
+                        deleteChat.Bind(1, chatids);
+                        deleteChat.Step();
+                    }
+                    return true;
+                }
+            } catch(Exception e)
+            {
+                return false;
+            }
+        }
+
+        private static bool removeGroupRelationFromDatabase(string uid , string gid)
+        {
+            string remove1 = "DELETE FROM GroupRelation WHERE uid = ? AND gid = ?";
+            try
+            {
+                using (var removeGroup = syncConnection.Prepare(remove1))
+                {
+                    removeGroup.Bind(1, uid);
+                    removeGroup.Bind(2, gid);
+                    removeGroup.Step();
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+
+        // Modified To Database
+        // Not Permotted to Update A Friend/Group/Chat At This Version
+
+
+
+
+        // Query From Database(Not doing now Because we don't need)
 
 
 
