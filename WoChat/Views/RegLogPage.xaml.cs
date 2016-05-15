@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using WoChat.Net;
@@ -8,18 +7,17 @@ using WoChat.ViewModels;
 
 namespace WoChat.Views {
     public sealed partial class RegLogPage : Page {
-        //private LocalUserViewModel LocalUserVM = App.LocalUserVM;
         private RegLogPageUIViewModel RegLogPageUIVM = new RegLogPageUIViewModel();
-        private StubViewModel localUserVM = App.LocalUserVM;
+        private LocalUserViewModel localUserViewModel = App.AppVM.LocalUserVM;
+        //private AppViewModel AppVM = App.AppVM;
+        //private LocalUserViewModel LocalUserVM = App.LocalUserVM;
+        //private StubViewModel localUserVM = App.LocalUserVMOld;
         //private StubViewModel tester;
         //private bool isLogin;
         public RegLogPage() {
-            this.InitializeComponent();
-            //TODO: Any other better choice to check user login state?
-            if (localUserVM.getCurrentUser() == null) {     // Not login
-                RegLogPageUIVM.IsLoading = false;
-            } else {                                        // Already logged in
-                UserAlreadyLoggedIn();
+            InitializeComponent();
+            if (localUserViewModel.AlreadyLoggedIn) {
+                UserAutoLoggedIn();
             }
             //tester = new StubViewModel();
             //isLogin = false;
@@ -66,10 +64,10 @@ namespace WoChat.Views {
             RegLogPageUIVM.IsLoading = false;
             switch (result.StatusCode) {
                 case PostAuthLoginResult.PostAuthLoginStatusCode.Success:
-                    App.LocalUserVM.login(RegLogPageUIVM.Username, RegLogPageUIVM.Password);
                     RegLogPageUIVM.HintText = "";
-                    //TODO: Store jwt, username and userId
-                    UserAlreadyLoggedIn();
+                    // TODO: Decode and store username and userId
+                    localUserViewModel.UserLogIn(result.jwt);
+                    UserAutoLoggedIn();
                     break;
                 case PostAuthLoginResult.PostAuthLoginStatusCode.Failure:
                     RegLogPageUIVM.HintText = "用户名或密码错误，请重试！";
@@ -80,7 +78,7 @@ namespace WoChat.Views {
             }
         }
 
-        private void UserAlreadyLoggedIn() {
+        private void UserAutoLoggedIn() {
             RegLogPageUIVM.HintText = "正在登录，请稍候…";
             RegLogPageUIVM.IsLoading = true;
             App.PushSocket.Connect();
@@ -137,9 +135,6 @@ namespace WoChat.Views {
         //        var s = new MessageDialog("注册失败").ShowAsync();
         //    }
         //}
-
-
-
     }
 
     class RegLogPageUIViewModel : INotifyPropertyChanged {

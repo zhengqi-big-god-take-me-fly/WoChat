@@ -13,7 +13,7 @@
             <ColumnDefinition x:Name="LeftColumn" Width="256"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <ListView Grid.Column="0" ItemsSource="{x:Bind model.chats}">
+        <ListView Grid.Column="0">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -52,7 +52,7 @@
             <TextBlock Text="Username" HorizontalAlignment="Center" TextAlignment="Center"/>
             <TextBlock Text="Person Statement" HorizontalAlignment="Center" Width="160" TextAlignment="Center"/>
             <TextBlock Text="微信号：XXX" HorizontalAlignment="Center" TextAlignment="Center"/>
-            <Button x:Name="test" Content="发送消息" HorizontalAlignment="Center" Width="96" Click="testDB"/>
+            <Button x:Name="test" Content="发送消息" HorizontalAlignment="Center" Width="96"/>
         </StackPanel>
     </Grid>
 </Page>

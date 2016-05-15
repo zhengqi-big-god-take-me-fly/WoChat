@@ -17,8 +17,11 @@ namespace WoChat {
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
     sealed partial class App : Application {
-        public static StubViewModel LocalUserVM = new StubViewModel();
+        // TODO: Remove after refactoring done.
+        public static StubViewModel LocalUserVMOld = new StubViewModel();
         public static SocketWorker PushSocket = new SocketWorker();
+        public static AppViewModel AppVM = new AppViewModel();
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -39,7 +42,7 @@ namespace WoChat {
         protected override void OnLaunched(LaunchActivatedEventArgs e) {
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached) {
-                DebugSettings.EnableFrameRateCounter = true;
+                //DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
 

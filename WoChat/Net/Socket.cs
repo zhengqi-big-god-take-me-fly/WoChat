@@ -43,7 +43,6 @@ namespace WoChat.Net {
             while (IsConnected) {
                 res = await ReadData();
                 if (res == null) continue;
-                Debug.WriteLine("SOCKET_RECEIVED-----------" + res);
                 //TODO: Finish protocal parsing
                 //RouteResponse(JObject.Parse(res));
             }
@@ -79,8 +78,8 @@ namespace WoChat.Net {
         public async Task Login() {
             AuthRequest reqObj = new AuthRequest() {
                 data = new AuthRequest.Data() {
-                    //TODO
-                    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNTczNzA3NDA2ZDllZmZmYjM5MzEwYzAwIiwidXNlcm5hbWUiOiJwZXJxaW4xIiwiaWF0IjoxNDYzMjI0NzI2fQ.CjS8lTXTfXpSqaYbrMDaNwobjAVz8yooi5nmRnCq9fo"
+                    token = App.AppVM.LocalUserVM.JWT
+                    //token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNTczNzA3NDA2ZDllZmZmYjM5MzEwYzAwIiwidXNlcm5hbWUiOiJwZXJxaW4xIiwiaWF0IjoxNDYzMjI0NzI2fQ.CjS8lTXTfXpSqaYbrMDaNwobjAVz8yooi5nmRnCq9fo"
                 }
             };
             string req = JsonConvert.SerializeObject(reqObj);
@@ -88,12 +87,7 @@ namespace WoChat.Net {
             //string res = await SendDataWithResponse(req);
             //AuthResponse resObj = JsonConvert.DeserializeObject<AuthResponse>(res);
         }
-
-        //public async Task<string> SendDataWithResponse(string req) {
-        //    await WriteData(req);
-        //    return await ReadData();
-        //}
-
+        
         public async Task WriteData(string data) {
             StreamWriter writer = new StreamWriter(socket.OutputStream.AsStreamForWrite());
             await writer.WriteAsync(data);
@@ -103,18 +97,12 @@ namespace WoChat.Net {
         public async Task<string> ReadData() {
             StreamReader reader = new StreamReader(socket.InputStream.AsStreamForRead());
             char[] ch = new char[65536];
-            int st = 0;
             int i = 0;
-            StringBuilder sb = new StringBuilder();
-            while (st != 2) {
+            while (IsConnected) {
                 await reader.ReadAsync(ch, i++, 1);
-                if (st == 0) {
-                    if (reader.Peek() == 10) st = 1;
-                } else if (st == 1) {
-                    st = reader.Peek() == 10 ? 2 : 0;
-                }
+                if (i > 1 && ch[i - 1] == '\n' && ch[i - 2] == '\n') break;
             }
-            return sb.Append(ch, 0, i).ToString();
+            return new StringBuilder().Append(ch, 0, i - 2).ToString();
         }
 
         public string Hostname {

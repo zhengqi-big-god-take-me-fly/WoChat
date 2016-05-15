@@ -109,17 +109,17 @@ namespace WoChat.ViewModels {
         /**
          * 
          */
-        public bool login(string uname , string password)
-        {
-            //if (isLogin) return false;
-            //this.currentUser = DataModel.userLogin(uname, password);
-            //if (this.currentUser == null) return false;
-            //isLogin = true;
-            /**
-             * 
-             */
-            return initDatas();
-        }
+        //public bool login(string uname , string password)
+        //{
+        //    //if (isLogin) return false;
+        //    //this.currentUser = DataModel.userLogin(uname, password);
+        //    //if (this.currentUser == null) return false;
+        //    //isLogin = true;
+        //    /**
+        //     * 
+        //     */
+        //    return initDatas();
+        //}
 
 
         /**
@@ -151,56 +151,56 @@ namespace WoChat.ViewModels {
          * And then update Local ObservableCollection
          * 
          */
-        private bool initDatas()
-        {
-            if (!isLogin) return false;
-            /**
-             * [friendList description]
-             * @type {[type]}
-             */
-            List<string> friendList = currentUser.getFriends();
-            UserModelOld tempUserModel;
-            string currentChatID;
-            for (int i = 0; i < friendList.Count; i++)
-            {
-                tempUserModel = fetchFriend(friendList.ElementAt(i));
-                currentChatID = getChatByFriend(tempUserModel.getID()).chatID;
-                this.friends.Add(new FriendViewModel(tempUserModel.getID(), tempUserModel.getName(), tempUserModel.getInfo().icon , tempUserModel.getInfo().stylish , tempUserModel.getInfo().email , currentChatID));
-            }
-            /**
-             * [groupList description]
-             * @type {[type]}
-             */
-            List<string> groupList = currentUser.getGroups();
-            GroupModelOld tempGroupModel;
-            for (int i = 0; i < groupList.Count; i++)
-            {
-                tempGroupModel = fetchGroup(groupList.ElementAt(i));
-                this.groups.Add(new GroupViewModel(tempGroupModel.getName() , tempGroupModel.getID() , tempGroupModel.getChatID() ,  tempGroupModel.getMembers().ElementAt(0) , tempGroupModel.getMembers()));
-            }
-            /**
-             * [chatList description]
-             * @type {[type]}
-             */
-            List<string> chatList = currentUser.getChats();
-            ChatModelOld tempChatModel;
-            List<MessageViewModel> tempMessage;
-            List<MessageModelOld> msgModel;
-            MessageModelOld helper;
-            for (int i = 0; i < chatList.Count; i++)
-            {
-                tempChatModel = fetchChat(chatList.ElementAt(i));
-                tempMessage = new List<MessageViewModel>();
-                msgModel = tempChatModel.getChat();
-                for (int ii = 0; ii < msgModel.Count; ii++)
-                {
-                    helper = msgModel.ElementAt(ii);
-                    tempMessage.Add(new MessageViewModel(helper.getSenderID(), helper.getSender(), helper.getReceiverID(), helper.getReceiver(), helper.getContent(), helper.getTime()));
-                }
-                this.chats.Add(new ChatViewModel(tempChatModel.getID() , tempChatModel.getChaterID() , tempChatModel.getChateeID() , tempChatModel.getChaterName() , tempChatModel.getChateeName() ,tempChatModel.getGroupChatFlag() , tempMessage));
-            }
-            return true;
-        }
+        //private bool initDatas()
+        //{
+        //    if (!isLogin) return false;
+        //    /**
+        //     * [friendList description]
+        //     * @type {[type]}
+        //     */
+        //    List<string> friendList = currentUser.getFriends();
+        //    UserModelOld tempUserModel;
+        //    string currentChatID;
+        //    for (int i = 0; i < friendList.Count; i++)
+        //    {
+        //        tempUserModel = fetchFriend(friendList.ElementAt(i));
+        //        currentChatID = getChatByFriend(tempUserModel.getID()).chatID;
+        //        this.friends.Add(new FriendViewModel(tempUserModel.getID(), tempUserModel.getName(), tempUserModel.getInfo().icon , tempUserModel.getInfo().stylish , tempUserModel.getInfo().email , currentChatID));
+        //    }
+        //    /**
+        //     * [groupList description]
+        //     * @type {[type]}
+        //     */
+        //    List<string> groupList = currentUser.getGroups();
+        //    GroupModelOld tempGroupModel;
+        //    for (int i = 0; i < groupList.Count; i++)
+        //    {
+        //        tempGroupModel = fetchGroup(groupList.ElementAt(i));
+        //        this.groups.Add(new GroupViewModel(tempGroupModel.getName() , tempGroupModel.getID() , tempGroupModel.getChatID() ,  tempGroupModel.getMembers().ElementAt(0) , tempGroupModel.getMembers()));
+        //    }
+        //    /**
+        //     * [chatList description]
+        //     * @type {[type]}
+        //     */
+        //    List<string> chatList = currentUser.getChats();
+        //    ChatModelOld tempChatModel;
+        //    List<MessageViewModel> tempMessage;
+        //    List<MessageModelOld> msgModel;
+        //    MessageModelOld helper;
+        //    for (int i = 0; i < chatList.Count; i++)
+        //    {
+        //        tempChatModel = fetchChat(chatList.ElementAt(i));
+        //        tempMessage = new List<MessageViewModel>();
+        //        msgModel = tempChatModel.getChat();
+        //        for (int ii = 0; ii < msgModel.Count; ii++)
+        //        {
+        //            helper = msgModel.ElementAt(ii);
+        //            tempMessage.Add(new MessageViewModel(helper.getSenderID(), helper.getSender(), helper.getReceiverID(), helper.getReceiver(), helper.getContent(), helper.getTime()));
+        //        }
+        //        this.chats.Add(new ChatViewModel(tempChatModel.getID() , tempChatModel.getChaterID() , tempChatModel.getChateeID() , tempChatModel.getChaterName() , tempChatModel.getChateeName() ,tempChatModel.getGroupChatFlag() , tempMessage));
+        //    }
+        //    return true;
+        //}
 
 
         /**
@@ -225,74 +225,74 @@ namespace WoChat.ViewModels {
          * ----Sync The Observation List and User himself----
          * --------------------------------------------------
          */
-        public bool addFriend(string fid)
-        {
-            if (!this.isLogin) return false;
-            if (DataModel.addFriend(this.currentUser.getID() , fid)) {
-                /**
-                 * Sync User's Friend String List(Update User)
-                 */
-                syncUserFriend();
-                syncUserChat();
-                /**
-                 * Sync Local Friend Observation Collection Set
-                 */
-                syncLocalFriend(this.getCurrentUser().getFriends().ElementAt(this.getCurrentUser().getFriends().Count - 1));
-                syncLocalChat(this.getCurrentUser().getChats().ElementAt(this.getCurrentUser().getChats().Count - 1));
-                return true;
-            }
-            return false;
-        }
+        //public bool addFriend(string fid)
+        //{
+        //    if (!this.isLogin) return false;
+        //    if (DataModel.addFriend(this.currentUser.getID() , fid)) {
+        //        /**
+        //         * Sync User's Friend String List(Update User)
+        //         */
+        //        syncUserFriend();
+        //        syncUserChat();
+        //        /**
+        //         * Sync Local Friend Observation Collection Set
+        //         */
+        //        syncLocalFriend(this.getCurrentUser().getFriends().ElementAt(this.getCurrentUser().getFriends().Count - 1));
+        //        syncLocalChat(this.getCurrentUser().getChats().ElementAt(this.getCurrentUser().getChats().Count - 1));
+        //        return true;
+        //    }
+        //    return false;
+        //}
 
-        private void syncLocalFriend(string newFriendID)
-        {
-            UserModelOld newFriend = DataModel.getFriendObjectById(newFriendID);
-            FriendViewModel friend = new FriendViewModel(newFriendID, newFriend.getName(), newFriend.getIcon(), newFriend.getStyle() ,newFriend.getInfo().email,getChatByFriend(newFriendID).chatID);
-            this.friends.Add(friend);
-        }
-        private void syncLocalGroup(string newGroupID)
-        {
-            GroupModelOld newGroup = DataModel.getGroupObjectById(newGroupID);
-            GroupViewModel group = new GroupViewModel(newGroup.getName(), newGroupID, newGroup.getChatID(), newGroup.getMembers().ElementAt(0), newGroup.getMembers());
-            this.groups.Add(group);
-        }
-        private void syncLocalChat(string newChatID)
-        {
-            ChatModelOld newChat = DataModel.getChatObjectById(newChatID);
-            List<MessageViewModel> tempMessage = new List<MessageViewModel>();
-            List<MessageModelOld> msgModel = newChat.getChat();
-            MessageModelOld helper;
-            for (int i = 0; i < msgModel.Count; i++)
-            {
-                helper = msgModel.ElementAt(i);
-                tempMessage.Add(new MessageViewModel(helper.getSenderID() , helper.getSender() , helper.getReceiverID() , helper.getReceiver() , helper.getContent() , helper.getTime()));
-            }
-            ChatViewModel chat = new ChatViewModel(newChatID, newChat.getChaterID(), newChat.getChateeID(), newChat.getChaterName(), newChat.getChateeName(), newChat.getGroupChatFlag(), tempMessage);
-            this.chats.Add(chat);
-        }
+        //private void syncLocalFriend(string newFriendID)
+        //{
+        //    UserModelOld newFriend = DataModel.getFriendObjectById(newFriendID);
+        //    FriendViewModel friend = new FriendViewModel(newFriendID, newFriend.getName(), newFriend.getIcon(), newFriend.getStyle() ,newFriend.getInfo().email,getChatByFriend(newFriendID).chatID);
+        //    this.friends.Add(friend);
+        //}
+        //private void syncLocalGroup(string newGroupID)
+        //{
+        //    GroupModelOld newGroup = DataModel.getGroupObjectById(newGroupID);
+        //    GroupViewModel group = new GroupViewModel(newGroup.getName(), newGroupID, newGroup.getChatID(), newGroup.getMembers().ElementAt(0), newGroup.getMembers());
+        //    this.groups.Add(group);
+        //}
+        //private void syncLocalChat(string newChatID)
+        //{
+        //    ChatModelOld newChat = DataModel.getChatObjectById(newChatID);
+        //    List<MessageViewModel> tempMessage = new List<MessageViewModel>();
+        //    List<MessageModelOld> msgModel = newChat.getChat();
+        //    MessageModelOld helper;
+        //    for (int i = 0; i < msgModel.Count; i++)
+        //    {
+        //        helper = msgModel.ElementAt(i);
+        //        tempMessage.Add(new MessageViewModel(helper.getSenderID() , helper.getSender() , helper.getReceiverID() , helper.getReceiver() , helper.getContent() , helper.getTime()));
+        //    }
+        //    ChatViewModel chat = new ChatViewModel(newChatID, newChat.getChaterID(), newChat.getChateeID(), newChat.getChaterName(), newChat.getChateeName(), newChat.getGroupChatFlag(), tempMessage);
+        //    this.chats.Add(chat);
+        //}
 
 
 
 
         // Should Be Modified
-        public ChatViewModel getChatByFriend(string fid)
-        {
-            if (!isLogin) return null;
-            // If we Can find At Local
-            // Certainly should be found at local!
-            // A chat will be removed only when we delete a friend
-            for (int i = 0; i < chats.Count; i++)
-            {
-                if (this.chats.ElementAt(i).hostID == this.currentUser.getID() && this.chats.ElementAt(i).participantID == fid)
-                {
-                    return this.chats.ElementAt(i);
-                } else if (this.chats.ElementAt(i).hostID == fid && this.chats.ElementAt(i).participantID == this.currentUser.getID())
-                {
-                    return this.chats.ElementAt(i);
-                }
-            }
-            return null;
-        }
+        //public ChatViewModel getChatByFriend(string fid)
+        //{
+        //    if (!isLogin) return null;
+        //    // If we Can find At Local
+        //    // Certainly should be found at local!
+        //    // A chat will be removed only when we delete a friend
+        //    for (int i = 0; i < chats.Count; i++)
+        //    {
+        //        if (this.chats.ElementAt(i).hostID == this.currentUser.getID() && this.chats.ElementAt(i).participantID == fid)
+        //        {
+        //            return this.chats.ElementAt(i);
+        //        } else if (this.chats.ElementAt(i).hostID == fid && this.chats.ElementAt(i).participantID == this.currentUser.getID())
+        //        {
+        //            return this.chats.ElementAt(i);
+        //        }
+        //    }
+        //    return null;
+        //}
 
 
 

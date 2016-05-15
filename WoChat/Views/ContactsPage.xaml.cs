@@ -3,11 +3,8 @@ using WoChat.ViewModels;
 
 namespace WoChat.Views {
     public sealed partial class ContactsPage : Page {
-        private ChatViewModel ChatVM;
         public ContactsPage() {
             InitializeComponent();
-            ChatVM = new ChatViewModel();
-            //this.model = new StubViewModel();
         }
 
 

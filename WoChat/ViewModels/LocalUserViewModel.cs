@@ -1,38 +1,22 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using WoChat.Models;
+﻿using WoChat.Models;
+using WoChat.Utils;
 
 namespace WoChat.ViewModels {
-    /// <summary>
-    /// For the user information of this client
-    /// </summary>
-    public class LocalUserViewModel {
-        //public UserModel LocalUser {
-        //    get {
-        //        return localUser;
-        //    }
-        //}
-
-        public LocalUserViewModel() {
-            chats.CollectionChanged += ChatsOnCollectionChanged;
-
-            Load();
-        }
-
-        private void ChatsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
-            //TODO: Call DataModel to change list
-            switch (e.Action) {
-                case NotifyCollectionChangedAction.Add:
-                    break;
-                default:
-                    break;
+    public class LocalUserViewModel : NotifyPropertyChangedBase {
+        public LocalUserModel LocalUser {
+            get {
+                return localUser;
             }
         }
 
-        public ObservableCollection<ChatModelOld> Chats {
+        public bool AlreadyLoggedIn {
             get {
-                return chats;
+                return alreadyLoggedIn;
+            }
+            set {
+                alreadyLoggedIn = value;
+                OnPropertyChanged();
+                // TODO: Store to local settings
             }
         }
 
@@ -42,29 +26,22 @@ namespace WoChat.ViewModels {
             }
             set {
                 jwt = value;
-            }
-        }
-
-        public bool IsLogin {
-            get {
-                return isLogin;
-            }
-            set {
-                isLogin = value;
+                OnPropertyChanged();
+                // TODO: Store to local settings
             }
         }
 
         /// <summary>
-        /// Load all local user data from local storage
+        /// Store logged in user data
         /// </summary>
-        public void Load() {
-            //TODO: Load from local storage
+        /// <param name="j">JWT token</param>
+        public void UserLogIn(string j) {
+            AlreadyLoggedIn = true;
+            JWT = j;
         }
 
-        //TODO: Initialization
-        private UserModelOld localUser = new UserModelOld("User1", "gggg", "User Haha", "a@b.com");
-        private string jwt;
-        private bool isLogin;
-        private ObservableCollection<ChatModelOld> chats = new ObservableCollection<ChatModelOld>();
+        private LocalUserModel localUser = new LocalUserModel();
+        private bool alreadyLoggedIn = false;
+        private string jwt = "";
     }
 }
