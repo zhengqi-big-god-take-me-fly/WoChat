@@ -12,7 +12,7 @@ namespace WoChat.Models
     /**
      * Model of a user
      */
-    public class UserModel
+    public class UserModelOld
     {
         /**
          * Intialize variables:
@@ -302,17 +302,17 @@ namespace WoChat.Models
         /**
          * Here are useless methods.
          */
-        public UserModel getFriendInfo(string friendID)
+        public UserModelOld getFriendInfo(string friendID)
         {
             return DataModel.getFriend(friendID);
         }
 
-        public GroupModel getGroupInfo(string groupID)
+        public GroupModelOld getGroupInfo(string groupID)
         {
             return DataModel.getGroup(groupID);
         }
 
-        public ChatModel getChatInfo(string chatID)
+        public ChatModelOld getChatInfo(string chatID)
         {
             return DataModel.getChat(chatID);
         }
@@ -349,7 +349,7 @@ namespace WoChat.Models
          * Required name ,pw ,nickname , email, icon and style
          *
          */
-        public UserModel(string name, string password , string _nick , string _email , string _icon = "default" , string _style = "None Yet!")
+        public UserModelOld(string name, string password , string _nick , string _email , string _icon = "default" , string _style = "None Yet!")
         {
 
             /**

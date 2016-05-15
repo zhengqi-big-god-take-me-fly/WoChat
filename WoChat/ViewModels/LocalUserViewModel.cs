@@ -30,7 +30,7 @@ namespace WoChat.ViewModels {
             }
         }
 
-        public ObservableCollection<ChatModel> Chats {
+        public ObservableCollection<ChatModelOld> Chats {
             get {
                 return chats;
             }
@@ -62,9 +62,9 @@ namespace WoChat.ViewModels {
         }
 
         //TODO: Initialization
-        private UserModel localUser = new UserModel("User1", "gggg", "User Haha", "a@b.com");
+        private UserModelOld localUser = new UserModelOld("User1", "gggg", "User Haha", "a@b.com");
         private string jwt;
         private bool isLogin;
-        private ObservableCollection<ChatModel> chats = new ObservableCollection<ChatModel>();
+        private ObservableCollection<ChatModelOld> chats = new ObservableCollection<ChatModelOld>();
     }
 }

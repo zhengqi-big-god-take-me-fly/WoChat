@@ -9,7 +9,7 @@ namespace WoChat.Models
     /**
      * Model of a group
      */
-    public class GroupModel
+    public class GroupModelOld
     {
 
         /**
@@ -187,7 +187,7 @@ namespace WoChat.Models
          *     _gstyle: the Group Personal Signature.
          * @type {String}
          */
-        public GroupModel(string uid , string uname , string _gname , string _ccid , string _gicon = "default", string _gstyle = "None Yet!")
+        public GroupModelOld(string uid , string uname , string _gname , string _ccid , string _gicon = "default", string _gstyle = "None Yet!")
         {
             this.admin = uid;
             this.gid = Guid.NewGuid().ToString();

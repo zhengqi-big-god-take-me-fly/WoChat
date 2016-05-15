@@ -9,7 +9,7 @@ namespace WoChat.Models
     /**
      * The model for the message
      */
-    public class MessageModel
+    public class MessageModelOld
     {
         /**
          * Initialize Variables:
@@ -110,7 +110,7 @@ namespace WoChat.Models
          *     message: the Content
          *     _isGroupMessage: the flag variable
          */
-        public MessageModel(string _sender , string _receiver , string message , string chatID , bool _isGroupMessage = false)
+        public MessageModelOld(string _sender , string _receiver , string message , string chatID , bool _isGroupMessage = false)
         {
             //this.sender = _sender;
             this.senderId = _sender;

@@ -7,7 +7,7 @@ using WoChat.Models;
 
 namespace WoChat.ViewModels {
     public class StubViewModel {
-        private UserModel currentUser;
+        private UserModelOld currentUser;
         private bool isLogin;
 
 
@@ -51,7 +51,7 @@ namespace WoChat.ViewModels {
          * if User has been Logged in , then we return the basic Information for the User
          * For safety Respect , User Model didn't provide open Api For pasword Getters.
          */
-        public UserModel getCurrentUser()
+        public UserModelOld getCurrentUser()
         {
             return this.currentUser;
         }
@@ -73,15 +73,15 @@ namespace WoChat.ViewModels {
         }
 
 
-        public List<UserModel> showTestDatabases()
+        public List<UserModelOld> showTestDatabases()
         {
-            List<UserModel> myModel = DataModel.readAndCreateUsers();
-            List<GroupModel> myGroups = DataModel.readAndCreateGroups();
-            List<ChatModel> myChats = DataModel.readAndCreateChats();
+            List<UserModelOld> myModel = DataModel.readAndCreateUsers();
+            List<GroupModelOld> myGroups = DataModel.readAndCreateGroups();
+            List<ChatModelOld> myChats = DataModel.readAndCreateChats();
 
-            UserModel tempUser;
-            GroupModel tempGroup;
-            ChatModel tc;
+            UserModelOld tempUser;
+            GroupModelOld tempGroup;
+            ChatModelOld tc;
 
 
 
@@ -159,7 +159,7 @@ namespace WoChat.ViewModels {
              * @type {[type]}
              */
             List<string> friendList = currentUser.getFriends();
-            UserModel tempUserModel;
+            UserModelOld tempUserModel;
             string currentChatID;
             for (int i = 0; i < friendList.Count; i++)
             {
@@ -172,7 +172,7 @@ namespace WoChat.ViewModels {
              * @type {[type]}
              */
             List<string> groupList = currentUser.getGroups();
-            GroupModel tempGroupModel;
+            GroupModelOld tempGroupModel;
             for (int i = 0; i < groupList.Count; i++)
             {
                 tempGroupModel = fetchGroup(groupList.ElementAt(i));
@@ -183,10 +183,10 @@ namespace WoChat.ViewModels {
              * @type {[type]}
              */
             List<string> chatList = currentUser.getChats();
-            ChatModel tempChatModel;
+            ChatModelOld tempChatModel;
             List<MessageViewModel> tempMessage;
-            List<MessageModel> msgModel;
-            MessageModel helper;
+            List<MessageModelOld> msgModel;
+            MessageModelOld helper;
             for (int i = 0; i < chatList.Count; i++)
             {
                 tempChatModel = fetchChat(chatList.ElementAt(i));
@@ -246,22 +246,22 @@ namespace WoChat.ViewModels {
 
         private void syncLocalFriend(string newFriendID)
         {
-            UserModel newFriend = DataModel.getFriendObjectById(newFriendID);
+            UserModelOld newFriend = DataModel.getFriendObjectById(newFriendID);
             FriendViewModel friend = new FriendViewModel(newFriendID, newFriend.getName(), newFriend.getIcon(), newFriend.getStyle() ,newFriend.getInfo().email,getChatByFriend(newFriendID).chatID);
             this.friends.Add(friend);
         }
         private void syncLocalGroup(string newGroupID)
         {
-            GroupModel newGroup = DataModel.getGroupObjectById(newGroupID);
+            GroupModelOld newGroup = DataModel.getGroupObjectById(newGroupID);
             GroupViewModel group = new GroupViewModel(newGroup.getName(), newGroupID, newGroup.getChatID(), newGroup.getMembers().ElementAt(0), newGroup.getMembers());
             this.groups.Add(group);
         }
         private void syncLocalChat(string newChatID)
         {
-            ChatModel newChat = DataModel.getChatObjectById(newChatID);
+            ChatModelOld newChat = DataModel.getChatObjectById(newChatID);
             List<MessageViewModel> tempMessage = new List<MessageViewModel>();
-            List<MessageModel> msgModel = newChat.getChat();
-            MessageModel helper;
+            List<MessageModelOld> msgModel = newChat.getChat();
+            MessageModelOld helper;
             for (int i = 0; i < msgModel.Count; i++)
             {
                 helper = msgModel.ElementAt(i);
@@ -438,15 +438,15 @@ namespace WoChat.ViewModels {
          *
          * 
          */
-        private UserModel fetchFriend(string fid)
+        private UserModelOld fetchFriend(string fid)
         {
             return DataModel.getFriend(fid);
         }
-        private GroupModel fetchGroup(string gid)
+        private GroupModelOld fetchGroup(string gid)
         {
             return DataModel.getGroup(gid);
         }
-        private ChatModel fetchChat(string cid)
+        private ChatModelOld fetchChat(string cid)
         {
             return DataModel.getChat(cid);
         }

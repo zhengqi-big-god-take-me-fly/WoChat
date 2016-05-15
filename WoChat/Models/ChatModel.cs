@@ -11,7 +11,7 @@ namespace WoChat.Models
     /**
      * Model of a Chat
      */
-    public class ChatModel
+    public class ChatModelOld
     {
         /**
          * Initialize Variables:
@@ -38,7 +38,7 @@ namespace WoChat.Models
         /**
          * The Message Box of a Specified Chat
          */
-        private List<MessageModel> messageList;
+        private List<MessageModelOld> messageList;
 
 
 
@@ -154,11 +154,11 @@ namespace WoChat.Models
         /**
          * The getter of the Chat Histories.
          */
-        public List<MessageModel> getChat()
+        public List<MessageModelOld> getChat()
         {
            return messageList;
         }
-        public void setChat(List<MessageModel> newChat)
+        public void setChat(List<MessageModelOld> newChat)
         {
             this.messageList = newChat;
         }
@@ -191,10 +191,10 @@ namespace WoChat.Models
         {
             if (this.messageList == null)
             {
-                this.messageList = new List<MessageModel>();
+                this.messageList = new List<MessageModelOld>();
             }
             // Start pushing process
-            MessageModel newMessage = new MessageModel(schater , schatee , message , this.chatid ,this.isGroupChat);
+            MessageModelOld newMessage = new MessageModelOld(schater , schatee , message , this.chatid ,this.isGroupChat);
             this.messageList.Add(newMessage);
             return true;
         }
@@ -205,13 +205,13 @@ namespace WoChat.Models
          * Needs to Be Modified! Warning!
          * @type {String}
          */
-        public ChatModel(string _chater, bool _isGroupChat = false , string _chatee = "NULL")
+        public ChatModelOld(string _chater, bool _isGroupChat = false , string _chatee = "NULL")
         {
             this.chatid = Guid.NewGuid().ToString();
             this.chater = _chater;
             this.chatee = _chatee;
             this.isGroupChat = _isGroupChat;
-            this.messageList = new List<MessageModel>();
+            this.messageList = new List<MessageModelOld>();
         }
         
 
@@ -219,7 +219,7 @@ namespace WoChat.Models
          * Regular Constructor
          * @type {[type]}
          */
-        public ChatModel(string _chater, string _chaterid , string _chatee, string _chateeid , bool _isGroupChat = false)
+        public ChatModelOld(string _chater, string _chaterid , string _chatee, string _chateeid , bool _isGroupChat = false)
         {
             if (!_isGroupChat)
             {
@@ -229,12 +229,12 @@ namespace WoChat.Models
                 this.chaterId = _chaterid;
                 this.chateeId = _chateeid;
                 this.isGroupChat = _isGroupChat;
-                this.messageList = new List<MessageModel>();
+                this.messageList = new List<MessageModelOld>();
             } else
             {
                 this.chatid = Guid.NewGuid().ToString();
                 this.isGroupChat = _isGroupChat;
-                this.messageList = new List<MessageModel>();
+                this.messageList = new List<MessageModelOld>();
                 //this.chaterList = new List<string>();
                 //this.chaterList.Add(_chaterid);
             }

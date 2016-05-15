@@ -23,9 +23,9 @@ namespace WoChat.Models
          * @type {List}
          */
         private static SQLiteConnection syncConnection;
-        private static List<UserModel> users = new List<UserModel>();
-        private static List<GroupModel> groups = new List<GroupModel>();
-        private static List<ChatModel> chats = new List<ChatModel>();
+        private static List<UserModelOld> users = new List<UserModelOld>();
+        private static List<GroupModelOld> groups = new List<GroupModelOld>();
+        private static List<ChatModelOld> chats = new List<ChatModelOld>();
 
 
 
@@ -171,14 +171,14 @@ namespace WoChat.Models
         //    return ret;
         //}
 
-        public static List<UserModel> readAndCreateUsers()
+        public static List<UserModelOld> readAndCreateUsers()
         {
-            List<UserModel> userList = new List<UserModel>();
+            List<UserModelOld> userList = new List<UserModelOld>();
             List<string> friendList;
             List<string> groupList;
             List<string> chatList;
 
-            UserModel temp;
+            UserModelOld temp;
             string usersql = "SELECT * FROM Users";
             string friendRelationSQL = "SELECT * FROM FriendRelation WHERE aid = ?";
             string friendRelationSQL2 = "SELECT * FROM FriendRelation WHERE bid = ?";
@@ -236,7 +236,7 @@ namespace WoChat.Models
                         }
                     }
 
-                    temp = new UserModel((string)getBareUser[2], (string)getBareUser[3], (string)getBareUser[4], (string)getBareUser[7], (string)getBareUser[5], (string)getBareUser[6]);
+                    temp = new UserModelOld((string)getBareUser[2], (string)getBareUser[3], (string)getBareUser[4], (string)getBareUser[7], (string)getBareUser[5], (string)getBareUser[6]);
                     temp.resetID((string)getBareUser[1]);
                     temp.setFriend(friendList);
                     temp.setGroup(groupList);
@@ -251,11 +251,11 @@ namespace WoChat.Models
         }
 
 
-        public static List<GroupModel> readAndCreateGroups()
+        public static List<GroupModelOld> readAndCreateGroups()
         {
-            List<GroupModel> groupList = new List<GroupModel>();
+            List<GroupModelOld> groupList = new List<GroupModelOld>();
             List<string> memberList;
-            GroupModel temp;
+            GroupModelOld temp;
             string tmpcid;
 
             string sql = "SELECT * FROM Groups";
@@ -280,7 +280,7 @@ namespace WoChat.Models
                             }
                         }
                     }
-                    temp = new GroupModel((string)getBareGroup[3] , (string)getBareGroup[3] , (string)getBareGroup[2] , tmpcid , (string)getBareGroup[4] , (string)getBareGroup[5]);
+                    temp = new GroupModelOld((string)getBareGroup[3] , (string)getBareGroup[3] , (string)getBareGroup[2] , tmpcid , (string)getBareGroup[4] , (string)getBareGroup[5]);
                     temp.resetID((string)getBareGroup[1]);
                     temp.setMember(memberList);
                     groupList.Add(temp);
@@ -290,12 +290,12 @@ namespace WoChat.Models
         }
 
 
-        public static List<ChatModel> readAndCreateChats()
+        public static List<ChatModelOld> readAndCreateChats()
         {
-            List<ChatModel> chatList = new List<ChatModel>();
-            ChatModel temp;
-            List<MessageModel> messages;
-            MessageModel singleMessage;
+            List<ChatModelOld> chatList = new List<ChatModelOld>();
+            ChatModelOld temp;
+            List<MessageModelOld> messages;
+            MessageModelOld singleMessage;
             string cid;
 
 
@@ -308,7 +308,7 @@ namespace WoChat.Models
                 {
                     // Now we Got this Chat record;
                     cid = (string)getChat[1];
-                    messages = new List<MessageModel>();
+                    messages = new List<MessageModelOld>();
                     bool reference = (string)getChat[7] == "true" ? true : false;
 
                     using (var getMessages = syncConnection.Prepare(sqlMessageList))
@@ -318,14 +318,14 @@ namespace WoChat.Models
                         {
                             
                             // Now we can safelyCreate the Messages!
-                            singleMessage = new MessageModel((string)getMessages[3], (string)getMessages[4], (string)getMessages[5], cid , reference);
+                            singleMessage = new MessageModelOld((string)getMessages[3], (string)getMessages[4], (string)getMessages[5], cid , reference);
                             singleMessage.setSendingTime((string)getMessages[6]);
                             // Add to MessageList
                             messages.Add(singleMessage);
                         }
                     }
                     // Now adding Completed , we can create ChatModel
-                    temp = new ChatModel((string)getChat[2], (string)getChat[4], (string)getChat[3], (string)getChat[5], reference);
+                    temp = new ChatModelOld((string)getChat[2], (string)getChat[4], (string)getChat[3], (string)getChat[5], reference);
                     // Need To Modify ID!!!!!!
                     temp.resetID(cid);
 
@@ -344,7 +344,7 @@ namespace WoChat.Models
             if (index == -1) index = getUserIndexByID(uid);
             if (index == -1) return false;
 
-            UserModel temp = users.ElementAt(index);
+            UserModelOld temp = users.ElementAt(index);
             string sql = "INSERT INTO Users (id , uid , name , pass , nick , icon , style , email) VALUES (? , ? , ? , ? , ? , ? , ? , ?)";
             try {
                 using (var addUser = syncConnection.Prepare(sql))
@@ -374,7 +374,7 @@ namespace WoChat.Models
             if (index == -1) index = getGroupIndexByID(gid);
             if (index == -1) return false;
             // Start
-            GroupModel gm = groups.ElementAt(index);
+            GroupModelOld gm = groups.ElementAt(index);
             string sql = "INSERT INTO Groups (id , gid , gname , admin , icon , style , chat) VALUES (? , ? , ? , ? , ? , ? , ?)";
             try
             {
@@ -402,7 +402,7 @@ namespace WoChat.Models
             if (index == -1) index = getChatIndexByID(cid);
             if (index == -1) return false;
             // Start
-            ChatModel cm = chats.ElementAt(index);
+            ChatModelOld cm = chats.ElementAt(index);
             string sql = "INSERT INTO Chats (id , cid , host , part , hostID , partID , message , isGroup) VALUES (? , ? , ? , ? , ? , ? , ? , ?)";
             try
             {
@@ -642,8 +642,8 @@ namespace WoChat.Models
          * If no such user
          * Then return null
          */
-        public static UserModel userLogin(string username, string password) {
-            UserModel uml = null;
+        public static UserModelOld userLogin(string username, string password) {
+            UserModelOld uml = null;
             int index = getUserIndexByName(username);
             if (index != -1 && users.ElementAt(index).comparePassword(encryptCreator(password))) {
                 uml = users.ElementAt(index);
@@ -683,7 +683,7 @@ namespace WoChat.Models
              * Query First
              */
             if (searchForUser(name, _nick, _email) != "Pass!") return false;
-            UserModel um = new UserModel(name, encryptCreator(password), _nick, _email, _icon, _style);
+            UserModelOld um = new UserModelOld(name, encryptCreator(password), _nick, _email, _icon, _style);
             /**
              * Append to user database
              */
@@ -942,7 +942,7 @@ namespace WoChat.Models
         */
 
 
-        public static UserModel getFriendObjectById(string fid)
+        public static UserModelOld getFriendObjectById(string fid)
         {
             int index = getUserIndexByID(fid);
             if (index != -1)
@@ -951,7 +951,7 @@ namespace WoChat.Models
             }
             return null;
         }
-        public static GroupModel getGroupObjectById(string gid)
+        public static GroupModelOld getGroupObjectById(string gid)
         {
             int index = getGroupIndexByID(gid);
             if (index != -1)
@@ -960,7 +960,7 @@ namespace WoChat.Models
             }
             return null;
         }
-        public static ChatModel getChatObjectById(string cid)
+        public static ChatModelOld getChatObjectById(string cid)
         {
             int index = getChatIndexByID(cid);
             if (index != -1)
@@ -1058,7 +1058,7 @@ namespace WoChat.Models
              * Create Chatmodel First
              * @type {ChatModel}
              */
-            ChatModel cm = new ChatModel(uname, true);
+            ChatModelOld cm = new ChatModelOld(uname, true);
 
 
             if (cm == null) return false;
@@ -1073,7 +1073,7 @@ namespace WoChat.Models
              * Create GroupModel
              * @type {GroupModel}
              */
-            GroupModel gm = new GroupModel(uid, uname, gname, cm.getID(), _gicon, _gstyle);
+            GroupModelOld gm = new GroupModelOld(uid, uname, gname, cm.getID(), _gicon, _gstyle);
 
             if (gm != null) {
                 groups.Add(gm);
@@ -1147,7 +1147,7 @@ namespace WoChat.Models
             if (getUserIndexByID(hostID) == -1 || getUserIndexByID(participantID) == -1) return "No User!";
             string hostName = users.ElementAt(getUserIndexByID(hostID)).getName();
             string participantName = users.ElementAt(getUserIndexByID(participantID)).getName();
-            ChatModel cm = new ChatModel(hostName, hostID, participantName, participantID, isGroupChat);
+            ChatModelOld cm = new ChatModelOld(hostName, hostID, participantName, participantID, isGroupChat);
             chats.Add(cm);
             // Append Chat to Database
             //addNewFriendRelationToDataBase(hostID, participantID, cm.getID());
@@ -1162,7 +1162,7 @@ namespace WoChat.Models
          * Should be depreciated.
          *
          */
-        public static List<UserModel> getUsers()
+        public static List<UserModelOld> getUsers()
         {
             return users;
         }
@@ -1428,27 +1428,27 @@ namespace WoChat.Models
         /**
          * I don't remember what these functions for
          */
-        public static UserModel getFriend(string id)
+        public static UserModelOld getFriend(string id)
         {
             int index = getUserIndexByID(id);
             if (index != -1) return users.ElementAt(index);
             else return null;
         }
-        public static UserModel getFriendByName(string name)
+        public static UserModelOld getFriendByName(string name)
         {
             int index = getUserIndexByName(name);
             if (index != -1) return users.ElementAt(index);
             else return null;
         }
 
-        public static GroupModel getGroup(string id)
+        public static GroupModelOld getGroup(string id)
         {
             int index = getGroupIndexByID(id);
             if (index != -1) return groups.ElementAt(index);
             else return null;
         }
 
-        public static ChatModel getChat(string id)
+        public static ChatModelOld getChat(string id)
         {
             int index = getChatIndexByID(id);
             if (index != -1) return chats.ElementAt(index);
