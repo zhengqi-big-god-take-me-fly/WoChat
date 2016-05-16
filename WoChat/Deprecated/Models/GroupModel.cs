@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WoChat.Models
+namespace WoChat.Deprecated.Models
 {
     /**
      * Model of a group

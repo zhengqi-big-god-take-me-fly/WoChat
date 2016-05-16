@@ -9,6 +9,20 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="600"/>
+                    </VisualState.StateTriggers>
+                </VisualState>
+                <VisualState>
+                    <VisualState.Setters>
+                        <Setter Target="Leftpane.Width" Value="64"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="1*"/>
@@ -16,7 +30,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="256"/>
+            <ColumnDefinition x:Name="LeftPane" Width="256"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
         <ListView Grid.RowSpan="4" Grid.Column="0" ItemsSource="{x:Bind ChatVM.Chats}">
@@ -26,20 +40,24 @@
                 </Style>
             </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
-                <DataTemplate x:DataType="viewmodels:ChatViewModel">
+                <DataTemplate x:DataType="models:ChatModel">
                     <Grid Height="64">
-                        <!--<VisualStateManager.VisualStateGroups>
-                                <VisualStateGroup>
-                                    <VisualState>
-                                        <VisualState.Setters>
-                                            <Setter Target="time.Visibility" Value="Visible"/>
-                                        </VisualState.Setters>
-                                        <VisualState.StateTriggers>
-                                            <AdaptiveTrigger MinWindowWidth="500"/>
-                                        </VisualState.StateTriggers>
-                                    </VisualState>
-                                </VisualStateGroup>
-                            </VisualStateManager.VisualStateGroups>-->
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup>
+                                <VisualState>
+                                    <VisualState.StateTriggers>
+                                        <AdaptiveTrigger MinWindowWidth="600"/>
+                                    </VisualState.StateTriggers>
+                                </VisualState>
+                                <VisualState>
+                                    <VisualState.Setters>
+                                        <Setter Target="DisplayNameText.Visibility" Value="Collapsed"/>
+                                        <Setter Target="TimeText.Visibility" Value="Collapsed"/>
+                                        <Setter Target="LatestMessageText.Visibility" Value="Collapsed"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="64"/>
                             <ColumnDefinition Width="1*"/>
@@ -49,9 +67,9 @@
                             <RowDefinition Height="1*"/>
                         </Grid.RowDefinitions>
                         <Image Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Source="Assets/image.jpg" Stretch="UniformToFill" Width="56" Height="56" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <TextBlock Grid.Row="0" Grid.Column="1" Text="name" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,4,0,0"/>
-                        <TextBlock Grid.Row="0" Grid.Column="1" Text="time" Margin="0,4,4,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
-                        <TextBlock Grid.Row="1" Grid.Column="1" Text="last_sentence" Margin="0,0,4,4"/>
+                        <TextBlock x:Name="DisplayNameText" Text="{x:Bind DisplayName,Mode=OneWay}" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,4,0,0"/>
+                        <TextBlock x:Name="TimeText" Grid.Row="0" Grid.Column="1" Text="time" Margin="0,4,4,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                        <TextBlock x:Name="LatestMessageText" Grid.Row="1" Grid.Column="1" Text="last_sentence" Margin="0,0,4,4"/>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>

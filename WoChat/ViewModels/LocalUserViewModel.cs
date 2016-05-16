@@ -1,4 +1,6 @@
-﻿using WoChat.Models;
+﻿using Newtonsoft.Json;
+using Windows.Security.Cryptography;
+using WoChat.Models;
 using WoChat.Utils;
 
 namespace WoChat.ViewModels {
@@ -38,10 +40,28 @@ namespace WoChat.ViewModels {
         public void UserLogIn(string j) {
             AlreadyLoggedIn = true;
             JWT = j;
+            // Decode
+            string payloadJson = CryptographicBuffer.ConvertBinaryToString(BinaryStringEncoding.Utf8, CryptographicBuffer.DecodeFromBase64String(JWT.Split('.')[1]));
+            JWTPayload jp = JsonConvert.DeserializeObject<JWTPayload>(payloadJson);
+            LocalUser.UserId = jp._id;
+            LocalUser.Username = jp.username;
+        }
+
+        /// <summary>
+        /// Load all data from local storage, such as database.
+        /// All the old data in this ViewModel will be overwriten.
+        /// </summary>
+        public void Load() {
+            // TODO
         }
 
         private LocalUserModel localUser = new LocalUserModel();
         private bool alreadyLoggedIn = false;
         private string jwt = "";
+    }
+
+    class JWTPayload {
+        public string _id = "";
+        public string username = "";
     }
 }

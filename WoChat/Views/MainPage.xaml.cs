@@ -1,8 +1,7 @@
 ﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using WoChat.Utils;
 
 namespace WoChat.Views {
     public sealed partial class MainPage : Page {
@@ -29,11 +28,14 @@ namespace WoChat.Views {
                 case 1:
                     MainFrame.Navigate(typeof(ContactsPage));
                     break;
+                default:
+                    break;
             }
+            MainSplitView.IsPaneOpen = false;
         }
     }
 
-    public class MainPageUIViewModel {
+    class MainPageUIViewModel {
         public MainPageUIViewModel() {
             // Create menu items
             MenuItems.Add(new MenuItem("", "Chat"));
@@ -57,7 +59,7 @@ namespace WoChat.Views {
         private MenuItem selectedMenuItem;
     }
 
-    public class MenuItem : INotifyPropertyChanged {
+    class MenuItem : NotifyPropertyChangedBase {
         public MenuItem(string _icon = "", string _title = "") {
             Icon = _icon;
             Title = _title;
@@ -84,11 +86,5 @@ namespace WoChat.Views {
 
         private string icon;
         private string title;
-
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
-        public void OnPropertyChanged([CallerMemberName] string propertyName = null) {
-            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

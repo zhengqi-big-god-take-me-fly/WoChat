@@ -9,7 +9,7 @@ using Windows.Security.Cryptography.Core;
 using Windows.Storage.Streams;
 using Windows.UI.Popups;
 
-namespace WoChat.Models
+namespace WoChat.Deprecated.Models
 {
 
     /**

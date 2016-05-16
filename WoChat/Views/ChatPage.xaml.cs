@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using Windows.UI.Xaml.Controls;
+﻿using Windows.UI.Xaml.Controls;
 using WoChat.ViewModels;
 
 namespace WoChat.Views {
     public sealed partial class ChatPage : Page {
         private ChatViewModel ChatVM = App.AppVM.ChatVM;
+        
+        public ChatPage() {
+            InitializeComponent();
+        }
 
         //private LocalUserViewModel LocalUserVM = App.LocalUserVM;
         //private StubViewModel svm = new StubViewModel();
@@ -52,15 +54,5 @@ namespace WoChat.Views {
         //{
         //    //Models.ChatModel c = model.get
         //}
-
-
-        public ChatPage() {
-            this.InitializeComponent();
-            //initObserveModel(chatid);
-        }
-
-        // Initialize the chatID in OnNavigateTo function
-        // Then we can init ObserveModel by chatid
-
     }
 }

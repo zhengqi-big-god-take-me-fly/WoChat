@@ -7,8 +7,7 @@ using Windows.Security.Cryptography;
 using Windows.Security.Cryptography.Core;
 using Windows.Storage.Streams;
 
-namespace WoChat.Models
-{
+namespace WoChat.Deprecated.Models {
     /**
      * Model of a user
      */

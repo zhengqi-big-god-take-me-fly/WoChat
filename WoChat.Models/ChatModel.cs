@@ -39,7 +39,7 @@ namespace WoChat.Models {
         /// <summary>
         /// Indicate chat type
         /// </summary>
-        public ChatTypeEnum ChatType {
+        public ChatType Type {
             get;
             private set;
         }
@@ -77,7 +77,7 @@ namespace WoChat.Models {
             private set;
         }
 
-        public enum ChatTypeEnum { User, Group, System };
+        public enum ChatType { User, Group, System };
 
         public void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));

@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Windows.UI.Popups;
+using WoChat.Deprecated.Models;
 using WoChat.Models;
+using WoChat.ViewModels;
 
-namespace WoChat.ViewModels {
+namespace WoChat.Deprecated {
     public class StubViewModel {
         private UserModelOld currentUser;
         private bool isLogin;

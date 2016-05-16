@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WoChat.Models
+namespace WoChat.Deprecated.Models
 {
     /**
      * Models of all kinds of infos

@@ -9,18 +9,12 @@ namespace WoChat.Views {
     public sealed partial class RegLogPage : Page {
         private RegLogPageUIViewModel RegLogPageUIVM = new RegLogPageUIViewModel();
         private LocalUserViewModel localUserViewModel = App.AppVM.LocalUserVM;
-        //private AppViewModel AppVM = App.AppVM;
-        //private LocalUserViewModel LocalUserVM = App.LocalUserVM;
-        //private StubViewModel localUserVM = App.LocalUserVMOld;
-        //private StubViewModel tester;
-        //private bool isLogin;
+
         public RegLogPage() {
             InitializeComponent();
             if (localUserViewModel.AlreadyLoggedIn) {
                 UserAutoLoggedIn();
             }
-            //tester = new StubViewModel();
-            //isLogin = false;
         }
 
         private async void RegisterButton_Click(object sender, RoutedEventArgs e) {
@@ -65,7 +59,6 @@ namespace WoChat.Views {
             switch (result.StatusCode) {
                 case PostAuthLoginResult.PostAuthLoginStatusCode.Success:
                     RegLogPageUIVM.HintText = "";
-                    // TODO: Decode and store username and userId
                     localUserViewModel.UserLogIn(result.jwt);
                     UserAutoLoggedIn();
                     break;
@@ -82,8 +75,7 @@ namespace WoChat.Views {
             RegLogPageUIVM.HintText = "正在登录，请稍候…";
             RegLogPageUIVM.IsLoading = true;
             App.PushSocket.Connect();
-            //TODO: Retrieve new data from server
-
+            App.AppVM.Load();
             Frame rootFrame = Window.Current.Content as Frame;
             if (rootFrame != null) {
                 rootFrame.Navigate(typeof(MainPage));
@@ -135,6 +127,7 @@ namespace WoChat.Views {
         //        var s = new MessageDialog("注册失败").ShowAsync();
         //    }
         //}
+        //*/
     }
 
     class RegLogPageUIViewModel : INotifyPropertyChanged {

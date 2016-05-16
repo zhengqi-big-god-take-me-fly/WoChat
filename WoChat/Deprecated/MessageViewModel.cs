@@ -4,8 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WoChat.ViewModels
-{
+namespace WoChat.Deprecated {
     public class MessageViewModel
     {
         public string senderID { get; set; }

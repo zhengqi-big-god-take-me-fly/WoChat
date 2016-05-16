@@ -8,9 +8,10 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using WoChat.Commons;
+using WoChat.Deprecated;
 using WoChat.Net;
-using WoChat.ViewModels;
 using WoChat.Views;
+using WoChat.ViewModels;
 
 namespace WoChat {
     /// <summary>

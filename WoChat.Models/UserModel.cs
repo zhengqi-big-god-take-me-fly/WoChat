@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WoChat.Models {
     /// <summary>
@@ -12,18 +7,33 @@ namespace WoChat.Models {
     /// </summary>
     public class UserModel : INotifyPropertyChanged {
         public string UserId {
-            get;
-            set;
+            get {
+                return userId;
+            }
+            set {
+                userId = value;
+                OnPropertyChanged();
+            }
         }
 
         public string Username {
-            get;
-            set;
+            get {
+                return username;
+            }
+            set {
+                username = value;
+                OnPropertyChanged();
+            }
         }
 
         public string Nickname {
-            get;
-            set;
+            get {
+                return nickname;
+            }
+            set {
+                nickname = value;
+                OnPropertyChanged();
+            }
         }
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
@@ -31,5 +41,9 @@ namespace WoChat.Models {
         }
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+        private string userId = "";
+        private string username = "";
+        private string nickname = "";
     }
 }
