@@ -1,5 +1,5 @@
 ﻿namespace WoChat.Models {
-    public class MessageModel {
+    public class MessageModel : NotifyPropertyChangedBase {
         public string Content {
             get;
             set;

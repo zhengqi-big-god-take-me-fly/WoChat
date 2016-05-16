@@ -33,7 +33,7 @@ namespace WoChat.Net {
         public async void Connect() {
             await socket.ConnectAsync(new HostName(Hostname), Port);
             IsConnected = true;
-            await Task.Factory.StartNew(() => ListenForData());
+            Task.Factory.StartNew(() => ListenForData());
             await Login();
             //TODO: Heart package
         }
@@ -42,7 +42,7 @@ namespace WoChat.Net {
             string res;
             while (IsConnected) {
                 res = await ReadData();
-                if (res == null) continue;
+                Debug.WriteLine("SOCKET>>>>>>>>> " + res);
                 //TODO: Finish protocal parsing
                 //RouteResponse(JObject.Parse(res));
             }
@@ -79,7 +79,6 @@ namespace WoChat.Net {
             AuthRequest reqObj = new AuthRequest() {
                 data = new AuthRequest.Data() {
                     token = App.AppVM.LocalUserVM.JWT
-                    //token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNTczNzA3NDA2ZDllZmZmYjM5MzEwYzAwIiwidXNlcm5hbWUiOiJwZXJxaW4xIiwiaWF0IjoxNDYzMjI0NzI2fQ.CjS8lTXTfXpSqaYbrMDaNwobjAVz8yooi5nmRnCq9fo"
                 }
             };
             string req = JsonConvert.SerializeObject(reqObj);
@@ -99,8 +98,12 @@ namespace WoChat.Net {
             char[] ch = new char[65536];
             int i = 0;
             while (IsConnected) {
-                await reader.ReadAsync(ch, i++, 1);
-                if (i > 1 && ch[i - 1] == '\n' && ch[i - 2] == '\n') break;
+                try {
+                    await reader.ReadAsync(ch, i++, 1);
+                    if (i > 1 && ch[i - 1] == '\n' && ch[i - 2] == '\n') break;
+                } catch (Exception ex) {
+                    Debug.WriteLine(",");
+                }
             }
             return new StringBuilder().Append(ch, 0, i - 2).ToString();
         }

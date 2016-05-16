@@ -5,6 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace WoChat.Models {
-    public class GroupModel {
+    public class GroupModel : NotifyPropertyChangedBase {
     }
 }

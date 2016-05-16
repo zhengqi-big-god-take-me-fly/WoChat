@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace WoChat.Models {
-    public class MixedContactModel {
+    public class MixedContactModel : NotifyPropertyChangedBase {
         public string DisplayName {
             get;
         }

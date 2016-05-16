@@ -5,7 +5,7 @@ namespace WoChat.Models {
     /// <summary>
     /// Model for common user information.
     /// </summary>
-    public class UserModel : INotifyPropertyChanged {
+    public class UserModel : NotifyPropertyChangedBase {
         public string UserId {
             get {
                 return userId;
@@ -35,12 +35,6 @@ namespace WoChat.Models {
                 OnPropertyChanged();
             }
         }
-
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
-            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
         private string userId = "";
         private string username = "";

@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using WoChat.Utils;
+using WoChat.Models;
 
 namespace WoChat.Views {
     public sealed partial class MainPage : Page {

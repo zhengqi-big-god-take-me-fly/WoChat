@@ -15,7 +15,7 @@ namespace WoChat.Models {
     /// <todo>
     /// Avatar releted property
     /// </todo>
-    public class ChatModel : INotifyPropertyChanged {
+    public class ChatModel : NotifyPropertyChangedBase {
         /// <summary>
         /// Context outside the model should be able to get ChatId in order to find specific chats.
         /// </summary>
@@ -78,11 +78,5 @@ namespace WoChat.Models {
         }
 
         public enum ChatType { User, Group, System };
-
-        public void OnPropertyChanged([CallerMemberName] string propertyName = null) {
-            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
     }
 }

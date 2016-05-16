@@ -109,7 +109,6 @@
     <Compile Include="Net\Socket.cs" />
     <Compile Include="Utils\Converters.cs" />
     <Compile Include="Utils\MD5.cs" />
-    <Compile Include="Utils\NotifyPropertyChangedBase.cs" />
     <Compile Include="ViewModels\ChatViewModel.cs" />
     <Compile Include="Deprecated\FriendViewModel.cs" />
     <Compile Include="Deprecated\GroupViewModel.cs" />
