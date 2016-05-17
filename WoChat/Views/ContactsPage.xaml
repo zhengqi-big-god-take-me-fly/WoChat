@@ -9,30 +9,58 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="768"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="LeftPane.Width" Value="256"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="LeftPane.Width" Value="64"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition x:Name="LeftColumn" Width="256"/>
+            <ColumnDefinition x:Name="LeftPane" Width="256"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <ListView Grid.Column="0">
+        <ListView Grid.Column="0" ItemsSource="{x:Bind MixedContactVM.MixedContacts,Mode=OneWay}">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="Padding" Value="0"/>
                 </Style>
             </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
-                <DataTemplate x:DataType="viewmodels:ChatViewModel">
+                <DataTemplate x:DataType="models:MixedContactModel">
                     <UserControl>
                         <Grid Height="64">
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup>
                                     <VisualState>
+                                        <VisualState.StateTriggers>
+                                            <AdaptiveTrigger MinWindowWidth="768"/>
+                                        </VisualState.StateTriggers>
                                         <VisualState.Setters>
                                             <Setter Target="ContactsNicknameText.Visibility" Value="Visible"/>
-                                            <Setter Target="LeftColumn.Width" Value="64"/>
                                         </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState>
                                         <VisualState.StateTriggers>
-                                            <AdaptiveTrigger MinWindowWidth="640"/>
+                                            <AdaptiveTrigger MinWindowWidth="0"/>
                                         </VisualState.StateTriggers>
+                                        <VisualState.Setters>
+                                            <Setter Target="ContactsNicknameText.Visibility" Value="Collapsed"/>
+                                        </VisualState.Setters>
                                     </VisualState>
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
@@ -41,7 +69,7 @@
                                 <ColumnDefinition Width="1*"/>
                             </Grid.ColumnDefinitions>
                             <Image x:Name="CoontactsAvatarImage" Grid.Column="0" Source="../Assets/image.jpg" Width="56" Height="56" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
-                            <TextBlock x:Name="ContactsNicknameText" Grid.Column="1" HorizontalAlignment="Left" Text="username" VerticalAlignment="Center" Visibility="Collapsed"/>
+                            <TextBlock x:Name="ContactsNicknameText" Grid.Column="1" HorizontalAlignment="Left" Text="{x:Bind DisplayName}" VerticalAlignment="Center" Visibility="Collapsed"/>
                         </Grid>
                     </UserControl>
                 </DataTemplate>

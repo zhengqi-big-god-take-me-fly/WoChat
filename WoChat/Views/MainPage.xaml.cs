@@ -38,8 +38,8 @@ namespace WoChat.Views {
     class MainPageUIViewModel {
         public MainPageUIViewModel() {
             // Create menu items
-            MenuItems.Add(new MenuItem("", "Chat"));
-            MenuItems.Add(new MenuItem("", "Contacts"));
+            MenuItems.Add(new MenuItem("", "聊天"));
+            MenuItems.Add(new MenuItem("", "联系人"));
         }
         public ObservableCollection<MenuItem> MenuItems {
             get {
@@ -84,7 +84,7 @@ namespace WoChat.Views {
             }
         }
 
-        private string icon;
-        private string title;
+        private string icon = "";
+        private string title = "";
     }
 }

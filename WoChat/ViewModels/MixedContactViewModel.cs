@@ -15,7 +15,14 @@ namespace WoChat.ViewModels {
         }
 
         public void Load() {
+            isLoading = true;
             LoadAndMix();
+            isLoading = false;
+        }
+
+        public async void Sync() {
+            await WaitUntilLoaded();
+            // TODO: Sync
         }
 
         /// <summary>
@@ -27,8 +34,13 @@ namespace WoChat.ViewModels {
             // TODO: Mix
         }
 
+        private async Task WaitUntilLoaded() {
+            while (isLoading) ;
+        }
+
         private ObservableCollection<MixedContactModel> mixedContacts = new ObservableCollection<MixedContactModel>();
         private ContactViewModel contactVM = new ContactViewModel();
         private GroupViewModel groupVM = new GroupViewModel();
+        private bool isLoading = false;
     }
 }

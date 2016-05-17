@@ -98,6 +98,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Storage\DbHelper.cs" />
     <Compile Include="Deprecated\Models\ChatModel.cs" />
     <Compile Include="Deprecated\Models\DataModel.cs" />
     <Compile Include="Deprecated\Models\GroupModel.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="Deprecated\Models\UserModel.cs" />
     <Compile Include="Net\HTTP.cs" />
     <Compile Include="Net\Socket.cs" />
+    <Compile Include="Storage\SettingsHelper.cs" />
     <Compile Include="Utils\Converters.cs" />
     <Compile Include="Utils\MD5.cs" />
     <Compile Include="ViewModels\ChatViewModel.cs" />

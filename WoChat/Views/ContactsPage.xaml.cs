@@ -3,6 +3,8 @@ using WoChat.ViewModels;
 
 namespace WoChat.Views {
     public sealed partial class ContactsPage : Page {
+        private MixedContactViewModel MixedContactVM = App.AppVM.MixedContactVM;
+
         public ContactsPage() {
             InitializeComponent();
         }

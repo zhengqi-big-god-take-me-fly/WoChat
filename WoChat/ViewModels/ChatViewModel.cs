@@ -1,5 +1,7 @@
 ﻿using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using WoChat.Models;
+using WoChat.Net;
 using WoChat.Utils;
 
 namespace WoChat.ViewModels {
@@ -17,6 +19,7 @@ namespace WoChat.ViewModels {
         }
 
         public void Load() {
+            isLoading = true;
             // TODO: To be removed. Only for debug
             ChatModel cm1 = new ChatModel();
             cm1.DisplayName = "AAA";
@@ -24,8 +27,22 @@ namespace WoChat.ViewModels {
             ChatModel cm2 = new ChatModel();
             cm2.DisplayName = "BBB";
             chats.Add(cm2);
+            isLoading = false;
         }
 
+        /// <summary>
+        /// Chat is stored locally so is no need to sync
+        /// </summary>
+        //public async void Sync() {
+        //    await WaitUntilLoaded();
+        //    HTTP.Get
+        //}
+        //
+        //public async Task WaitUntilLoaded() {
+        //    while (isLoading) ;
+        //}
+
         private ObservableCollection<ChatModel> chats = new ObservableCollection<ChatModel>();
+        private bool isLoading = false;
     }
 }

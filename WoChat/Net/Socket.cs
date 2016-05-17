@@ -102,7 +102,8 @@ namespace WoChat.Net {
                     await reader.ReadAsync(ch, i++, 1);
                     if (i > 1 && ch[i - 1] == '\n' && ch[i - 2] == '\n') break;
                 } catch (Exception ex) {
-                    Debug.WriteLine(",");
+                    Debug.WriteLine("Socket closed unexpectedly!");
+                    Disconnect();
                 }
             }
             return new StringBuilder().Append(ch, 0, i - 2).ToString();

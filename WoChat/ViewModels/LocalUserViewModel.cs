@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Windows.Security.Cryptography;
 using WoChat.Models;
-using WoChat.Utils;
+using WoChat.Storage;
 
 namespace WoChat.ViewModels {
     public class LocalUserViewModel : NotifyPropertyChangedBase {
@@ -24,12 +24,11 @@ namespace WoChat.ViewModels {
 
         public string JWT {
             get {
-                return jwt;
+                return SettingsHelper.Load("jwt", "");
             }
             set {
-                jwt = value;
+                SettingsHelper.Save("jwt", value);
                 OnPropertyChanged();
-                // TODO: Store to local settings
             }
         }
 
@@ -57,7 +56,7 @@ namespace WoChat.ViewModels {
 
         private LocalUserModel localUser = new LocalUserModel();
         private bool alreadyLoggedIn = false;
-        private string jwt = "";
+        //private string jwt = "";
     }
 
     class JWTPayload {

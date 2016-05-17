@@ -1,19 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WoChat.Models {
+﻿namespace WoChat.Models {
     public class MixedContactModel : NotifyPropertyChangedBase {
         public string DisplayName {
-            get;
+            get {
+                return displayName;
+            }
         }
 
         public ContactType Type {
-            get;
+            get {
+                return type;
+            }
         }
 
         public enum ContactType { User, Group, System };
+
+        private string displayName = "";
+        private ContactType type = ContactType.User;
     }
 }
