@@ -108,9 +108,21 @@
     </Page.Resources>
     <SplitView x:Name="MainSplitView" DisplayMode="CompactOverlay"  IsPaneOpen="False" CompactPaneLength="48" OpenPaneLength="240" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <SplitView.Pane>
-            <StackPanel>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="48"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="48"/>
+                </Grid.ColumnDefinitions>
                 <Button Content="&#xE700;" FontFamily="Segoe MDL2 Assets" Width="48" Height="48" Background="Transparent" Click="MainPaneMenuButton_Click"/>
-                <ListBox x:Name="SplitViewMenu" ItemsSource="{x:Bind MainPageUIVM.MenuItems}" SelectedItem="{x:Bind MainPageUIVM.SelectedMenuItem, Mode=TwoWay, Converter={StaticResource O2MiConverter}}" ItemContainerStyle="{StaticResource MenuListBoxItemStyle}" SelectionChanged="MainPaneMenu_SelectionChanged">
+                <Button Content="Perqin" Width="48" Height="48" Background="Transparent" Grid.Column="1" FontWeight="Bold"/>
+                <Button Content="&#xE711;" FontFamily="Segoe MDL2 Assets" Width="48" Height="48" Background="Transparent" Grid.Column="2"/>
+                <ListBox x:Name="SplitViewMenu" ItemsSource="{x:Bind MainPageUIVM.MenuItems}" SelectedItem="{x:Bind MainPageUIVM.SelectedMenuItem, Mode=TwoWay, Converter={StaticResource O2MiConverter}}" ItemContainerStyle="{StaticResource MenuListBoxItemStyle}" SelectionChanged="MainPaneMenu_SelectionChanged" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
                     <ListBox.ItemTemplate>
                         <DataTemplate x:DataType="utils:MenuItem">
                             <StackPanel Orientation="Horizontal" Height="48">
@@ -120,7 +132,11 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-            </StackPanel>
+                <StackPanel Orientation="Horizontal" Height="48" Grid.Row="2" Grid.ColumnSpan="3">
+                    <TextBlock Text="&#xE713;" Style="{StaticResource IconTextBlockStyle}" />
+                    <TextBlock Text="设置" Style="{StaticResource MenuTitleTextBlockStyle}" />
+                </StackPanel>
+            </Grid>
         </SplitView.Pane>
         <SplitView.Content>
             <Frame x:Name="MainFrame"/>
