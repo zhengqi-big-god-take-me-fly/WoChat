@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Networking;
 using Windows.Networking.Sockets;
@@ -18,6 +19,7 @@ namespace WoChat.Net {
     /// You should only hold on instance.
     /// </summary>
     public class SocketWorker {
+        private Timer heartTimer;
         /// <summary>
         /// Call once when App launched.
         /// </summary>
@@ -36,30 +38,39 @@ namespace WoChat.Net {
             Task.Factory.StartNew(() => ListenForData());
             await Login();
             //TODO: Heart package
+            heartTimer = new Timer(SendHeart, null, 30 * 1000, 30 * 1000);
         }
 
         public async void ListenForData() {
             string res;
             while (IsConnected) {
                 res = await ReadData();
-                Debug.WriteLine("SOCKET>>>>>>>>> " + res);
-                //TODO: Finish protocal parsing
-                //RouteResponse(JObject.Parse(res));
+                //Debug.WriteLine("SOCKET>>>>>>>>> " + res);
+                if (res == null || res.Equals("")) continue;
+                RouteResponse(JObject.Parse(res));
             }
         }
 
-        public void SendHeart() {
+        public async void SendHeart(object state) {
             //TODO
+            HeartRequest data = new HeartRequest();
+            string req = JsonConvert.SerializeObject(data);
+            await WriteData(req);
         }
 
         public void RouteResponse(JObject res) {
             //TODO
             string type = res["type"].ToString();
+            Debug.WriteLine("TYPE::::" + type);
             if (type.Equals("msg")) {
-                OnMessageArrive(this, new MessageArriveEventArgs(JsonConvert.DeserializeObject<PushMessage>(res["data"].ToString())));
+                OnMessageArrive(this, new MessageArriveEventArgs(JsonConvert.DeserializeObject<List<PushMessage>>(res["data"].ToString())));
             } else if (type.Equals("authrst")) {
-                //OnMessageArrive(this, new MessageArriveEventArgs(JsonConvert.DeserializeObject<PushMessage>(res["data"].ToString())));
-                Debug.WriteLine("");
+                AuthResponse ar = JsonConvert.DeserializeObject<AuthResponse>(res.ToString());
+                if (ar.data.code != 0) {
+                    Debug.WriteLine("Auth response ERROR");
+                    Disconnect();
+                    Connect();
+                }
             } else if (type.Equals("quit")) {
                 Disconnect();
             }
@@ -83,10 +94,15 @@ namespace WoChat.Net {
             };
             string req = JsonConvert.SerializeObject(reqObj);
             await WriteData(req);
-            //string res = await SendDataWithResponse(req);
-            //AuthResponse resObj = JsonConvert.DeserializeObject<AuthResponse>(res);
         }
-        
+
+        public async void MessagesRead(List<string> mids) {
+            MessageReceipt mr = new MessageReceipt();
+            mr.data = mids;
+            string req = JsonConvert.SerializeObject(mr);
+            await WriteData(req);
+        }
+
         public async Task WriteData(string data) {
             StreamWriter writer = new StreamWriter(socket.OutputStream.AsStreamForWrite());
             await writer.WriteAsync(data);
@@ -104,6 +120,7 @@ namespace WoChat.Net {
                 } catch (Exception ex) {
                     Debug.WriteLine("Socket closed unexpectedly!");
                     Disconnect();
+                    Connect();
                 }
             }
             return new StringBuilder().Append(ch, 0, i - 2).ToString();
@@ -158,6 +175,10 @@ namespace WoChat.Net {
         }
     }
 
+    public class HeartRequest {
+        public string type = "heart";
+    }
+
     public class AuthResponse {
         public string type;
         public Data data;
@@ -170,23 +191,25 @@ namespace WoChat.Net {
     public delegate void MessageArriveEventHandler(object sender, MessageArriveEventArgs e);
 
     public class MessageArriveEventArgs : EventArgs {
-        public MessageArriveEventArgs(PushMessage pm) {
+        public MessageArriveEventArgs(List<PushMessage> pm) {
             message = pm;
         }
 
-        private PushMessage message;
+        private List<PushMessage> message;
     }
     
     public class PushMessage {
         public string _id;
-        public string sender_id;
-        public string receiver_id;
-        public string time;
-        public Content content;
+        public string sender;
+        public string receiver;
+        public string to_group;
+        public int type;
+        public long time;
+        public string content;
+    }
 
-        public class Content {
-            public int type;
-            public string plain;
-        }
+    public class MessageReceipt {
+        public string type = "msgrcpt";
+        public List<string> data = new List<string>();
     }
 }

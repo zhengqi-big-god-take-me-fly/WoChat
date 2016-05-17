@@ -1,14 +1,23 @@
-﻿using System.Collections.ObjectModel;
+﻿using Newtonsoft.Json;
+using System.Collections.ObjectModel;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using WoChat.Models;
+using WoChat.Commons.Utils;
 
 namespace WoChat.Views {
     public sealed partial class MainPage : Page {
         private MainPageUIViewModel MainPageUIVM = new MainPageUIViewModel();
+        private ChatSimpleInfo startChatParams = null;
 
         public MainPage() {
             InitializeComponent();
+        }
+
+        public void StartChat(string id, int type) {
+            startChatParams = new ChatSimpleInfo();
+            startChatParams.id = id;
+            startChatParams.type = type;
+            SplitViewMenu.SelectedIndex = 0;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs nea) {
@@ -23,7 +32,8 @@ namespace WoChat.Views {
             int selectedIndex = MainPageUIVM.MenuItems.IndexOf(MainPageUIVM.SelectedMenuItem);
             switch (selectedIndex) {
                 case 0:
-                    MainFrame.Navigate(typeof(ChatPage));
+                    MainFrame.Navigate(typeof(ChatPage), startChatParams != null ? JsonConvert.SerializeObject(startChatParams) : null);
+                    startChatParams = null;
                     break;
                 case 1:
                     MainFrame.Navigate(typeof(ContactsPage));
@@ -33,6 +43,11 @@ namespace WoChat.Views {
             }
             MainSplitView.IsPaneOpen = false;
         }
+    }
+
+    public class ChatSimpleInfo {
+        public string id;
+        public int type;
     }
 
     class MainPageUIViewModel {
@@ -57,34 +72,5 @@ namespace WoChat.Views {
 
         private ObservableCollection<MenuItem> menuItems = new ObservableCollection<MenuItem>();
         private MenuItem selectedMenuItem;
-    }
-
-    class MenuItem : NotifyPropertyChangedBase {
-        public MenuItem(string _icon = "", string _title = "") {
-            Icon = _icon;
-            Title = _title;
-        }
-
-        public string Icon {
-            get {
-                return icon;
-            }
-            set {
-                icon = value;
-                OnPropertyChanged();
-            }
-        }
-        public string Title {
-            get {
-                return title;
-            }
-            set {
-                title = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private string icon = "";
-        private string title = "";
     }
 }

@@ -1,4 +1,9 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿using Newtonsoft.Json;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
+using WoChat.Models;
+using WoChat.Net;
 using WoChat.ViewModels;
 
 namespace WoChat.Views {
@@ -9,50 +14,29 @@ namespace WoChat.Views {
             InitializeComponent();
         }
 
-        //private LocalUserViewModel LocalUserVM = App.LocalUserVM;
-        //private StubViewModel svm = new StubViewModel();
-        //
-        //class messageObserve
-        //{
-        //    public string sender { get; set; }
-        //    public string receiver { get; set; }
-        //    public string content { get; set; }
-        //    public bool isGroup { get; set; }
-        //    public DateTimeOffset time { get; set; }
-        //    public messageObserve(string sender , string receiver , string content , DateTimeOffset time , bool isGroup = false)
-        //    {
-        //        this.sender = sender;
-        //        this.receiver = receiver;
-        //        this.content = content;
-        //        this.time = time;
-        //        this.isGroup = isGroup;
-        //    }
-        //}
-        //
-        //class chatObserve
-        //{
-        //    public string chater {get;set;}
-        //    public string chatee {get;set;}
-        //    public string chaterid {get;set;}
-        //    public string chateeid {get;set;}
-        //    public string chatid {get; set;}
-        //    public bool isGroup { get; set; }
-        //    public ObservableCollection<messageObserve> messages { get; set; }
-        //    public chatObserve(string chater , string chatee , string chaterid , string chateeid ,string chatid , ObservableCollection<messageObserve> messages , bool isGroup = false)
-        //    {
-        //        this.chater = chater;
-        //        this.chatee = chatee;
-        //        this.chaterid = chaterid;
-        //        this.chateeid = chateeid;
-        //        this.messages = messages;
-        //        this.isGroup = isGroup;
-        //    }
-        //
-        //}
-        //
-        //private void initObserveModel(string cid)
-        //{
-        //    //Models.ChatModel c = model.get
-        //}
+        protected override void OnNavigatedTo(NavigationEventArgs e) {
+            if (e.Parameter != null) {
+                ChatSimpleInfo info = JsonConvert.DeserializeObject<ChatSimpleInfo>(e.Parameter as string);
+                switch (info.type) {
+                    case 0:
+                        // TODO: Check existence of chat
+                        ChatVM.Chats.Add(new ChatModel(info.id, 0, "DDDDDD"));
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        private async void SendButton_Click(object sender, RoutedEventArgs e) {
+            if (SendTextBox.Text.Equals("")) return;
+            var chat = ChatList.SelectedItem as ChatModel;
+            switch (chat.Type) {
+                case ChatModel.ChatType.User:
+                    var result = await HTTP.PostUsers_Message(App.AppVM.LocalUserVM.JWT, chat.ReceiverId, 0, SendTextBox.Text);
+                    if (result.StatusCode == PostUsers_MessageResult.PostUsers_MessageStatusCode.Success) SendTextBox.Text = "";
+                    break;
+            }
+        }
     }
 }

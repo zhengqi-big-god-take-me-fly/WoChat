@@ -1,12 +1,11 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using WoChat.Commons.Models;
 
 namespace WoChat.Models {
     /// <summary>
     /// Model for common user information.
     /// </summary>
     public class UserModel : NotifyPropertyChangedBase {
-        public string UserId {
+        public virtual string UserId {
             get {
                 return userId;
             }
@@ -16,7 +15,7 @@ namespace WoChat.Models {
             }
         }
 
-        public string Username {
+        public virtual string Username {
             get {
                 return username;
             }

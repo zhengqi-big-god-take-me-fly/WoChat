@@ -98,7 +98,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Storage\DbHelper.cs" />
     <Compile Include="Deprecated\Models\ChatModel.cs" />
     <Compile Include="Deprecated\Models\DataModel.cs" />
     <Compile Include="Deprecated\Models\GroupModel.cs" />
@@ -108,9 +107,6 @@
     <Compile Include="Deprecated\Models\UserModel.cs" />
     <Compile Include="Net\HTTP.cs" />
     <Compile Include="Net\Socket.cs" />
-    <Compile Include="Storage\SettingsHelper.cs" />
-    <Compile Include="Utils\Converters.cs" />
-    <Compile Include="Utils\MD5.cs" />
     <Compile Include="ViewModels\ChatViewModel.cs" />
     <Compile Include="Deprecated\FriendViewModel.cs" />
     <Compile Include="Deprecated\GroupViewModel.cs" />
@@ -127,6 +123,12 @@
     <Compile Include="Views\ContactsPage.xaml.cs">
       <DependentUpon>ContactsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\FriendsPage.xaml.cs">
+      <DependentUpon>FriendsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GroupsPage.xaml.cs">
+      <DependentUpon>GroupsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -136,6 +138,9 @@
     </Compile>
     <Compile Include="Views\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SystemsPage.xaml.cs">
+      <DependentUpon>SystemsPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -175,6 +180,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\FriendsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GroupsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -184,6 +197,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SystemsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

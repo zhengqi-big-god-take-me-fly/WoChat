@@ -1,14 +1,14 @@
 ﻿using Windows.UI.Xaml.Controls;
-using WoChat.ViewModels;
 
 namespace WoChat.Views {
     public sealed partial class ContactsPage : Page {
-        private MixedContactViewModel MixedContactVM = App.AppVM.MixedContactVM;
-
         public ContactsPage() {
             InitializeComponent();
-        }
 
+            FriendsFrame.Navigate(typeof(FriendsPage));
+            GroupsFrame.Navigate(typeof(GroupsPage));
+            SystemsFrame.Navigate(typeof(SystemsPage));
+        }
 
         //private StubViewModel model;
         //private ObservableCollection<friendObserve> friends;

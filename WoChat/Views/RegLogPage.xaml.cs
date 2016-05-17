@@ -1,7 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
 using WoChat.Net;
 using WoChat.ViewModels;
 
@@ -12,6 +15,9 @@ namespace WoChat.Views {
 
         public RegLogPage() {
             InitializeComponent();
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e) {
             if (localUserViewModel.AlreadyLoggedIn) {
                 UserAutoLoggedIn();
             }
@@ -71,14 +77,16 @@ namespace WoChat.Views {
             }
         }
 
-        private void UserAutoLoggedIn() {
+        private async void UserAutoLoggedIn() {
             RegLogPageUIVM.HintText = "正在登录，请稍候…";
             RegLogPageUIVM.IsLoading = true;
             App.PushSocket.Connect();
             App.AppVM.Load();
             Frame rootFrame = Window.Current.Content as Frame;
             if (rootFrame != null) {
-                rootFrame.Navigate(typeof(MainPage));
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                    rootFrame.Navigate(typeof(MainPage));
+                });
             }
         }
 

@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:WoChat.Views"
-    xmlns:utils="using:WoChat.Utils"
+    xmlns:utils="using:WoChat.Commons.Utils"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -110,9 +110,9 @@
         <SplitView.Pane>
             <StackPanel>
                 <Button Content="&#xE700;" FontFamily="Segoe MDL2 Assets" Width="48" Height="48" Background="Transparent" Click="MainPaneMenuButton_Click"/>
-                <ListBox ItemsSource="{x:Bind MainPageUIVM.MenuItems}" SelectedItem="{x:Bind MainPageUIVM.SelectedMenuItem, Mode=TwoWay, Converter={StaticResource O2MiConverter}}" ItemContainerStyle="{StaticResource MenuListBoxItemStyle}" SelectionChanged="MainPaneMenu_SelectionChanged">
+                <ListBox x:Name="SplitViewMenu" ItemsSource="{x:Bind MainPageUIVM.MenuItems}" SelectedItem="{x:Bind MainPageUIVM.SelectedMenuItem, Mode=TwoWay, Converter={StaticResource O2MiConverter}}" ItemContainerStyle="{StaticResource MenuListBoxItemStyle}" SelectionChanged="MainPaneMenu_SelectionChanged">
                     <ListBox.ItemTemplate>
-                        <DataTemplate x:DataType="local:MenuItem">
+                        <DataTemplate x:DataType="utils:MenuItem">
                             <StackPanel Orientation="Horizontal" Height="48">
                                 <TextBlock Text="{x:Bind Icon, Mode=OneWay}" Style="{StaticResource IconTextBlockStyle}" />
                                 <TextBlock Text="{x:Bind Title, Mode=OneWay}" Style="{StaticResource MenuTitleTextBlockStyle}" />

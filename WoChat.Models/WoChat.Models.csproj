@@ -113,10 +113,15 @@
     <Compile Include="LocalUserModel.cs" />
     <Compile Include="MessageModel.cs" />
     <Compile Include="MixedContactModel.cs" />
-    <Compile Include="NotifyPropertyChangedBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserModel.cs" />
     <EmbeddedResource Include="Properties\WoChat.Models.rd.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WoChat.Commons\WoChat.Commons.csproj">
+      <Project>{1d6789a4-6f42-4ad6-8b6b-cdcc5fe5d1b8}</Project>
+      <Name>WoChat.Commons</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

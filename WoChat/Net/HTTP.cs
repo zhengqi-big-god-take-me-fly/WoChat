@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using WoChat.Commons.Utils;
 using Windows.Storage.Streams;
 using Windows.Web.Http;
-using WoChat.Utils;
 
 namespace WoChat.Net {
     class HTTP {

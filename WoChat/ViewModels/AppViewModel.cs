@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-using WoChat.Models;
-using WoChat.Utils;
+﻿using WoChat.Commons.Models;
 
 namespace WoChat.ViewModels {
     /// <summary>
@@ -19,9 +17,15 @@ namespace WoChat.ViewModels {
             }
         }
 
-        public MixedContactViewModel MixedContactVM {
+        public ContactViewModel ContactVM {
             get {
-                return mixedContactVM;
+                return contactVM;
+            }
+        }
+
+        public GroupViewModel GroupVM {
+            get {
+                return groupVM;
             }
         }
 
@@ -31,11 +35,13 @@ namespace WoChat.ViewModels {
         public void Load() {
             LocalUserVM.Load();
             ChatVM.Load();
-            MixedContactVM.Load();
+            ContactVM.Load();
+            GroupVM.Load();
         }
 
         private LocalUserViewModel localUserVM = new LocalUserViewModel();
         private ChatViewModel chatVM = new ChatViewModel();
-        private MixedContactViewModel mixedContactVM = new MixedContactViewModel();
+        private ContactViewModel contactVM = new ContactViewModel();
+        private GroupViewModel groupVM = new GroupViewModel();
     }
 }

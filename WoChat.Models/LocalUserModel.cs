@@ -1,11 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using WoChat.Commons.Storage;
 
 namespace WoChat.Models {
     public class LocalUserModel : UserModel {
+        public override string Username {
+            get {
+                return SettingsHelper.LoadString("username", "");
+            }
+            set {
+                SettingsHelper.Save("username", value);
+                OnPropertyChanged();
+            }
+        }
+
+        public override string UserId {
+            get {
+                return SettingsHelper.LoadString("user_id", "");
+            }
+            set {
+                SettingsHelper.Save("user_id", value);
+                OnPropertyChanged();
+            }
+        }
     }
 }

@@ -1,9 +1,8 @@
 ﻿using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
-using WoChat.Views;
 
-namespace WoChat.Utils {
+namespace WoChat.Commons.Utils {
     public class ObjectToMenuItemConverter : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, string language) {
             return value;

@@ -1,4 +1,6 @@
-﻿namespace WoChat.Models {
+﻿using WoChat.Commons.Models;
+
+namespace WoChat.Models {
     public class MixedContactModel : NotifyPropertyChangedBase {
         public string DisplayName {
             get {
