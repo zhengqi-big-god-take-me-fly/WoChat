@@ -304,7 +304,7 @@ namespace WoChat.Net {
                 Content = new HttpStringContent(JsonConvert.SerializeObject(new PostUsers_MessageParams() {
                     type = t,
                     content = c
-                })),
+                }), UnicodeEncoding.Utf8, "application/json"),
                 Method = HttpMethod.Post,
                 RequestUri = new Uri(API_HOST + URI_USERS_ + cn + URI_MESSAGE)
             };
@@ -838,7 +838,7 @@ namespace WoChat.Net {
         public string receiver;
         public bool to_group;
         public int type;
-        public int time;
+        public long time;
         public string content;
     }
     public class PostChatGroupResult {

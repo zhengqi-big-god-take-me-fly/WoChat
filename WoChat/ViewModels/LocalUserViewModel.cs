@@ -46,6 +46,13 @@ namespace WoChat.ViewModels {
             LocalUser.Username = jp.username;
         }
 
+        public void UserLogOut() {
+            JWT = "";
+            LocalUser.UserId = "";
+            LocalUser.Username = "";
+            AlreadyLoggedIn = false;
+        }
+
         /// <summary>
         /// Load all data from local storage, such as database.
         /// All the old data in this ViewModel will be overwriten.

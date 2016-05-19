@@ -35,9 +35,10 @@ namespace WoChat.Net {
         public async void Connect() {
             await socket.ConnectAsync(new HostName(Hostname), Port);
             IsConnected = true;
+#pragma warning disable CS4014 // Need await
             Task.Factory.StartNew(() => ListenForData());
+#pragma warning restore CS4014 // Need await
             await Login();
-            //TODO: Heart package
             heartTimer = new Timer(SendHeart, null, 30 * 1000, 30 * 1000);
         }
 
@@ -81,9 +82,9 @@ namespace WoChat.Net {
         /// Disconnect from server
         /// </summary>
         public async void Disconnect() {
+            IsConnected = false;
             await socket.CancelIOAsync();
             socket.Dispose();
-            IsConnected = false;
         }
 
         public async Task Login() {
@@ -94,6 +95,10 @@ namespace WoChat.Net {
             };
             string req = JsonConvert.SerializeObject(reqObj);
             await WriteData(req);
+        }
+
+        public void Logout() {
+            Disconnect();
         }
 
         public async void MessagesRead(List<string> mids) {
@@ -191,18 +196,27 @@ namespace WoChat.Net {
     public delegate void MessageArriveEventHandler(object sender, MessageArriveEventArgs e);
 
     public class MessageArriveEventArgs : EventArgs {
-        public MessageArriveEventArgs(List<PushMessage> pm) {
-            message = pm;
+        public List<PushMessage> Messages {
+            get {
+                return messages;
+            }
+            private set {
+                messages = value;
+            }
         }
 
-        private List<PushMessage> message;
+        public MessageArriveEventArgs(List<PushMessage> pm) {
+            Messages = pm;
+        }
+
+        private List<PushMessage> messages;
     }
     
     public class PushMessage {
         public string _id;
         public string sender;
         public string receiver;
-        public string to_group;
+        public bool to_group;
         public int type;
         public long time;
         public string content;

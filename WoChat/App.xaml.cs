@@ -19,7 +19,6 @@ namespace WoChat {
     /// </summary>
     sealed partial class App : Application {
         // TODO: Remove after refactoring done.
-        public static StubViewModel LocalUserVMOld = new StubViewModel();
         public static SocketWorker PushSocket = new SocketWorker();
         public static AppViewModel AppVM = new AppViewModel();
 
@@ -108,6 +107,7 @@ namespace WoChat {
         /// <param name="e">Details about the suspend request.</param>
         private void OnSuspending(object sender, SuspendingEventArgs e) {
             var deferral = e.SuspendingOperation.GetDeferral();
+            PushSocket.Disconnect();
             //TODO: Save application state and stop any background activity
             deferral.Complete();
         }

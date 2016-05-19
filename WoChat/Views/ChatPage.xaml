@@ -91,15 +91,15 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <ListView x:Name="MessageList" Grid.Row="1" Grid.Column="1">
+        <ListView DataContext="{Binding SelectedItem, ElementName=ChatList}" x:Name="MessageList" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding MessageList,Mode=OneWay}">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                    <Setter Property="Padding" Value="0,0,0,8"/>
+                    <Setter Property="Padding" Value="16,0,16,8"/>
                 </Style>
             </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="models:MessageModel">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -108,7 +108,7 @@
                         </Grid.ColumnDefinitions>
                         <Image Grid.Column="0" Source="../Assets/image.jpg" Stretch="UniformToFill" Width="48" Height="48"/>
                         <Border Grid.Column="1" Margin="8,0" Padding="8" HorizontalAlignment="Right">
-                            <TextBlock Text="sentences" TextWrapping="WrapWholeWords"/>
+                            <TextBlock Text="{Binding Content,Mode=OneWay}" TextWrapping="WrapWholeWords"/>
                         </Border>
                         <Image Grid.Column="2" Source="../Assets/th.jpg" Stretch="UniformToFill" Width="48" Height="48"/>
                     </Grid>

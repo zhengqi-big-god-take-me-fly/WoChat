@@ -88,10 +88,10 @@
             </Grid.ColumnDefinitions>
             <Image Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Source="../Assets/image.jpg" Width="108" Height="108" Stretch="UniformToFill" Margin="4"/>
             <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Nickname}" HorizontalAlignment="Center" TextAlignment="Center" Margin="4" Style="{StaticResource TitleTextBlockStyle}"/>
-            <TextBlock Grid.Row="2" Grid.Column="0" Text="备注" HorizontalAlignment="Center" TextAlignment="Center" Margin="4"/>
-            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Remark}" HorizontalAlignment="Center" TextAlignment="Center" Margin="4"/>
-            <TextBlock Grid.Row="3" Grid.Column="0" Text="用户名" HorizontalAlignment="Center" TextAlignment="Center" Margin="4"/>
-            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Username}" HorizontalAlignment="Center" TextAlignment="Center" Margin="4"/>
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="备注" HorizontalAlignment="Right" TextAlignment="Center" Margin="4"/>
+            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Remark}" HorizontalAlignment="Left" TextAlignment="Center" Margin="4"/>
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="用户名" HorizontalAlignment="Right" TextAlignment="Center" Margin="4"/>
+            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Username}" HorizontalAlignment="Left" TextAlignment="Center" Margin="4"/>
             <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Content="发消息" HorizontalAlignment="Center" Width="96" Click="StartChatButton_Click" Margin="4"/>
         </Grid>
         <StackPanel>

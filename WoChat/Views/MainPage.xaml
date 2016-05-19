@@ -9,6 +9,7 @@
     mc:Ignorable="d">
     <Page.Resources>
         <utils:ObjectToMenuItemConverter x:Key="O2MiConverter"/>
+        <utils:IntToStringConverter x:Key="I2SConverter"/>
         <Style x:Key="MenuListBoxItemStyle" TargetType="ListBoxItem">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="TabNavigation" Value="Local" />
@@ -120,22 +121,34 @@
                     <ColumnDefinition Width="48"/>
                 </Grid.ColumnDefinitions>
                 <Button Content="&#xE700;" FontFamily="Segoe MDL2 Assets" Width="48" Height="48" Background="Transparent" Click="MainPaneMenuButton_Click"/>
-                <Button Content="Perqin" Width="48" Height="48" Background="Transparent" Grid.Column="1" FontWeight="Bold"/>
-                <Button Content="&#xE711;" FontFamily="Segoe MDL2 Assets" Width="48" Height="48" Background="Transparent" Grid.Column="2"/>
+                <Button Content="{x:Bind LocalUserVM.LocalUser.Nickname,Mode=OneWay}" Height="48" Background="Transparent" Grid.Column="1" FontWeight="Bold" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Click="UserButton_Click"/>
+                <Button Content="&#xE711;" FontFamily="Segoe MDL2 Assets" Width="48" Height="48" Background="Transparent" Grid.Column="2" Click="LogOutButton_Click"/>
                 <ListBox x:Name="SplitViewMenu" ItemsSource="{x:Bind MainPageUIVM.MenuItems}" SelectedItem="{x:Bind MainPageUIVM.SelectedMenuItem, Mode=TwoWay, Converter={StaticResource O2MiConverter}}" ItemContainerStyle="{StaticResource MenuListBoxItemStyle}" SelectionChanged="MainPaneMenu_SelectionChanged" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
                     <ListBox.ItemTemplate>
                         <DataTemplate x:DataType="utils:MenuItem">
-                            <StackPanel Orientation="Horizontal" Height="48">
+                            <Grid Height="48">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="48"/>
+                                    <ColumnDefinition Width="1*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid Visibility="{x:Bind IndicatorVisibility, Mode=OneWay}" Width="16" Height="16" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0">
+                                    <Ellipse Fill="{ThemeResource SystemControlBackgroundAccentBrush}"/>
+                                    <TextBlock Text="{x:Bind Unread, Mode=OneWay,Converter={StaticResource I2SConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" />
+                                </Grid>
                                 <TextBlock Text="{x:Bind Icon, Mode=OneWay}" Style="{StaticResource IconTextBlockStyle}" />
-                                <TextBlock Text="{x:Bind Title, Mode=OneWay}" Style="{StaticResource MenuTitleTextBlockStyle}" />
-                            </StackPanel>
+                                <TextBlock Text="{x:Bind Title, Mode=OneWay}" Style="{StaticResource MenuTitleTextBlockStyle}" Grid.Column="1" />
+                            </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <StackPanel Orientation="Horizontal" Height="48" Grid.Row="2" Grid.ColumnSpan="3">
-                    <TextBlock Text="&#xE713;" Style="{StaticResource IconTextBlockStyle}" />
-                    <TextBlock Text="设置" Style="{StaticResource MenuTitleTextBlockStyle}" />
-                </StackPanel>
+                <Button Grid.Row="2" Grid.ColumnSpan="3" Height="48" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="0" Click="SettingsButton_Click">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE713;" Style="{StaticResource IconTextBlockStyle}" />
+                            <TextBlock Text="设置" Style="{StaticResource MenuTitleTextBlockStyle}" />
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
             </Grid>
         </SplitView.Pane>
         <SplitView.Content>

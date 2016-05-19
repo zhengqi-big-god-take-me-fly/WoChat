@@ -36,6 +36,15 @@ namespace WoChat.ViewModels {
             }
         }
 
+        public ContactModel FindUser(string id) {
+            foreach (var c in Contacts) {
+                if (c.UserId.Equals(id)) {
+                    return c;
+                }
+            }
+            return new ContactModel();
+        }
+
         private async Task WaitUntilLoaded() {
             while (isLoading) ;
         }

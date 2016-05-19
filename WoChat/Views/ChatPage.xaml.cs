@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using System;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -12,6 +14,13 @@ namespace WoChat.Views {
         
         public ChatPage() {
             InitializeComponent();
+            App.PushSocket.OnMessageArrive += PushSocket_OnMessageArrive;
+        }
+
+        private async void PushSocket_OnMessageArrive(object sender, MessageArriveEventArgs e) {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                App.AppVM.ChatVM.PushSocket_OnMessageArrive(sender, e);
+            });
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e) {
@@ -20,7 +29,8 @@ namespace WoChat.Views {
                 switch (info.type) {
                     case 0:
                         // TODO: Check existence of chat
-                        ChatVM.Chats.Add(new ChatModel(info.id, 0, "DDDDDD"));
+                        ChatVM.Chats.Insert(0, new ChatModel(info.id, 0, "DDDDDD"));
+                        ChatList.SelectedIndex = 0;
                         break;
                     default:
                         break;
@@ -33,8 +43,11 @@ namespace WoChat.Views {
             var chat = ChatList.SelectedItem as ChatModel;
             switch (chat.Type) {
                 case ChatModel.ChatType.User:
-                    var result = await HTTP.PostUsers_Message(App.AppVM.LocalUserVM.JWT, chat.ReceiverId, 0, SendTextBox.Text);
-                    if (result.StatusCode == PostUsers_MessageResult.PostUsers_MessageStatusCode.Success) SendTextBox.Text = "";
+                    var result = await HTTP.PostUsers_Message(App.AppVM.LocalUserVM.JWT, App.AppVM.ContactVM.FindUser(chat.ReceiverId).Username, 0, SendTextBox.Text);
+                    if (result.StatusCode == PostUsers_MessageResult.PostUsers_MessageStatusCode.Success) {
+                        SendTextBox.Text = "";
+                        chat.MessageList.Add(new MessageModel(result.content, result.time, 0, result.receiver, result.sender, result.sender));
+                    }
                     break;
             }
         }

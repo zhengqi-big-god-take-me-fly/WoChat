@@ -15,6 +15,16 @@ namespace WoChat.Commons.Utils {
         }
     }
 
+    public class IntToStringConverter : IValueConverter {
+        public object Convert(object value, Type targetType, object parameter, string language) {
+            return ((int)value).ToString();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language) {
+            return int.Parse((string)value);
+        }
+    }
+
     /// <summary>
     /// Boolean to Visibility converter
     /// </summary>
