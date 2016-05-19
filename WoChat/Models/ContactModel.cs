@@ -14,7 +14,7 @@
             UserId = _id;
             Username = _username;
             Nickname = _nickname;
-            // TODO: Avatar
+            Avatar = _avatar;
             Remark = _remark;
             BlockLevel = (BlockLevelType)blt;
         }

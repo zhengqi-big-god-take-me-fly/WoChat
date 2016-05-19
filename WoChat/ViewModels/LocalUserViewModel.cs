@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
+using System.Threading.Tasks;
 using Windows.Security.Cryptography;
 using WoChat.Models;
+using WoChat.Net;
 using WoChat.Storage;
 
 namespace WoChat.ViewModels {
@@ -60,9 +62,29 @@ namespace WoChat.ViewModels {
             // TODO
         }
 
+        public async void Sync() {
+            if (isSyncing) return;
+            await WaitUntilLoaded();
+            isSyncing = true;
+            GetUsers_Result result = await HTTP.GetUsers_(LocalUser.Username);
+            LocalUser.UserId = result._id;
+            LocalUser.Username = result.username;
+            LocalUser.Nickname = result.nickname;
+            LocalUser.Avatar = result.avatar;
+            LocalUser.Gender = result.gender;
+            LocalUser.Region = result.region;
+            isSyncing = false;
+        }
+
+#pragma warning disable CS1998
+        public async Task WaitUntilLoaded() {
+            while (isLoading) ;
+        }
+#pragma warning restore CS1998
+
         private LocalUserModel localUser = new LocalUserModel();
-        //private bool alreadyLoggedIn = false;
-        //private string jwt = "";
+        private bool isLoading = false;
+        private bool isSyncing = false;
     }
 
     class JWTPayload {

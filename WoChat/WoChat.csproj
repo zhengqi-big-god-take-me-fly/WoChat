@@ -131,7 +131,6 @@
     <Compile Include="Deprecated\MessageViewModel.cs" />
     <Compile Include="Deprecated\StubViewModel.cs" />
     <Compile Include="ViewModels\AppViewModel.cs" />
-    <Compile Include="ViewModels\MixedContactViewModel.cs" />
     <Compile Include="Views\ChatPage.xaml.cs">
       <DependentUpon>ChatPage.xaml</DependentUpon>
     </Compile>

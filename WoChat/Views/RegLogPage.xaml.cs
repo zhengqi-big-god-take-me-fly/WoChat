@@ -82,6 +82,7 @@ namespace WoChat.Views {
             RegLogPageUIVM.IsLoading = true;
             App.PushSocket.Connect();
             App.AppVM.Load();
+            App.AppVM.LocalUserVM.Sync();
             Frame rootFrame = Window.Current.Content as Frame;
             if (rootFrame != null) {
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {

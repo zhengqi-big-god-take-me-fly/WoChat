@@ -42,6 +42,26 @@ namespace WoChat.Models {
             }
         }
 
+        public int Gender {
+            get {
+                return gender;
+            }
+            set {
+                gender = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int Region {
+            get {
+                return region;
+            }
+            set {
+                region = value;
+                OnPropertyChanged();
+            }
+        }
+
         public string Avatar {
             get {
                 return avatar;
@@ -66,8 +86,7 @@ namespace WoChat.Models {
         private async void updateAvatarSource() {
             if (Avatar == "") return;
             var localFolder = ApplicationData.Current.LocalFolder;
-            // TODO: Get file name from url
-            string filename = Avatar;
+            string filename = Avatar.Substring(Avatar.LastIndexOfAny(new char[2] { '/', '\\' }) + 1);
             try {
                 StorageFile avatarFile = await localFolder.GetFileAsync(filename);
                 BitmapImage source = new BitmapImage();
@@ -90,6 +109,8 @@ namespace WoChat.Models {
         private string username = "";
         private string nickname = "";
         private string avatar = "";
+        private int gender = 0;
+        private int region = 0;
         private ImageSource avatarSource = new BitmapImage();
     }
 }
