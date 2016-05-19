@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Windows.UI.Notifications;
 
-namespace WoChat.Commons.Utils {
+namespace WoChat.Utils {
     public class NotificationHelper {
         public static void ShowToast(string noti) {
             var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText02);

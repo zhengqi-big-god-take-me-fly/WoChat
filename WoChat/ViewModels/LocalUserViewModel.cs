@@ -1,8 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Windows.Security.Cryptography;
-using WoChat.Commons.Models;
-using WoChat.Commons.Storage;
 using WoChat.Models;
+using WoChat.Storage;
 
 namespace WoChat.ViewModels {
     public class LocalUserViewModel : NotifyPropertyChangedBase {

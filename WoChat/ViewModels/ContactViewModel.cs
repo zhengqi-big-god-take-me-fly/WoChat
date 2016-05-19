@@ -1,8 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using WoChat.Commons.Utils;
 using WoChat.Models;
 using WoChat.Net;
+using WoChat.Utils;
 
 namespace WoChat.ViewModels {
 

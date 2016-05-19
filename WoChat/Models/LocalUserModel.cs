@@ -1,4 +1,4 @@
-﻿using WoChat.Commons.Storage;
+﻿using WoChat.Storage;
 
 namespace WoChat.Models {
     public class LocalUserModel : UserModel {

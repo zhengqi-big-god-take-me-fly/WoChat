@@ -1,4 +1,4 @@
-﻿using WoChat.Commons.Models;
+﻿using WoChat.Models;
 
 namespace WoChat.ViewModels {
     /// <summary>

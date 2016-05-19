@@ -1,4 +1,4 @@
-﻿namespace WoChat.Commons.Storage {
+﻿namespace WoChat.Storage {
     /// <summary>
     /// Provide local database access.
     /// </summary>

@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using WoChat.Commons.Utils;
+using WoChat.Utils;
 using Windows.Storage.Streams;
 using Windows.Web.Http;
 
@@ -724,6 +724,22 @@ namespace WoChat.Net {
                 result = new PutUser_Result() { StatusCode = PutUser_Result.PutUser_StatusCode.UnknownError };
             }
             return result;
+        }
+
+        public static async Task<IBuffer> GetAvatar(string url) {
+            if (url.Equals("")) return null;
+            HttpClient client = new HttpClient();
+            HttpRequestMessage req = new HttpRequestMessage() {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(url)
+            };
+            HttpResponseMessage res = await client.SendRequestAsync(req);
+            switch (res.StatusCode) {
+                case HttpStatusCode.Ok:
+                    return await res.Content.ReadAsBufferAsync();
+                default:
+                    return null;
+            }
         }
     }
 

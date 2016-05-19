@@ -6,7 +6,7 @@ using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using WoChat.Commons.Utils;
+using WoChat.Utils;
 using WoChat.Net;
 using WoChat.ViewModels;
 

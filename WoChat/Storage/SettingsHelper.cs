@@ -1,6 +1,6 @@
 ﻿using Windows.Storage;
 
-namespace WoChat.Commons.Storage {
+namespace WoChat.Storage {
     public class SettingsHelper {
         public static void Save(string key, string value) {
             ApplicationData.Current.LocalSettings.Values[key] = value;

@@ -1,7 +1,7 @@
 ﻿using Windows.UI.Xaml;
-using WoChat.Commons.Models;
+using WoChat.Models;
 
-namespace WoChat.Commons.Utils {
+namespace WoChat.Utils {
     public class MenuItem : NotifyPropertyChangedBase {
         public MenuItem(string _icon = "", string _title = "", int _unread = 0, Visibility _visibility = Visibility.Collapsed) {
             Icon = _icon;

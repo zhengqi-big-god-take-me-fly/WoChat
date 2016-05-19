@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using WoChat.Commons.Models;
 using WoChat.Models;
 using WoChat.Net;
 

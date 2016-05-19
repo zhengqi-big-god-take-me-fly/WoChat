@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using WoChat.Commons.Models;
 
 namespace WoChat.Models {
     /// <summary>

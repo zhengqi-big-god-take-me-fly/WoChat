@@ -1,6 +1,4 @@
-﻿using WoChat.Commons.Models;
-
-namespace WoChat.Models {
+﻿namespace WoChat.Models {
     public class MessageModel : NotifyPropertyChangedBase {
         public string Content {
             get {
