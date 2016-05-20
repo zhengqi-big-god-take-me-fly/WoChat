@@ -32,7 +32,7 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        <ListView Grid.Column="0">
+        <ListView Grid.Column="0" ItemsSource="{x:Bind SystemVM.Systems}">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -40,7 +40,7 @@
                 </Style>
             </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="models:SystemModel">
                     <UserControl>
                         <Grid Height="64">
                             <VisualStateManager.VisualStateGroups>
@@ -67,8 +67,8 @@
                                 <ColumnDefinition Width="64"/>
                                 <ColumnDefinition Width="1*"/>
                             </Grid.ColumnDefinitions>
-                            <Image x:Name="CoontactsAvatarImage" Grid.Column="0" Source="../Assets/image.jpg" Width="56" Height="56" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
-                            <TextBlock x:Name="ContactsNicknameText" Grid.Column="1" HorizontalAlignment="Left" Text="ss" VerticalAlignment="Center" Visibility="Collapsed"/>
+                            <Image x:Name="CoontactsAvatarImage" Grid.Column="0" Source="{x:Bind AvatarSource,Mode=OneWay}" Width="56" Height="56" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
+                            <TextBlock x:Name="ContactsNicknameText" Grid.Column="1" HorizontalAlignment="Left" Text="{x:Bind Nickname,Mode=OneWay}" VerticalAlignment="Center" Visibility="Collapsed"/>
                         </Grid>
                     </UserControl>
                 </DataTemplate>

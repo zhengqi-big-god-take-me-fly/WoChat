@@ -112,6 +112,7 @@
     <Compile Include="Models\LocalUserModel.cs" />
     <Compile Include="Models\MessageModel.cs" />
     <Compile Include="Models\MixedContactModel.cs" />
+    <Compile Include="Models\SystemModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Net\HTTP.cs" />
     <Compile Include="Net\Socket.cs" />
@@ -131,6 +132,7 @@
     <Compile Include="Deprecated\MessageViewModel.cs" />
     <Compile Include="Deprecated\StubViewModel.cs" />
     <Compile Include="ViewModels\AppViewModel.cs" />
+    <Compile Include="ViewModels\SystemViewModel.cs" />
     <Compile Include="Views\ChatPage.xaml.cs">
       <DependentUpon>ChatPage.xaml</DependentUpon>
     </Compile>
@@ -170,6 +172,7 @@
     <Content Include="Assets\DefaultBackground.jpg" />
     <Content Include="Assets\image.jpg" />
     <Content Include="Assets\th.jpg" />
+    <Content Include="Assets\WOCHAT_SYSTEM_FRIEND_INVITATION.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />

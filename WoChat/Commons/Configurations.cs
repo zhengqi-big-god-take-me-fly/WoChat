@@ -5,4 +5,7 @@
         //public static string Hostname = "119.29.134.105"; //perqin on qcloud
         public static string Port = "3001";
     }
+    public class SystemIds {
+        public static string SystemIdFriendInvitation = "000000000000000000000000";
+    }
 }

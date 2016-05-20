@@ -29,6 +29,12 @@ namespace WoChat.ViewModels {
             }
         }
 
+        public SystemViewModel SystemVM {
+            get {
+                return systemVM;
+            }
+        }
+
         /// <summary>
         /// Load all data in this ViewModel from local storage such as database
         /// </summary>
@@ -37,11 +43,13 @@ namespace WoChat.ViewModels {
             ChatVM.Load();
             ContactVM.Load();
             GroupVM.Load();
+            SystemVM.Load();
         }
 
         private LocalUserViewModel localUserVM = new LocalUserViewModel();
         private ChatViewModel chatVM = new ChatViewModel();
         private ContactViewModel contactVM = new ContactViewModel();
         private GroupViewModel groupVM = new GroupViewModel();
+        private SystemViewModel systemVM = new SystemViewModel();
     }
 }

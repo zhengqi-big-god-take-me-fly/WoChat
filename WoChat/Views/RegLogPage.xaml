@@ -22,7 +22,7 @@
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Row="1" Grid.Column="1" Width="320">
-            <Image HorizontalAlignment="Center" Height="150" Width="150" Source="../Assets/image.jpg" Stretch="UniformToFill" Margin="16"/>
+            <Image HorizontalAlignment="Center" Source="ms-appx:///Assets/Square150x150Logo.png" Stretch="UniformToFill" Margin="16"/>
             <TextBox IsEnabled="{x:Bind RegLogPageUIVM.AcceptInput,Mode=OneWay}" Text="{x:Bind RegLogPageUIVM.Username,Mode=TwoWay}" Header="用户名" InputScope="AlphanumericHalfWidth" Margin="0,8,0,0"/>
             <PasswordBox IsEnabled="{x:Bind RegLogPageUIVM.AcceptInput,Mode=OneWay}" Password="{x:Bind RegLogPageUIVM.Password,Mode=TwoWay}" Header="密码" Margin="0,8,0,0"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8" >

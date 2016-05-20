@@ -63,7 +63,7 @@ namespace WoChat.Models {
             }
         }
 
-        public string Avatar {
+        public virtual string Avatar {
             get {
                 return avatar;
             }
@@ -78,13 +78,13 @@ namespace WoChat.Models {
             get {
                 return avatarSource;
             }
-            private set {
+            protected set {
                 avatarSource = value;
                 OnPropertyChanged();
             }
         }
 
-        private async void updateAvatarSource() {
+        protected virtual async void updateAvatarSource() {
             if (Avatar == "") return;
             var localFolder = ApplicationData.Current.LocalFolder;
             string filename = Avatar.Substring(Avatar.LastIndexOfAny(new char[2] { '/', '\\' }) + 1);
@@ -128,9 +128,9 @@ namespace WoChat.Models {
         private string userId = "";
         private string username = "";
         private string nickname = "";
-        private string avatar = "";
+        protected string avatar = "";
         private int gender = 0;
         private int region = 0;
-        private ImageSource avatarSource = new BitmapImage();
+        protected ImageSource avatarSource = new BitmapImage();
     }
 }

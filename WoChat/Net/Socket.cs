@@ -17,125 +17,6 @@ namespace WoChat.Net {
     /// You should only hold on instance.
     /// </summary>
     public class SocketWorker {
-        private Timer heartTimer;
-
-        /// <summary>
-        /// Call once when App launched.
-        /// </summary>
-        public void Init(string _hostname, string _port) {
-            Hostname = _hostname;
-            Port = _port;
-            socket = new StreamSocket();
-        }
-
-        /// <summary>
-        /// Connect to socket server and start listening
-        /// </summary>
-        public async void Connect() {
-            await socket.ConnectAsync(new HostName(Hostname), Port);
-#pragma warning disable CS4014 // Need await
-            Task.Factory.StartNew(() => ListenForData());
-#pragma warning restore CS4014 // Need await
-            await Login();
-            heartTimer = new Timer(SendHeart, null, 30 * 1000, 30 * 1000);
-        }
-
-        public async void ListenForData() {
-            string res;
-            while (true) {
-                res = await ReadData();
-                if (res == null) {
-                    Disconnect();
-                    Connect();
-                    break;
-                } else if (res.Equals("")) {
-                    Disconnect();
-                    break;
-                } else {
-                    Debug.WriteLine("SOCKET>>>>>>>>> " + res);
-                    RouteResponse(JObject.Parse(res));
-                }
-            }
-        }
-
-        public async void SendHeart(object state) {
-            HeartRequest data = new HeartRequest();
-            string req = JsonConvert.SerializeObject(data);
-            await WriteData(req);
-        }
-
-        public void RouteResponse(JObject res) {
-            //TODO
-            string type = res["type"].ToString();
-            if (type.Equals("msg")) {
-                dispatchMessages(JsonConvert.DeserializeObject<List<PushMessage>>(res["data"].ToString()));
-            } else if (type.Equals("authrst")) {
-                AuthResponse ar = JsonConvert.DeserializeObject<AuthResponse>(res.ToString());
-                if (ar.data.code != 0) {
-                    Debug.WriteLine("Auth response ERROR");
-                    Disconnect();
-                    Connect();
-                }
-            } else if (type.Equals("quit")) {
-                Disconnect();
-            }
-        }
-
-        /// <summary>
-        /// Disconnect from server
-        /// </summary>
-        public void Disconnect() {
-            heartTimer.Dispose();
-            socket.Dispose();
-        }
-
-        public async Task Login() {
-            AuthRequest reqObj = new AuthRequest() {
-                data = new AuthRequest.Data() {
-                    token = App.AppVM.LocalUserVM.JWT
-                }
-            };
-            string req = JsonConvert.SerializeObject(reqObj);
-            await WriteData(req);
-        }
-
-        public async void MessagesRead(List<string> mids) {
-            if (mids.Count == 0) return;
-            MessageReceipt mr = new MessageReceipt();
-            mr.data = mids;
-            string req = JsonConvert.SerializeObject(mr);
-            await WriteData(req);
-        }
-
-        private async Task WriteData(string data) {
-            StreamWriter writer = new StreamWriter(socket.OutputStream.AsStreamForWrite());
-            await writer.WriteAsync(data);
-            await writer.FlushAsync();
-        }
-
-        private async Task<string> ReadData() {
-            StreamReader reader = new StreamReader(socket.InputStream.AsStreamForRead());
-            char[] ch = new char[65536];
-            int i = 0;
-            while (true) {
-                try {
-                    await reader.ReadAsync(ch, i++, 1);
-                    if (ch[i - 1] == '\0' || (i > 1 && ch[i - 1] == '\n' && ch[i - 2] == '\n')) break;
-                } catch (Exception ex) {
-                    // Ungracefully closed
-                    Debug.WriteLine(ex.Message);
-                    return null;
-                }
-            }
-            if (ch[i - 1] == '\0') {
-                // Gracefully closed
-                return "";
-            } else {
-                // Data read
-                return new StringBuilder().Append(ch, 0, i - 2).ToString();
-            }
-        }
-
         public string Hostname {
             get {
                 return hostname;
@@ -162,6 +43,135 @@ namespace WoChat.Net {
             }
         }
 
+        public event MessageArriveEventHandler OnMessageArrive = delegate { };
+
+        /// <summary>
+        /// Call once when App launched.
+        /// </summary>
+        public void Init(string _hostname, string _port) {
+            Hostname = _hostname;
+            Port = _port;
+        }
+
+        /// <summary>
+        /// Connect to socket server and start listening
+        /// </summary>
+        public async void Connect() {
+            logOutFlag = false;
+            socket = new StreamSocket();
+            await socket.ConnectAsync(new HostName(Hostname), Port);
+#pragma warning disable CS4014 // Need await
+            Task.Factory.StartNew(() => ListenForData());
+#pragma warning restore CS4014 // Need await
+            await Login();
+            heartTimer = new Timer(SendHeart, null, 30 * 1000, 30 * 1000);
+        }
+
+        /// <summary>
+        /// Disconnect from server
+        /// </summary>
+        public void Disconnect() {
+            logOutFlag = true;
+            heartTimer.Dispose();
+            socket.Dispose();
+        }
+
+        public async void MessagesRead(List<string> mids) {
+            if (mids.Count == 0) return;
+            MessageReceipt mr = new MessageReceipt();
+            mr.data = mids;
+            string req = JsonConvert.SerializeObject(mr);
+            await WriteData(req);
+        }
+
+        private async void ListenForData() {
+            string res;
+            while (true) {
+                res = await ReadData();
+                if (res == null) {
+                    Disconnect();
+                    if (!logOutFlag) {
+                        // Reconnect
+                        Connect();
+                    } else {
+                        logOutFlag = false;
+                    }
+                    break;
+                } else if (res.Equals("")) {
+                    Disconnect();
+                    break;
+                } else {
+                    RouteResponse(JObject.Parse(res));
+                }
+            }
+        }
+
+        private async void SendHeart(object state) {
+            HeartRequest data = new HeartRequest();
+            string req = JsonConvert.SerializeObject(data);
+            await WriteData(req);
+        }
+
+        private void RouteResponse(JObject res) {
+            //TODO
+            string type = res["type"].ToString();
+            if (type.Equals("msg")) {
+                dispatchMessages(JsonConvert.DeserializeObject<List<PushMessage>>(res["data"].ToString()));
+            } else if (type.Equals("authrst")) {
+                AuthResponse ar = JsonConvert.DeserializeObject<AuthResponse>(res.ToString());
+                if (ar.data.code != 0) {
+                    Debug.WriteLine("Auth response ERROR");
+                    Disconnect();
+                    Connect();
+                }
+            } else if (type.Equals("quit")) {
+                Disconnect();
+            }
+        }
+
+        private async Task Login() {
+            AuthRequest reqObj = new AuthRequest() {
+                data = new AuthRequest.Data() {
+                    token = App.AppVM.LocalUserVM.JWT
+                }
+            };
+            string req = JsonConvert.SerializeObject(reqObj);
+            await WriteData(req);
+        }
+
+        private async Task WriteData(string data) {
+            StreamWriter writer = new StreamWriter(socket.OutputStream.AsStreamForWrite(), new UTF8Encoding(false), 65536);
+            await writer.WriteAsync(data);
+            await writer.FlushAsync();
+        }
+
+        private async Task<string> ReadData() {
+            StreamReader reader = new StreamReader(socket.InputStream.AsStreamForRead(), new UTF8Encoding(false), false, 65536);
+            char[] ch = new char[65536];
+            int i = 0;
+            while (true) {
+                try {
+                    await reader.ReadAsync(ch, i++, 1);
+                    if (ch[i - 1] == '\0' || (i > 1 && ch[i - 1] == '\n' && ch[i - 2] == '\n')) break;
+                } catch (Exception ex) {
+                    // Ungracefully closed
+                    if (ex.HResult == -2147023901) {
+                        // Due to normal log out
+                        return "";
+                    }
+                    Debug.WriteLine("Socket unexpected closed: " + ex.Message);
+                    return null;
+                }
+            }
+            if (ch[i - 1] == '\0') {
+                // Gracefully closed
+                return "";
+            } else {
+                // Data read
+                return new StringBuilder().Append(ch, 0, i - 2).ToString();
+            }
+        }
+
         private async void dispatchMessages(List<PushMessage> pm) {
             if (pm != null) {
                 queuedMessages.AddRange(pm);
@@ -182,8 +192,8 @@ namespace WoChat.Net {
         private string port = "";
         private CoreDispatcher dispatcher = null;
         private List<PushMessage> queuedMessages = new List<PushMessage>();
-
-        public event MessageArriveEventHandler OnMessageArrive = delegate { };
+        private bool logOutFlag = false;
+        private Timer heartTimer;
     }
 
     public class PushSocketResponse {

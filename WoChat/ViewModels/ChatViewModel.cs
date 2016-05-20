@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using WoChat.Commons;
 using WoChat.Models;
 using WoChat.Net;
 
@@ -25,18 +26,26 @@ namespace WoChat.ViewModels {
             List<PushMessage> ms = e.Messages;
             List<string> mr = new List<string>();
             foreach (var m in ms) {
-                if (m.to_group) {
-                    // TODO
-                } else {
-                    AppendMessage(m.sender, m.to_group, m.content, m.time);
+                switch (m.type) {
+                    case 0:
+                        AppendMessage(m.sender, 0, m.content, m.time);
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        // TODO: Handle more types of system user
+                        AppendMessage(SystemIds.SystemIdFriendInvitation, 2, m.content, m.time);
+                        break;
+                    default:
+                        break;
                 }
                 mr.Add(m._id);
             }
             App.PushSocket.MessagesRead(mr);
         }
 
-        private void AppendMessage(string id, bool toGroup, string content, long time) {
-            // TODO: Use find method provided by database helper is more efficient.
+        private void AppendMessage(string id, int type, string content, long time) {
+            // TODO: Using find method provided by database helper is more efficient.
             ChatModel cm = null;
             foreach (var c in Chats) {
                 if (c.ReceiverId == id) {
@@ -45,10 +54,10 @@ namespace WoChat.ViewModels {
                 }
             }
             if (cm == null) {
-                cm = new ChatModel(id, toGroup ? 1 : 0);
+                cm = new ChatModel(id, type);
                 Chats.Add(cm);
             }
-            cm.MessageList.Add(new MessageModel(content, time, toGroup ? 1 : 0, "", id, "DisplayName"));
+            cm.MessageList.Add(new MessageModel(content, time, type, "", id, "DisplayName"));
         }
 
         public void Load() {
