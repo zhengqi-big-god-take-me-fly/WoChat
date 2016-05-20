@@ -1,10 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using WoChat.Utils;
 using Windows.Storage.Streams;
 using Windows.Web.Http;
+using Windows.Storage;
 
 namespace WoChat.Net {
     class HTTP {
@@ -19,6 +21,7 @@ namespace WoChat.Net {
         public static string URI_CONTACTS_ = "/contacts/";
         public static string URI_INVITATION = "/invitation";
         public static string URI_MESSAGE = "/message";
+        public static string URI_AVATAR = "/avatar";
 
         public static async Task<GetChatGroup_Result> GetChatGroup_(string jwt, string gi) {
             GetChatGroup_Result result;
@@ -53,6 +56,46 @@ namespace WoChat.Net {
             } catch (JsonException e) {
 #pragma warning restore CS0168 // Variable is declared but never used
                 result = new GetChatGroup_Result() { StatusCode = GetChatGroup_Result.GetChatGroup_StatusCode.UnknownError };
+            }
+            return result;
+        }
+
+        public static async Task<PostUsers_AvatarResult> UploadAvatar(string jwt, string un, StorageFile file) {
+            if (file == null || jwt.Equals("") || un.Equals("")) {
+                return new PostUsers_AvatarResult() { StatusCode = PostUsers_AvatarResult.PostUsers_AvatarStatusCode.UnknownError };
+            }
+            PostUsers_AvatarResult result = new PostUsers_AvatarResult();
+            HttpClient client = new HttpClient();
+            // Process Content for this post request.
+            HttpMultipartFormDataContent content = new HttpMultipartFormDataContent();
+            // Read file content to a HttpStreamContent which will be added into post request content.
+            Stream fileStream = await file.OpenStreamForReadAsync();
+            HttpStreamContent avatarContent = new HttpStreamContent(fileStream.AsInputStream());
+            avatarContent.Headers["Content-Type"] = file.ContentType;
+            content.Add(avatarContent, "avatar", file.Name);
+            HttpRequestMessage req = new HttpRequestMessage() {
+                RequestUri = new Uri(API_HOST + URI_USERS_ + un + URI_AVATAR),
+                Method = HttpMethod.Post,
+                Content = content
+            };
+            req.Headers["Authorization"] = jwt;
+            HttpResponseMessage res = await client.SendRequestAsync(req);
+            switch (res.StatusCode) {
+                case HttpStatusCode.Created:
+                    result.StatusCode = PostUsers_AvatarResult.PostUsers_AvatarStatusCode.Success;
+                    break;
+                case HttpStatusCode.BadRequest:
+                    result.StatusCode = PostUsers_AvatarResult.PostUsers_AvatarStatusCode.InvalidContent;
+                    break;
+                case HttpStatusCode.Unauthorized:
+                    result.StatusCode = PostUsers_AvatarResult.PostUsers_AvatarStatusCode.InvalidToken;
+                    break;
+                case HttpStatusCode.NotFound:
+                    result.StatusCode = PostUsers_AvatarResult.PostUsers_AvatarStatusCode.NoThisUser;
+                    break;
+                default:
+                    result.StatusCode = PostUsers_AvatarResult.PostUsers_AvatarStatusCode.UnknownError;
+                    break;
             }
             return result;
         }
@@ -888,5 +931,9 @@ namespace WoChat.Net {
     public class PutUser_Result {
         public enum PutUser_StatusCode { Success, InvalidParams, InvalidToken, NoThisGroup, UnknownError };
         public PutUser_StatusCode StatusCode;
+    }
+    public class PostUsers_AvatarResult {
+        public enum PostUsers_AvatarStatusCode { Success, InvalidContent, InvalidToken, NoThisUser, UnknownError };
+        public PostUsers_AvatarStatusCode StatusCode;
     }
 }

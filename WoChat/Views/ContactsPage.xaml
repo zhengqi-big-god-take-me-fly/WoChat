@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-    <Pivot Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Pivot x:Name="ContactsPivot" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" SelectionChanged="Pivot_SelectionChanged">
         <PivotItem Header="朋友">
             <Frame x:Name="FriendsFrame"/>
         </PivotItem>

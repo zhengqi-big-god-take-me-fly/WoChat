@@ -16,10 +16,6 @@ namespace WoChat.Views {
             InitializeComponent();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e) {
-            ContactVM.Sync();
-        }
-
         private ContactViewModel contactVM = App.AppVM.ContactVM;
 
         private void StartChatButton_Click(object sender, RoutedEventArgs e) {

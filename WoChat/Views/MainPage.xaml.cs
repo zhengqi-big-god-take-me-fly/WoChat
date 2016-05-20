@@ -41,6 +41,7 @@ namespace WoChat.Views {
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs nea) {
+            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
             MainPageUIVM.SelectedMenuItem = MainPageUIVM.MenuItems.Count > 0 ? MainPageUIVM.MenuItems[0] : null;
         }
 
@@ -73,7 +74,8 @@ namespace WoChat.Views {
         }
 
         private void UserButton_Click(object sender, RoutedEventArgs e) {
-            // TODO
+            var rootFrame = Window.Current.Content as Frame;
+            rootFrame.Navigate(typeof(MyProfilePage));
         }
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e) {

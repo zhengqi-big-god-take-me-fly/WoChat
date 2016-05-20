@@ -34,11 +34,11 @@ namespace WoChat.Utils {
         /// Converts a bool value to a Visibility value.
         /// </summary>
         /// <returns>
-        /// Returns Visibility.Visible if true, else Visibility.Collapsed.
+        /// Returns Visibility.Collapsed if false, else Visibility.Visible.
         /// </returns>
         public object Convert(object value, Type targetType, object parameter, string language) {
             var b = value as bool?;
-            return b == null ? Visibility.Collapsed : (b.Value ? Visibility.Visible : Visibility.Collapsed);
+            return b == null ? Visibility.Visible : (b.Value ? Visibility.Visible : Visibility.Collapsed);
         }
 
         /// <summary>
@@ -50,6 +50,23 @@ namespace WoChat.Utils {
         public object ConvertBack(object value, Type targetType, object parameter, string language) {
             var v = value as Visibility?;
             return v == null ? (object)null : v.Value == Visibility.Visible;
+        }
+    }
+
+    public class BooleanToVisibilityReverseConverter : IValueConverter {
+        /// <summary>
+        /// Converts a bool value to a Visibility value.
+        /// </summary>
+        /// <returns>
+        /// Returns Visibility.Visible if false, else Visibility.Collapsed.
+        /// </returns>
+        public object Convert(object value, Type targetType, object parameter, string language) {
+            var b = value as bool?;
+            return b == null ? Visibility.Collapsed : (b.Value ? Visibility.Collapsed : Visibility.Visible);
+        }
+        
+        public object ConvertBack(object value, Type targetType, object parameter, string language) {
+            throw new NotImplementedException();
         }
     }
 }

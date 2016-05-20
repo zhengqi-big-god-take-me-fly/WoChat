@@ -1,0 +1,58 @@
+﻿<Page
+    x:Class="WoChat.Views.MyProfilePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WoChat.Views"
+    xmlns:utils="using:WoChat.Utils"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <utils:BooleanToVisibilityConverter x:Key="B2VConverter"/>
+        <utils:BooleanToVisibilityReverseConverter x:Key="B2VRConverter"/>
+    </Page.Resources>
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="64"/>
+                <RowDefinition Height="64"/>
+                <RowDefinition Height="64"/>
+                <RowDefinition Height="64"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Vertical" Grid.RowSpan="4" VerticalAlignment="Center" Padding="32,0">
+                <Image Width="108" Height="108" HorizontalAlignment="Center" Margin="0,16" Source="{x:Bind LocalUserVM.LocalUser.AvatarSource,Mode=OneWay}"/>
+                <Button Content="上传新头像" HorizontalAlignment="Center" Click="UploadAvatar_Click"/>
+            </StackPanel>
+            <TextBlock Text="用户名" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="8,0"/>
+            <TextBlock Text="{x:Bind LocalUserVM.LocalUser.Username,Mode=OneWay}" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <TextBlock Text="昵称" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <TextBlock Text="{x:Bind LocalUserVM.LocalUser.Nickname,Mode=OneWay}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <AppBarButton Width="48" Height="48" Grid.Row="1" Grid.Column="3" Icon="Edit" VerticalAlignment="Center" Visibility="{x:Bind UIVM.IsEditingNickname,Mode=OneWay,Converter={StaticResource B2VRConverter}}"/>
+            <AppBarButton Width="48" Height="48" Grid.Row="1" Grid.Column="3" Icon="Accept" VerticalAlignment="Center" Visibility="{x:Bind UIVM.IsEditingNickname,Mode=OneWay,Converter={StaticResource B2VConverter}}"/>
+            <AppBarButton Width="48" Height="48" Grid.Row="1" Grid.Column="4" Icon="Cancel" VerticalAlignment="Center" Visibility="{x:Bind UIVM.IsEditingNickname,Mode=OneWay,Converter={StaticResource B2VConverter}}"/>
+            <TextBlock Text="性别" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center">
+                <RadioButton Content="男" MinWidth="0" Width="96" Margin="8,0" GroupName="Gender" />
+                <RadioButton Content="女" MinWidth="0" Width="96" Margin="8,0" GroupName="Gender" />
+            </StackPanel>
+            <TextBlock Text="地区" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        </Grid>
+    </Grid>
+</Page>

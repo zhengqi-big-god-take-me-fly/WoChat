@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml.Media;
@@ -87,19 +88,38 @@ namespace WoChat.Models {
             if (Avatar == "") return;
             var localFolder = ApplicationData.Current.LocalFolder;
             string filename = Avatar.Substring(Avatar.LastIndexOfAny(new char[2] { '/', '\\' }) + 1);
+            // If the file is not exist, create one.
+            StorageFile avatarFile;
+            try {
+                avatarFile = await localFolder.GetFileAsync(filename);
+            } catch (FileNotFoundException e) {
+                Debug.WriteLine(e.Message);
+                avatarFile = await localFolder.CreateFileAsync(filename);
+            } catch (Exception e) {
+                Debug.WriteLine(e.Message);
+                return;
+            }
+            // Download file from web
+            IBuffer downloadedBuffer = await HTTP.GetAvatar(Avatar);
+            // Store downloaded content into file
+            Stream writeStream = await avatarFile.OpenStreamForWriteAsync();
+            await writeStream.AsOutputStream().WriteAsync(downloadedBuffer);
+            await writeStream.AsOutputStream().FlushAsync();
+            writeStream.AsOutputStream().Dispose();
+            // Read content and add it to source
+            BitmapImage source = new BitmapImage();
+            IRandomAccessStream ras = await avatarFile.OpenReadAsync();
+            await source.SetSourceAsync(ras);
+            AvatarSource = source;
+        }
+
+        public async Task RemoveAvatar() {
+            if (Avatar == "") return;
+            var localFolder = ApplicationData.Current.LocalFolder;
+            string filename = Avatar.Substring(Avatar.LastIndexOfAny(new char[2] { '/', '\\' }) + 1);
             try {
                 StorageFile avatarFile = await localFolder.GetFileAsync(filename);
-                BitmapImage source = new BitmapImage();
-                await source.SetSourceAsync(await avatarFile.OpenReadAsync());
-                AvatarSource = source;
-            } catch (FileNotFoundException e) {
-                string avatarOriginal = Avatar;
-                Avatar = "";
-                IBuffer buffer = await HTTP.GetAvatar(avatarOriginal);
-                StorageFile newAvatar = await localFolder.CreateFileAsync(filename);
-                Stream write = await newAvatar.OpenStreamForWriteAsync();
-                await write.AsOutputStream().WriteAsync(buffer);
-                Avatar = avatarOriginal;
+                await avatarFile.DeleteAsync();
             } catch (Exception e) {
                 Debug.WriteLine(e.Message);
             }
