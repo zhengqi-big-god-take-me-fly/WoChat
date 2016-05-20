@@ -18,18 +18,21 @@ namespace WoChat.ViewModels {
         }
 
         public ChatViewModel() {
-            //App.PushSocket.OnMessageArrive += PushSocket_OnMessageArrive;
+            App.PushSocket.OnMessageArrive += PushSocket_OnMessageArrive;
         }
 
         public void PushSocket_OnMessageArrive(object sender, MessageArriveEventArgs e) {
             List<PushMessage> ms = e.Messages;
+            List<string> mr = new List<string>();
             foreach (var m in ms) {
                 if (m.to_group) {
                     // TODO
                 } else {
                     AppendMessage(m.sender, m.to_group, m.content, m.time);
                 }
+                mr.Add(m._id);
             }
+            App.PushSocket.MessagesRead(mr);
         }
 
         private void AppendMessage(string id, bool toGroup, string content, long time) {

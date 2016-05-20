@@ -12,6 +12,7 @@ using WoChat.Deprecated;
 using WoChat.Net;
 using WoChat.Views;
 using WoChat.ViewModels;
+using Windows.UI.Core;
 
 namespace WoChat {
     /// <summary>
@@ -48,6 +49,8 @@ namespace WoChat {
 
             // Init socket worker
             PushSocket.Init(PushSocketConfig.Hostname, PushSocketConfig.Port);
+            // Chat view model should be able to listen to message arrival
+            //PushSocket.OnMessageArrive += AppVM.ChatVM.PushSocket_OnMessageArrive;
 
             // Change TitleBar color
             if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.ApplicationView")) {

@@ -11,16 +11,10 @@ using WoChat.ViewModels;
 namespace WoChat.Views {
     public sealed partial class ChatPage : Page {
         private ChatViewModel ChatVM = App.AppVM.ChatVM;
+        private UIViewModel UIVM = new UIViewModel();
         
         public ChatPage() {
             InitializeComponent();
-            App.PushSocket.OnMessageArrive += PushSocket_OnMessageArrive;
-        }
-
-        private async void PushSocket_OnMessageArrive(object sender, MessageArriveEventArgs e) {
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
-                App.AppVM.ChatVM.PushSocket_OnMessageArrive(sender, e);
-            });
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e) {
@@ -28,9 +22,18 @@ namespace WoChat.Views {
                 ChatSimpleInfo info = JsonConvert.DeserializeObject<ChatSimpleInfo>(e.Parameter as string);
                 switch (info.type) {
                     case 0:
-                        // TODO: Check existence of chat
-                        ChatVM.Chats.Insert(0, new ChatModel(info.id, 0, "DDDDDD"));
-                        ChatList.SelectedIndex = 0;
+                        int s = -1;
+                        for (int i = 0; i < ChatVM.Chats.Count; ++i) {
+                            if (ChatVM.Chats[i].ChatId == info.id) {
+                                s = i;
+                                break;
+                            }
+                        }
+                        if (s == -1) {
+                            ChatVM.Chats.Insert(0, new ChatModel(info.id, 0, App.AppVM.ContactVM.FindUser(info.id).Nickname));
+                            s = 0;
+                        }
+                        UIVM.SelectedIndex = s;
                         break;
                     default:
                         break;
@@ -51,5 +54,19 @@ namespace WoChat.Views {
                     break;
             }
         }
+    }
+
+    class UIViewModel : NotifyPropertyChangedBase {
+        public int SelectedIndex {
+            get {
+                return selectedIndex;
+            }
+            set {
+                selectedIndex = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int selectedIndex = -1;
     }
 }

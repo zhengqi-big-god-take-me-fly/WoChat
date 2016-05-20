@@ -419,6 +419,7 @@ namespace WoChat.Net {
                 Method = HttpMethod.Post,
                 RequestUri = new Uri(API_HOST + URI_USERS_ + cn + URI_INVITATION)
             };
+            req.Headers["Authorization"] = jwt;
             HttpResponseMessage res = await client.SendRequestAsync(req);
             result = new PostUsers_InvitationResult();
             switch (res.StatusCode) {

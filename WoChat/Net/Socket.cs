@@ -2,16 +2,14 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Networking;
 using Windows.Networking.Sockets;
-using Windows.Storage.Streams;
+using Windows.UI.Core;
 
 namespace WoChat.Net {
     /// <summary>
@@ -20,6 +18,7 @@ namespace WoChat.Net {
     /// </summary>
     public class SocketWorker {
         private Timer heartTimer;
+
         /// <summary>
         /// Call once when App launched.
         /// </summary>
@@ -34,7 +33,6 @@ namespace WoChat.Net {
         /// </summary>
         public async void Connect() {
             await socket.ConnectAsync(new HostName(Hostname), Port);
-            IsConnected = true;
 #pragma warning disable CS4014 // Need await
             Task.Factory.StartNew(() => ListenForData());
 #pragma warning restore CS4014 // Need await
@@ -44,16 +42,23 @@ namespace WoChat.Net {
 
         public async void ListenForData() {
             string res;
-            while (IsConnected) {
+            while (true) {
                 res = await ReadData();
-                //Debug.WriteLine("SOCKET>>>>>>>>> " + res);
-                if (res == null || res.Equals("")) continue;
-                RouteResponse(JObject.Parse(res));
+                if (res == null) {
+                    Disconnect();
+                    Connect();
+                    break;
+                } else if (res.Equals("")) {
+                    Disconnect();
+                    break;
+                } else {
+                    Debug.WriteLine("SOCKET>>>>>>>>> " + res);
+                    RouteResponse(JObject.Parse(res));
+                }
             }
         }
 
         public async void SendHeart(object state) {
-            //TODO
             HeartRequest data = new HeartRequest();
             string req = JsonConvert.SerializeObject(data);
             await WriteData(req);
@@ -62,9 +67,8 @@ namespace WoChat.Net {
         public void RouteResponse(JObject res) {
             //TODO
             string type = res["type"].ToString();
-            Debug.WriteLine("TYPE::::" + type);
             if (type.Equals("msg")) {
-                OnMessageArrive(this, new MessageArriveEventArgs(JsonConvert.DeserializeObject<List<PushMessage>>(res["data"].ToString())));
+                dispatchMessages(JsonConvert.DeserializeObject<List<PushMessage>>(res["data"].ToString()));
             } else if (type.Equals("authrst")) {
                 AuthResponse ar = JsonConvert.DeserializeObject<AuthResponse>(res.ToString());
                 if (ar.data.code != 0) {
@@ -75,15 +79,13 @@ namespace WoChat.Net {
             } else if (type.Equals("quit")) {
                 Disconnect();
             }
-            
         }
 
         /// <summary>
         /// Disconnect from server
         /// </summary>
-        public async void Disconnect() {
-            IsConnected = false;
-            await socket.CancelIOAsync();
+        public void Disconnect() {
+            heartTimer.Dispose();
             socket.Dispose();
         }
 
@@ -97,38 +99,41 @@ namespace WoChat.Net {
             await WriteData(req);
         }
 
-        public void Logout() {
-            Disconnect();
-        }
-
         public async void MessagesRead(List<string> mids) {
+            if (mids.Count == 0) return;
             MessageReceipt mr = new MessageReceipt();
             mr.data = mids;
             string req = JsonConvert.SerializeObject(mr);
             await WriteData(req);
         }
 
-        public async Task WriteData(string data) {
+        private async Task WriteData(string data) {
             StreamWriter writer = new StreamWriter(socket.OutputStream.AsStreamForWrite());
             await writer.WriteAsync(data);
             await writer.FlushAsync();
         }
 
-        public async Task<string> ReadData() {
+        private async Task<string> ReadData() {
             StreamReader reader = new StreamReader(socket.InputStream.AsStreamForRead());
             char[] ch = new char[65536];
             int i = 0;
-            while (IsConnected) {
+            while (true) {
                 try {
                     await reader.ReadAsync(ch, i++, 1);
-                    if (i > 1 && ch[i - 1] == '\n' && ch[i - 2] == '\n') break;
+                    if (ch[i - 1] == '\0' || (i > 1 && ch[i - 1] == '\n' && ch[i - 2] == '\n')) break;
                 } catch (Exception ex) {
-                    Debug.WriteLine("Socket closed unexpectedly!");
-                    Disconnect();
-                    Connect();
+                    // Ungracefully closed
+                    Debug.WriteLine(ex.Message);
+                    return null;
                 }
             }
-            return new StringBuilder().Append(ch, 0, i - 2).ToString();
+            if (ch[i - 1] == '\0') {
+                // Gracefully closed
+                return "";
+            } else {
+                // Data read
+                return new StringBuilder().Append(ch, 0, i - 2).ToString();
+            }
         }
 
         public string Hostname {
@@ -147,19 +152,36 @@ namespace WoChat.Net {
                 port = value;
             }
         }
-        public bool IsConnected {
+        public CoreDispatcher Dispatcher {
             get {
-                return isConnected;
+                return dispatcher;
             }
             set {
-                isConnected = value;
+                dispatcher = value;
+                dispatchMessages(null);
+            }
+        }
+
+        private async void dispatchMessages(List<PushMessage> pm) {
+            if (pm != null) {
+                queuedMessages.AddRange(pm);
+            }
+            if (queuedMessages.Count == 0) return;
+            if (Dispatcher != null) {
+                // Trigger message event on UI thread
+                var self = this;
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
+                    OnMessageArrive(self, new MessageArriveEventArgs(queuedMessages));
+                    queuedMessages = new List<PushMessage>();
+                });
             }
         }
 
         private StreamSocket socket = null;
         private string hostname = "";
         private string port = "";
-        private bool isConnected = false;
+        private CoreDispatcher dispatcher = null;
+        private List<PushMessage> queuedMessages = new List<PushMessage>();
 
         public event MessageArriveEventHandler OnMessageArrive = delegate { };
     }

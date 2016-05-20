@@ -39,7 +39,7 @@
             <ColumnDefinition x:Name="LeftPane" Width="256"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <ListView x:Name="ChatList" Grid.RowSpan="4" Grid.Column="0" ItemsSource="{x:Bind ChatVM.Chats}">
+        <ListView x:Name="ChatList" Grid.RowSpan="4" Grid.Column="0" ItemsSource="{x:Bind ChatVM.Chats}" SelectedIndex="{x:Bind UIVM.SelectedIndex,Mode=TwoWay}">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>

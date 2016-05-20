@@ -18,19 +18,15 @@ namespace WoChat.Views {
 
         public MainPage() {
             InitializeComponent();
-            App.PushSocket.OnMessageArrive += PushSocket_OnMessageArrive;
         }
 
-        private async void PushSocket_OnMessageArrive(object sender, MessageArriveEventArgs e) {
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
-                List<PushMessage> ms = e.Messages;
-                MainPageUIVM.MenuItems[0].Unread += ms.Count;
-                if (MainPageUIVM.SelectedMenuItem == MainPageUIVM.MenuItems[0]) {
-                    MainPageUIVM.MenuItems[0].Unread = 0;
-                }
-                MainPageUIVM.MenuItems[0].IndicatorVisibility = MainPageUIVM.MenuItems[0].Unread > 0 ? Visibility.Visible : Visibility.Collapsed;
-                // TODO: Send message receipt
-            });
+        private void PushSocket_OnMessageArrive(object sender, MessageArriveEventArgs e) {
+            List<PushMessage> ms = e.Messages;
+            MainPageUIVM.MenuItems[0].Unread += ms.Count;
+            if (MainPageUIVM.SelectedMenuItem == MainPageUIVM.MenuItems[0]) {
+                MainPageUIVM.MenuItems[0].Unread = 0;
+            }
+            MainPageUIVM.MenuItems[0].IndicatorVisibility = MainPageUIVM.MenuItems[0].Unread > 0 ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public void StartChat(string id, int type) {
@@ -43,6 +39,11 @@ namespace WoChat.Views {
         protected override void OnNavigatedTo(NavigationEventArgs nea) {
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
             MainPageUIVM.SelectedMenuItem = MainPageUIVM.MenuItems.Count > 0 ? MainPageUIVM.MenuItems[0] : null;
+            App.PushSocket.OnMessageArrive += PushSocket_OnMessageArrive;
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e) {
+            App.PushSocket.OnMessageArrive -= PushSocket_OnMessageArrive;
         }
 
         private void MainPaneMenuButton_Click(object sender, RoutedEventArgs e) {
@@ -68,7 +69,7 @@ namespace WoChat.Views {
 
         private void LogOutButton_Click(object sender, RoutedEventArgs e) {
             App.AppVM.LocalUserVM.UserLogOut();
-            App.PushSocket.Logout();
+            App.PushSocket.Disconnect();
             var rootFrame = Window.Current.Content as Frame;
             rootFrame.Navigate(typeof(RegLogPage));
         }

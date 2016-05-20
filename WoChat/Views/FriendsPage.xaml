@@ -8,6 +8,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition x:Name="LeftPane" Width="256"/>
             <ColumnDefinition Width="1*"/>
@@ -28,11 +32,23 @@
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="LeftPane.Width" Value="64"/>
+                        <Setter Target="SearchGrid.Width" Value="256"/>
+                        <Setter Target="SearchGrid.(Grid.ColumnSpan)" Value="2"/>
+                        <Setter Target="SearchGrid.HorizontalAlignment" Value="Left"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        <ListView x:Name="FriendsListView" Grid.Column="0" ItemsSource="{x:Bind ContactVM.Contacts}">
+        <Grid x:Name="SearchGrid" Height="48">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox Margin="4" HorizontalContentAlignment="Left" Text="{x:Bind UIVM.SearchQuery,Mode=TwoWay}" Padding="3,6,3,0" PlaceholderText="查找或添加好友" IsSpellCheckEnabled="False" TextChanging="SearchBox_TextChanging"/>
+            <AppBarButton Height="48" Width="48" Icon="Add" Grid.Column="1" Click="AddFriend_Click" IsEnabled="{x:Bind UIVM.AddButtonEnabled,Mode=OneWay}"/>
+        </Grid>
+        <ListView Grid.Row="1" Visibility="{x:Bind UIVM.SearchListVisibility,Mode=OneWay}"/>
+        <ListView x:Name="FriendsListView" Grid.Row="1" Grid.Column="0" ItemsSource="{x:Bind ContactVM.Contacts}" Visibility="{x:Bind UIVM.ChatListVisibility,Mode=OneWay}">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -74,7 +90,7 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <Grid Width="256" DataContext="{Binding SelectedItem, ElementName=FriendsListView}" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid Width="256" DataContext="{Binding SelectedItem, ElementName=FriendsListView}" Grid.RowSpan="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
