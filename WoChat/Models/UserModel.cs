@@ -101,16 +101,20 @@ namespace WoChat.Models {
             }
             // Download file from web
             IBuffer downloadedBuffer = await HTTP.GetAvatar(Avatar);
-            // Store downloaded content into file
-            Stream writeStream = await avatarFile.OpenStreamForWriteAsync();
-            await writeStream.AsOutputStream().WriteAsync(downloadedBuffer);
-            await writeStream.AsOutputStream().FlushAsync();
-            writeStream.AsOutputStream().Dispose();
-            // Read content and add it to source
-            BitmapImage source = new BitmapImage();
-            IRandomAccessStream ras = await avatarFile.OpenReadAsync();
-            await source.SetSourceAsync(ras);
-            AvatarSource = source;
+            try {
+                // Store downloaded content into file
+                Stream writeStream = await avatarFile.OpenStreamForWriteAsync();
+                await writeStream.AsOutputStream().WriteAsync(downloadedBuffer);
+                await writeStream.AsOutputStream().FlushAsync();
+                writeStream.AsOutputStream().Dispose();
+                // Read content and add it to source
+                BitmapImage source = new BitmapImage();
+                IRandomAccessStream ras = await avatarFile.OpenReadAsync();
+                await source.SetSourceAsync(ras);
+                AvatarSource = source;
+            } catch (Exception e) {
+                Debug.WriteLine(e.Message);
+            }
         }
 
         public async Task RemoveAvatar() {
@@ -131,6 +135,6 @@ namespace WoChat.Models {
         protected string avatar = "";
         private int gender = 0;
         private int region = 0;
-        protected ImageSource avatarSource = new BitmapImage();
+        protected ImageSource avatarSource = new BitmapImage(new Uri("ms-appx:///Assets/default.png"));
     }
 }

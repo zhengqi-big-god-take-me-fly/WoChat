@@ -8,6 +8,7 @@ using Windows.Storage.Streams;
 using Windows.Web.Http;
 using Windows.Storage;
 using System.Text;
+using Windows.Web.Http.Filters;
 
 namespace WoChat.Net {
     class HTTP {
@@ -181,7 +182,9 @@ namespace WoChat.Net {
             if (jwt.Equals("") || un.Equals("")) {
                 return new GetUsers_ContactsResult() { StatusCode = GetUsers_ContactsResult.GetUsers0ContactsStatusCode.UnknownError };
             }
-            HttpClient client = new HttpClient();
+            HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
+            filter.CacheControl.ReadBehavior = HttpCacheReadBehavior.MostRecent;
+            HttpClient client = new HttpClient(filter);
             HttpRequestMessage req = new HttpRequestMessage() {
                 Method = HttpMethod.Get,
                 RequestUri = new Uri(API_HOST + URI_USERS_ + un + URI_CONTACTS)
@@ -694,14 +697,14 @@ namespace WoChat.Net {
             HttpRequestMessage req = new HttpRequestMessage() {
                 Content = new HttpStringContent(JsonConvert.SerializeObject(new PutUsers_InvitationParams() {
                     invitation = tk
-                })),
+                }), Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/json"),
                 Method = HttpMethod.Put,
                 RequestUri = new Uri(API_HOST + URI_USERS_ + un + URI_INVITATION)
             };
             req.Headers["Authorization"] = jwt;
             HttpResponseMessage res = await client.SendRequestAsync(req);
             try {
-                result = JsonConvert.DeserializeObject<PutUsers_InvitationResult>(res.Content.ToString());
+                result = new PutUsers_InvitationResult();
                 switch (res.StatusCode) {
                     case HttpStatusCode.Ok:
                         result.StatusCode = PutUsers_InvitationResult.PutUsers_InvitationStatusCode.Success;

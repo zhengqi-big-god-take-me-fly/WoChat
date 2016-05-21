@@ -11,8 +11,14 @@
     mc:Ignorable="d">
     <Page.Resources>
         <utils:EqualToVisibilityConverter x:Key="E2VConverter"/>
+        <utils:FriendInvitationContentConverter x:Key="FICConverter"/>
+        <utils:SenderIdToMessageBackgroundConverter x:Key="SI2MBConverter"/>
+        <utils:SenderIdToMessageAvatarVisibilityConverter x:Key="SI2MAVConverter"/>
+        <utils:SenderIdToMessageHorizontalAlignmentConverter x:Key="SI2MHAConverter"/>
+        <utils:BooleanToVisibilityConverter x:Key="B2VConverter"/>
+        <utils:SelectedIndexToVisibilityConverter x:Key="SI2VConverter"/>
     </Page.Resources>
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
                 <VisualState>
@@ -86,57 +92,62 @@
                                 <RowDefinition Height="1*"/>
                                 <RowDefinition Height="1*"/>
                             </Grid.RowDefinitions>
-                            <Image Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Source="ms-appx:///Assets/image.jpg" Stretch="UniformToFill" Width="56" Height="56" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            <TextBlock x:Name="DisplayNameText" Text="{x:Bind DisplayName,Mode=OneWay}" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,4,0,0"/>
-                            <TextBlock x:Name="TimeText" Grid.Row="0" Grid.Column="1" Text="{x:Bind LatestMessageTimeText,Mode=OneWay}" Margin="0,4,4,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
-                            <TextBlock x:Name="LatestMessageText" Grid.Row="1" Grid.Column="1" Text="{x:Bind LatestMessageText,Mode=OneWay}" Margin="0,0,4,4"/>
+                            <Image Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Source="{x:Bind ReceiverModel.AvatarSource,Mode=OneWay}" Stretch="UniformToFill" Width="56" Height="56" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="DisplayNameText" Text="{x:Bind ReceiverModel.Nickname,Mode=OneWay}" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,4,0,0"/>
+                            <TextBlock x:Name="TimeText" Grid.Row="0" Grid.Column="1" Text="{x:Bind LatestMessageTimeText,Mode=OneWay}" Margin="0,4,4,0" HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="#FF7F7F7F" FontSize="12"/>
+                            <TextBlock x:Name="LatestMessageText" Grid.Row="1" Grid.Column="1" Text="{x:Bind LatestMessageText,Mode=OneWay}" Margin="0,0,4,4" Foreground="#FF7F7F7F" FontSize="12" VerticalAlignment="Bottom" MaxLines="1" TextTrimming="CharacterEllipsis"/>
                         </Grid>
                     </UserControl>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <ListView DataContext="{Binding SelectedItem, ElementName=ChatList}" x:Name="MessageList" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding MessageList,Mode=OneWay}" SelectionMode="None">
+        <ListView DataContext="{Binding SelectedItem, ElementName=ChatList}" x:Name="MessageList" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding MessageList,Mode=OneWay}" SelectionMode="None" Visibility="{Binding SelectedIndex,ElementName=ChatList,Converter={StaticResource SI2VConverter},Mode=OneWay}" ContainerContentChanging="MessageList_ContainerContentChanging">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                    <Setter Property="Padding" Value="16,0,16,8"/>
+                    <Setter Property="Padding" Value="16,8,16,8"/>
+                    <Setter Property="MinHeight" Value="0"/>
                 </Style>
             </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="models:MessageModel">
                     <StackPanel Orientation="Vertical">
                         <!--Friend-->
-                        <Grid Visibility="{Binding MessageType,Mode=OneWay,Converter={StaticResource E2VConverter},ConverterParameter=MessageTypeEnum.Text}">
+                        <Grid Visibility="{Binding MessageType,Mode=OneWay,Converter={StaticResource E2VConverter},ConverterParameter=Text}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="1*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <Image Grid.Column="0" Source="{Binding SenderModel.AvatarSource,Mode=OneWay}" Stretch="UniformToFill" Width="48" Height="48"/>
-                            <Border Grid.Column="1" Margin="8,0" Padding="8" HorizontalAlignment="Right">
-                                <TextBlock Text="{Binding Content,Mode=OneWay}" TextWrapping="WrapWholeWords"/>
+                            <Image Grid.Column="0" Source="{Binding SenderModel.AvatarSource,Mode=OneWay}" Stretch="UniformToFill" Width="36" Height="36" Visibility="{Binding SenderId,Mode=OneWay,Converter={StaticResource SI2MAVConverter},ConverterParameter=Left}" VerticalAlignment="Top"/>
+                            <Border Grid.Column="1" Margin="8,0" Padding="8" HorizontalAlignment="{Binding SenderId,Mode=OneWay,Converter={StaticResource SI2MHAConverter}}" Background="{Binding SenderId,Mode=OneWay,Converter={StaticResource SI2MBConverter}}">
+                                <TextBlock Text="{Binding Content,Mode=OneWay}" TextWrapping="WrapWholeWords" FontSize="16" MinHeight="20"/>
                             </Border>
-                            <Image Grid.Column="2" Source="../Assets/th.jpg" Stretch="UniformToFill" Width="48" Height="48"/>
+                            <Image Grid.Column="2" Source="{Binding SenderModel.AvatarSource,Mode=OneWay}" Stretch="UniformToFill" Width="36" Height="36" Visibility="{Binding SenderId,Mode=OneWay,Converter={StaticResource SI2MAVConverter},ConverterParameter=Right}" VerticalAlignment="Top"/>
                         </Grid>
                         <!--System FriendInvitation-->
-                        <Grid Visibility="{Binding MessageType,Mode=OneWay,Converter={StaticResource E2VConverter},ConverterParameter=MessageTypeEnum.FriendInvitation}">
+                        <Grid Visibility="{Binding MessageType,Mode=OneWay,Converter={StaticResource E2VConverter},ConverterParameter=FriendInvitation}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="1*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <Image Grid.Column="0" Source="{Binding SenderModel.AvatarSource,Mode=OneWay}" Stretch="UniformToFill" Width="48" Height="48"/>
-                            <Border Grid.Column="1" Margin="8,0" Padding="8" HorizontalAlignment="Right">
-                                <TextBlock Text="{Binding Content,Mode=OneWay}" TextWrapping="WrapWholeWords"/>
+                            <Image Grid.Column="0" Source="{Binding SenderModel.AvatarSource,Mode=OneWay}" Stretch="UniformToFill" Width="36" Height="36" VerticalAlignment="Top"/>
+                            <Border Grid.Column="1" Margin="8,0" Padding="8" Background="{Binding SenderId,Mode=OneWay,Converter={StaticResource SI2MBConverter}}" HorizontalAlignment="Left">
+                                <TextBlock Text="{Binding Content,Mode=OneWay,Converter={StaticResource FICConverter},ConverterParameter=MessageType}" TextWrapping="WrapWholeWords" MinHeight="20"/>
                             </Border>
-                            <Button Grid.Column="2" Content="接受"/>
+                            <Button Grid.Column="2" Content="接受" Tag="{x:Bind Content}" Click="AcceptInvitation_Click"/>
                         </Grid>
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <AppBarButton Grid.Row="2" Grid.Column="1" Icon="Emoji2" Width="48" Height="48"/>
-        <AppBarButton Grid.Row="2" Grid.Column="1" Icon="Send" Width="48" Height="48" HorizontalAlignment="Right" Click="SendButton_Click"/>
-        <TextBox x:Name="SendTextBox" Grid.Row="3" Grid.Column="1" Height="108" AcceptsReturn="True"/>
+        <AppBarButton Grid.Row="2" Grid.Column="1" Icon="Emoji2" Width="48" Height="48" Visibility="Collapsed"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" Visibility="{Binding SelectedIndex,ElementName=ChatList,Converter={StaticResource SI2VConverter},Mode=OneWay}">
+            <TextBlock Text="{x:Bind UIVM.Error,Mode=OneWay}" VerticalAlignment="Center" Margin="8,0"/>
+            <ProgressRing Margin="14" Visibility="{x:Bind UIVM.IsSending,Mode=OneWay,Converter={StaticResource B2VConverter}}" IsActive="{x:Bind UIVM.IsSending,Mode=OneWay}"/>
+            <AppBarButton Grid.Row="2" Grid.Column="1" Icon="Send" Width="48" Height="48" HorizontalAlignment="Right" Click="SendButton_Click"/>
+        </StackPanel>
+        <TextBox x:Name="SendTextBox" Grid.Row="3" Grid.Column="1" Height="108" AcceptsReturn="True" Visibility="{Binding SelectedIndex,ElementName=ChatList,Converter={StaticResource SI2VConverter},Mode=OneWay}" KeyUp="SendTextBox_KeyUp"/>
     </Grid>
 </Page>

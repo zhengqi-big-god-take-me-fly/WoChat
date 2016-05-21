@@ -80,7 +80,8 @@ namespace WoChat.Views {
         }
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e) {
-            // TODO
+            var rootFrame = Window.Current.Content as Frame;
+            rootFrame.Navigate(typeof(SettingsPage));
         }
     }
 

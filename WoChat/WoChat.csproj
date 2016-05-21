@@ -111,7 +111,6 @@
     <Compile Include="Models\GroupModel.cs" />
     <Compile Include="Models\LocalUserModel.cs" />
     <Compile Include="Models\MessageModel.cs" />
-    <Compile Include="Models\MixedContactModel.cs" />
     <Compile Include="Models\SystemModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Net\HTTP.cs" />
@@ -123,6 +122,7 @@
     <Compile Include="Utils\MenuItem.cs" />
     <Compile Include="Utils\NotificationHelper.cs" />
     <Compile Include="Models\NotifyPropertyChangedBase.cs" />
+    <Compile Include="Utils\TimesTool.cs" />
     <Compile Include="ViewModels\ChatViewModel.cs" />
     <Compile Include="Deprecated\FriendViewModel.cs" />
     <Compile Include="Deprecated\GroupViewModel.cs" />

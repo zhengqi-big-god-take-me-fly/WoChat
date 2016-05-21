@@ -85,6 +85,7 @@ namespace WoChat.Views {
             App.PushSocket.Connect();
             App.AppVM.Load();
             App.AppVM.LocalUserVM.Sync();
+            App.AppVM.ContactVM.Sync();
             Frame rootFrame = Window.Current.Content as Frame;
             if (rootFrame != null) {
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {

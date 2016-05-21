@@ -17,5 +17,13 @@ namespace WoChat.Storage {
         public static bool LoadBool(string key, bool defaultValue) {
             return (bool?)ApplicationData.Current.LocalSettings.Values[key] ?? defaultValue;
         }
+
+        public static void Save(string key, int value) {
+            ApplicationData.Current.LocalSettings.Values[key] = value;
+        }
+
+        public static int LoadInt(string key, int defaultValue) {
+            return (int?)ApplicationData.Current.LocalSettings.Values[key] ?? defaultValue;
+        }
     }
 }

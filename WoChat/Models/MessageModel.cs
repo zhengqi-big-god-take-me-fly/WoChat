@@ -1,6 +1,7 @@
 ﻿using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using WoChat.Commons;
+using WoChat.Utils;
 
 namespace WoChat.Models {
     public class MessageModel : NotifyPropertyChangedBase {
@@ -21,6 +22,7 @@ namespace WoChat.Models {
             set {
                 time = value;
                 OnPropertyChanged();
+                HumanTime = "";
             }
         }
 
@@ -57,14 +59,18 @@ namespace WoChat.Models {
             get {
                 return senderid;
             }
-            private set {
+            set {
                 senderid = value;
                 OnPropertyChanged();
                 // Change other data that should be retrieved from other model
                 // Sadly, this make this model tight coupling.
                 switch (MessageType) {
                     case MessageTypeEnum.Text:
-                        SenderModel = App.AppVM.ContactVM.FindUser(value);
+                        if (value.Equals(App.AppVM.LocalUserVM.LocalUser.UserId)) {
+                            SenderModel = App.AppVM.LocalUserVM.LocalUser;
+                        } else {
+                            SenderModel = App.AppVM.ContactVM.FindUser(value);
+                        }
                         break;
                     case MessageTypeEnum.FriendInvitation:
                         SenderModel = App.AppVM.SystemVM.FindUser(SystemIds.SystemIdFriendInvitation);
@@ -122,7 +128,10 @@ namespace WoChat.Models {
         /// </remarks>
         public string HumanTime {
             get {
-                return time.ToString();
+                return TimesTool.UnixTimeStampToDateTime(time / 1000);
+            }
+            private set {
+                OnPropertyChanged();
             }
         }
 

@@ -63,6 +63,7 @@ namespace WoChat.ViewModels {
 
         public void Load() {
             isLoading = true;
+            Chats.Clear();
             // TODO: Load from local storage.
             isLoading = false;
         }

@@ -4,9 +4,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:WoChat.Views"
     xmlns:models="using:WoChat.Models"
+    xmlns:utils="using:WoChat.Utils"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
+    <Page.Resources>
+        <utils:SelectedIndexToVisibilityConverter x:Key="SI2VConverter"/>
+    </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -44,7 +48,7 @@
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBox Margin="4" HorizontalContentAlignment="Left" Text="{x:Bind UIVM.SearchQuery,Mode=TwoWay}" Padding="3,6,3,0" PlaceholderText="查找或添加好友" IsSpellCheckEnabled="False" TextChanging="SearchBox_TextChanging"/>
+            <TextBox x:Name="SearchBox" Margin="4" HorizontalContentAlignment="Left" Text="{x:Bind UIVM.SearchQuery,Mode=TwoWay}" Padding="3,6,3,0" PlaceholderText="查找或添加好友" IsSpellCheckEnabled="False" TextChanged="SearchBox_TextChanged"/>
             <AppBarButton Height="48" Width="48" Icon="Add" Grid.Column="1" Click="AddFriend_Click" IsEnabled="{x:Bind UIVM.AddButtonEnabled,Mode=OneWay}"/>
         </Grid>
         <ListView Grid.Row="1" Visibility="{x:Bind UIVM.SearchListVisibility,Mode=OneWay}"/>
@@ -84,13 +88,13 @@
                                 <ColumnDefinition Width="1*"/>
                             </Grid.ColumnDefinitions>
                             <Image x:Name="CoontactsAvatarImage" Grid.Column="0" Source="{x:Bind AvatarSource,Mode=OneWay}" Width="56" Height="56" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
-                            <TextBlock x:Name="ContactsNicknameText" Grid.Column="1" HorizontalAlignment="Left" Text="{x:Bind Remark,Mode=OneWay}" VerticalAlignment="Center" Visibility="Collapsed"/>
+                            <TextBlock x:Name="ContactsNicknameText" Grid.Column="1" HorizontalAlignment="Left" Text="{x:Bind Nickname,Mode=OneWay}" VerticalAlignment="Center" Visibility="Collapsed"/>
                         </Grid>
                     </UserControl>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <Grid Width="256" DataContext="{Binding SelectedItem, ElementName=FriendsListView}" Grid.RowSpan="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid Width="256" DataContext="{Binding SelectedItem, ElementName=FriendsListView}" Grid.RowSpan="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding SelectedIndex,ElementName=FriendsListView,Converter={StaticResource SI2VConverter},Mode=OneWay}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -110,7 +114,5 @@
             <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Username}" HorizontalAlignment="Left" TextAlignment="Center" Margin="4"/>
             <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Content="发消息" HorizontalAlignment="Center" Width="96" Click="StartChatButton_Click" Margin="4"/>
         </Grid>
-        <StackPanel>
-        </StackPanel>
     </Grid>
 </Page>

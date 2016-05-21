@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -30,7 +31,7 @@ namespace WoChat.Views {
         }
 
         private async void AddFriend_Click(object sender, RoutedEventArgs e) {
-            PostUsers_InvitationResult result = await HTTP.PostUsers_Invitation(App.AppVM.LocalUserVM.JWT, UIVM.SearchQuery, "交个朋友吧！");
+            PostUsers_InvitationResult result = await HTTP.PostUsers_Invitation(App.AppVM.LocalUserVM.JWT, UIVM.SearchQuery, App.AppVM.LocalUserVM.LocalUser.Nickname + "(" + App.AppVM.LocalUserVM.LocalUser.Username + "): 交个朋友吧！");
             UIVM.SearchQuery = "";
             switch (result.StatusCode) {
                 case PostUsers_InvitationResult.PostUsers_InvitationStatusCode.Success:
@@ -48,12 +49,18 @@ namespace WoChat.Views {
             }
         }
 
-        /// <summary>
-        /// This event must be handled if want SearchQuery to be changed as soon as user input.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        private void SearchBox_TextChanging(TextBox sender, TextBoxTextChangingEventArgs args) {}
+        ///// <summary>
+        ///// This event must be handled if want SearchQuery to be changed as soon as user input.
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="args"></param>
+        //private void SearchBox_TextChanging(TextBox sender, TextBoxTextChangingEventArgs args) {
+        //    Debug.WriteLine("SearchBox_TextChanging: " + SearchBox.Text);
+        //}
+
+        private void SearchBox_TextChanged(object sender, TextChangedEventArgs e) {
+            UIVM.SearchQuery = SearchBox.Text;
+        }
     }
 
     class FriendsPageUIViewModel : NotifyPropertyChangedBase {

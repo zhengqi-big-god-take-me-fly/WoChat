@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 
 namespace WoChat.Models {
     /// <summary>
@@ -137,6 +138,23 @@ namespace WoChat.Models {
             DisplayName = dn;
             LatestMessageText = lmt;
             LatestMessageTimeText = lmtt;
+            MessageList.CollectionChanged += MessageList_CollectionChanged;
+        }
+
+        public void RefreshReceiver() {
+            ReceiverId = ReceiverId;
+            foreach (var m in MessageList) {
+                if (m.SenderId.Equals(ReceiverId)) {
+                    m.SenderId = m.SenderId;
+                }
+            }
+        }
+
+        private void MessageList_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
+            if (MessageList.Count > 0) {
+                LatestMessageText = MessageList[MessageList.Count - 1].Content;
+                LatestMessageTimeText = MessageList[MessageList.Count - 1].HumanTime;
+            }
         }
 
         public enum ChatType { User, Group, System };

@@ -14,6 +14,7 @@ namespace WoChat.ViewModels {
         }
 
         public void Load() {
+            Contacts.Clear();
             // TODO: Load from db
         }
 
@@ -25,6 +26,13 @@ namespace WoChat.ViewModels {
                     Contacts.Clear();
                     foreach (var c in r.contacts) {
                         Contacts.Add(new ContactModel(c.contact._id, c.contact.username, c.contact.nickname, c.contact.avatar, c.remark, c.block_level));
+                        // Update info. Should use one-to-one ChatId-ReceiverId pair to avoid loop finding.
+                        foreach (var ch in App.AppVM.ChatVM.Chats) {
+                            if (ch.ReceiverId.Equals(c.contact._id)) {
+                                ch.RefreshReceiver();
+                                break;
+                            }
+                        }
                     }
                     break;
                 case GetUsers_ContactsResult.GetUsers0ContactsStatusCode.InvalidToken:

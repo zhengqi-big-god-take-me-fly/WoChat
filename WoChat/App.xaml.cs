@@ -56,9 +56,10 @@ namespace WoChat {
             if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.ApplicationView")) {
                 var titleBar = ApplicationView.GetForCurrentView().TitleBar;
                 if (titleBar != null) {
+                    titleBar.BackgroundColor = Current.Resources["SystemAccentColor"] as Color?;
                     titleBar.ButtonBackgroundColor = Current.Resources["SystemAccentColor"] as Color?;
                     titleBar.ButtonForegroundColor = Colors.White;
-                    titleBar.BackgroundColor = Current.Resources["SystemAccentColor"] as Color?;
+                    titleBar.ButtonHoverBackgroundColor = Color.FromArgb(255, 221, 161, 85) as Color?;
                 }
             }
 

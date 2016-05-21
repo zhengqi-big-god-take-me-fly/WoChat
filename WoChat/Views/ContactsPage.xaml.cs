@@ -6,7 +6,7 @@ namespace WoChat.Views {
             InitializeComponent();
 
             FriendsFrame.Navigate(typeof(FriendsPage));
-            GroupsFrame.Navigate(typeof(GroupsPage));
+            //GroupsFrame.Navigate(typeof(GroupsPage));
             SystemsFrame.Navigate(typeof(SystemsPage));
         }
 

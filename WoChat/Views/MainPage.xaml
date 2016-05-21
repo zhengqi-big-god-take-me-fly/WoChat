@@ -6,7 +6,7 @@
     xmlns:utils="using:WoChat.Utils"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.Resources>
         <utils:ObjectToMenuItemConverter x:Key="O2MiConverter"/>
         <utils:IntToStringConverter x:Key="I2SConverter"/>
@@ -107,9 +107,9 @@
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
     </Page.Resources>
-    <SplitView x:Name="MainSplitView" DisplayMode="CompactOverlay"  IsPaneOpen="False" CompactPaneLength="48" OpenPaneLength="240" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <SplitView x:Name="MainSplitView" DisplayMode="CompactOverlay"  IsPaneOpen="False" CompactPaneLength="48" OpenPaneLength="240" Background="{ThemeResource HalfOpacityColorBrush}">
         <SplitView.Pane>
-            <Grid>
+            <Grid Background="{ThemeResource HalfOpacityLowColorBrush}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="1*"/>
@@ -121,9 +121,9 @@
                     <ColumnDefinition Width="48"/>
                 </Grid.ColumnDefinitions>
                 <Button Content="&#xE700;" FontFamily="Segoe MDL2 Assets" Width="48" Height="48" Background="Transparent" Click="MainPaneMenuButton_Click"/>
-                <Button Content="{x:Bind LocalUserVM.LocalUser.Nickname,Mode=OneWay}" Height="48" Background="Transparent" Grid.Column="1" FontWeight="Bold" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Click="UserButton_Click"/>
+                <Button Content="{x:Bind LocalUserVM.LocalUser.Nickname,Mode=OneWay}" Height="48" Background="Transparent" Grid.Column="1" FontWeight="Bold" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Click="UserButton_Click" Foreground="{ThemeResource AccentColorBrush}"/>
                 <Button Content="&#xE711;" FontFamily="Segoe MDL2 Assets" Width="48" Height="48" Background="Transparent" Grid.Column="2" Click="LogOutButton_Click"/>
-                <ListBox x:Name="SplitViewMenu" ItemsSource="{x:Bind MainPageUIVM.MenuItems}" SelectedItem="{x:Bind MainPageUIVM.SelectedMenuItem, Mode=TwoWay, Converter={StaticResource O2MiConverter}}" ItemContainerStyle="{StaticResource MenuListBoxItemStyle}" SelectionChanged="MainPaneMenu_SelectionChanged" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
+                <ListBox x:Name="SplitViewMenu" ItemsSource="{x:Bind MainPageUIVM.MenuItems}" SelectedItem="{x:Bind MainPageUIVM.SelectedMenuItem, Mode=TwoWay, Converter={StaticResource O2MiConverter}}" ItemContainerStyle="{StaticResource MenuListBoxItemStyle}" SelectionChanged="MainPaneMenu_SelectionChanged" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Background="Transparent">
                     <ListBox.ItemTemplate>
                         <DataTemplate x:DataType="utils:MenuItem">
                             <Grid Height="48">
@@ -141,10 +141,10 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <Button Grid.Row="2" Grid.ColumnSpan="3" Height="48" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="0" Click="SettingsButton_Click">
+                <Button Grid.Row="2" Grid.ColumnSpan="3" Height="48" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="0" Click="SettingsButton_Click" Background="#00000000">
                     <Button.Content>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="&#xE713;" Style="{StaticResource IconTextBlockStyle}" />
+                        <StackPanel Orientation="Horizontal" Margin="-2,0,0,0">
+                            <TextBlock Text="&#xE713;" Style="{StaticResource IconTextBlockStyle}"/>
                             <TextBlock Text="设置" Style="{StaticResource MenuTitleTextBlockStyle}" />
                         </StackPanel>
                     </Button.Content>

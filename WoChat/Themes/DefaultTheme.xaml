@@ -4,10 +4,18 @@
     xmlns:local="using:WoChat.Themes">
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
-            <Color x:Key="SystemAccentColor">#C2BD8E</Color>
-            <Color x:Key="SystemColorButtonTextColor">#646555</Color>
-            <Color x:Key="SystemColorButtonFaceColor">#C2BD8E</Color>
-            <Color x:Key="SystemListAccentHighColor">#C2BD8E</Color>
+            <Color x:Key="SystemAccentColor">#CD7201</Color>
+            <Color x:Key="ApplicationMediumColor">#E3B36C</Color>
+            <Color x:Key="ApplicationLowColor">#F9F4D7</Color>
+            <Color x:Key="ApplicationHalfOpacityLowColor">#7FF9F4D7</Color>
+            <!--<Color x:Key="SystemColorButtonTextColor">#646555</Color>-->
+            <!--<Color x:Key="SystemColorButtonFaceColor">#C2BD8E</Color>-->
+            <Color x:Key="SystemListAccentHighColor">#CD7201</Color>
+            <Color x:Key="SystemListAccentMediumColor">#E3B36C</Color>
+            <SolidColorBrush x:Key="AccentColorBrush" Color="{ThemeResource SystemAccentColor}"/>
+            <SolidColorBrush x:Key="LowColorBrush" Color="{ThemeResource ApplicationLowColor}"/>
+            <SolidColorBrush x:Key="HalfOpacityLowColorBrush" Color="{ThemeResource ApplicationHalfOpacityLowColor}"/>
+            <SolidColorBrush x:Key="HalfOpacityColorBrush" Color="#3FFFFFFF"/>
             <ImageBrush x:Key="ApplicationPageBackgroundThemeBrush" Stretch="UniformToFill" ImageSource="ms-appx:///Assets/DefaultBackground.jpg"/>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>

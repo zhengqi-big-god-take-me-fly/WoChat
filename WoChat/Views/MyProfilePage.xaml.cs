@@ -94,6 +94,7 @@ namespace WoChat.Views {
         }
 
         private async void UpdateNewGender(int g) {
+            if (App.AppVM.LocalUserVM.LocalUser.Gender.Equals(g)) return;
             PutUsers_Result result = await HTTP.PutUsers_(LocalUserVM.JWT, LocalUserVM.LocalUser.Username, "", "", "", "", g, -1);
             switch (result.StatusCode) {
                 case PutUsers_Result.PutUser_StatusCode.Success:

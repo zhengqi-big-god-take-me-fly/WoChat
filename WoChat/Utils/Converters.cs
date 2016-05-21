@@ -1,6 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
+using System.Text;
+using Windows.Security.Cryptography;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
 
 namespace WoChat.Utils {
     public class ObjectToMenuItemConverter : IValueConverter {
@@ -72,7 +77,7 @@ namespace WoChat.Utils {
 
     public class EqualToVisibilityConverter : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, string language) {
-            return value == parameter ? Visibility.Visible : Visibility.Collapsed;
+            return value.ToString().Equals(parameter as string) ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language) {
@@ -100,5 +105,76 @@ namespace WoChat.Utils {
         public object ConvertBack(object value, Type targetType, object parameter, string language) {
             throw new NotImplementedException();
         }
+    }
+
+    public class FriendInvitationContentConverter : IValueConverter {
+        public object Convert(object value, Type targetType, object parameter, string language) {
+            string jwt = value as string;
+            if (jwt == null) return "";
+            try {
+                jwt = CryptographicBuffer.ConvertBinaryToString(BinaryStringEncoding.Utf8, CryptographicBuffer.DecodeFromBase64String(jwt.Split('.')[1]));
+                InvitationInfo info = JsonConvert.DeserializeObject<InvitationInfo>(jwt);
+                return new StringBuilder().Append("你收到了一条好友申请\n").Append(info.message).ToString();
+            } catch (Exception e) {
+                return value;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language) {
+            throw new NotImplementedException();
+        }
+    }
+
+    class SenderIdToMessageBackgroundConverter : IValueConverter {
+        public object Convert(object value, Type targetType, object parameter, string language) {
+            bool isSent = (value as string ?? "").Equals(App.AppVM.LocalUserVM.LocalUser.UserId);
+            // TODO: Change to theme color
+            return new SolidColorBrush(isSent == false ? Color.FromArgb(223, 255, 255, 255) : Color.FromArgb(223, 205, 114, 1));
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language) {
+            throw new NotImplementedException();
+        }
+    }
+
+    class SenderIdToMessageHorizontalAlignmentConverter : IValueConverter {
+        public object Convert(object value, Type targetType, object parameter, string language) {
+            bool isSent = (value as string ?? "").Equals(App.AppVM.LocalUserVM.LocalUser.UserId);
+            return isSent ? HorizontalAlignment.Right : HorizontalAlignment.Left;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language) {
+            throw new NotImplementedException();
+        }
+    }
+
+    class SenderIdToMessageAvatarVisibilityConverter : IValueConverter {
+        public object Convert(object value, Type targetType, object parameter, string language) {
+            bool isSent = (value as string ?? "").Equals(App.AppVM.LocalUserVM.LocalUser.UserId);
+            bool isLeft = (parameter as string ?? "Left").Equals("Left");
+            return (isSent && isLeft) || (!isSent && !isLeft) ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language) {
+            throw new NotImplementedException();
+        }
+    }
+
+    class SelectedIndexToVisibilityConverter : IValueConverter {
+        public object Convert(object value, Type targetType, object parameter, string language) {
+            int i = value as int? ?? -1;
+            return i == -1 ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language) {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class InvitationInfo {
+        public string sender;
+        public string receiver;
+        public string message;
+        public long iat;
     }
 }
