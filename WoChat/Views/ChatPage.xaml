@@ -4,10 +4,14 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:WoChat.Views"
     xmlns:models="using:WoChat.Models"
+    xmlns:utils="using:WoChat.Utils"
     xmlns:viewmodels="using:WoChat.ViewModels"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
+    <Page.Resources>
+        <utils:EqualToVisibilityConverter x:Key="E2VConverter"/>
+    </Page.Resources>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
@@ -100,18 +104,34 @@
             </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="models:MessageModel">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="1*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <Image Grid.Column="0" Source="../Assets/image.jpg" Stretch="UniformToFill" Width="48" Height="48"/>
-                        <Border Grid.Column="1" Margin="8,0" Padding="8" HorizontalAlignment="Right">
-                            <TextBlock Text="{Binding Content,Mode=OneWay}" TextWrapping="WrapWholeWords"/>
-                        </Border>
-                        <Image Grid.Column="2" Source="../Assets/th.jpg" Stretch="UniformToFill" Width="48" Height="48"/>
-                    </Grid>
+                    <StackPanel Orientation="Vertical">
+                        <!--Friend-->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0" Source="{Binding SenderModel.AvatarSource,Mode=OneWay}" Stretch="UniformToFill" Width="48" Height="48"/>
+                            <Border Grid.Column="1" Margin="8,0" Padding="8" HorizontalAlignment="Right">
+                                <TextBlock Text="{Binding Content,Mode=OneWay}" TextWrapping="WrapWholeWords"/>
+                            </Border>
+                            <Image Grid.Column="2" Source="../Assets/th.jpg" Stretch="UniformToFill" Width="48" Height="48"/>
+                        </Grid>
+                        <!--System FriendInvitation-->
+                        <Grid Visibility="{Binding MessageType,Mode=OneWay,Converter={StaticResource E2VConverter},ConverterParameter=MessageTypeEnum.System}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0" Source="{Binding SenderModel.AvatarSource,Mode=OneWay}" Stretch="UniformToFill" Width="48" Height="48"/>
+                            <Border Grid.Column="1" Margin="8,0" Padding="8" HorizontalAlignment="Right">
+                                <TextBlock Text="{Binding Content,Mode=OneWay}" TextWrapping="WrapWholeWords"/>
+                            </Border>
+                            <Button Grid.Column="2" Content="接受"/>
+                        </Grid>
+                    </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

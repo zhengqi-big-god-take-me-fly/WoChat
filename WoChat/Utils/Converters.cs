@@ -69,4 +69,36 @@ namespace WoChat.Utils {
             throw new NotImplementedException();
         }
     }
+
+    public class EqualToVisibilityConverter : IValueConverter {
+        public object Convert(object value, Type targetType, object parameter, string language) {
+            return value == parameter ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language) {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class GenderMaleConverter : IValueConverter {
+        public object Convert(object value, Type targetType, object parameter, string language) {
+            int g = value as int? ?? 0;
+            return g == 0 ? true : false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language) {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class GenderFemaleConverter : IValueConverter {
+        public object Convert(object value, Type targetType, object parameter, string language) {
+            int g = value as int? ?? 0;
+            return g == 1 ? true : false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language) {
+            throw new NotImplementedException();
+        }
+    }
 }

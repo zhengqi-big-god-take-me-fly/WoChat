@@ -10,6 +10,8 @@
     <Page.Resources>
         <utils:BooleanToVisibilityConverter x:Key="B2VConverter"/>
         <utils:BooleanToVisibilityReverseConverter x:Key="B2VRConverter"/>
+        <utils:GenderMaleConverter x:Key="GMConverter"/>
+        <utils:GenderFemaleConverter x:Key="GFConverter"/>
     </Page.Resources>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
@@ -27,7 +29,7 @@
                 <RowDefinition Height="64"/>
                 <RowDefinition Height="64"/>
                 <RowDefinition Height="64"/>
-                <RowDefinition Height="64"/>
+                <!--<RowDefinition Height="64"/>-->
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -44,15 +46,16 @@
             <TextBlock Text="{x:Bind LocalUserVM.LocalUser.Username,Mode=OneWay}" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
             <TextBlock Text="昵称" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
             <TextBlock Text="{x:Bind LocalUserVM.LocalUser.Nickname,Mode=OneWay}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            <AppBarButton Width="48" Height="48" Grid.Row="1" Grid.Column="3" Icon="Edit" VerticalAlignment="Center" Visibility="{x:Bind UIVM.IsEditingNickname,Mode=OneWay,Converter={StaticResource B2VRConverter}}"/>
-            <AppBarButton Width="48" Height="48" Grid.Row="1" Grid.Column="3" Icon="Accept" VerticalAlignment="Center" Visibility="{x:Bind UIVM.IsEditingNickname,Mode=OneWay,Converter={StaticResource B2VConverter}}"/>
-            <AppBarButton Width="48" Height="48" Grid.Row="1" Grid.Column="4" Icon="Cancel" VerticalAlignment="Center" Visibility="{x:Bind UIVM.IsEditingNickname,Mode=OneWay,Converter={StaticResource B2VConverter}}"/>
+            <TextBox Grid.Row="1" Grid.Column="2" Text="{x:Bind UIVM.EditingNickname,Mode=TwoWay}" VerticalAlignment="Center" Margin="8,0" Visibility="{x:Bind UIVM.IsEditingNickname,Mode=OneWay,Converter={StaticResource B2VConverter}}" KeyUp="NewNicknameBox_KeyUp"/>
+            <AppBarButton Width="48" Height="48" Grid.Row="1" Grid.Column="3" Icon="Edit" VerticalAlignment="Center" Visibility="{x:Bind UIVM.IsEditingNickname,Mode=OneWay,Converter={StaticResource B2VRConverter}}" Click="EditNicknameButton_Click"/>
+            <AppBarButton Width="48" Height="48" Grid.Row="1" Grid.Column="3" Icon="Accept" VerticalAlignment="Center" Visibility="{x:Bind UIVM.IsEditingNickname,Mode=OneWay,Converter={StaticResource B2VConverter}}" Click="AcceptNewNicknameButton_Click"/>
+            <AppBarButton Width="48" Height="48" Grid.Row="1" Grid.Column="4" Icon="Cancel" VerticalAlignment="Center" Visibility="{x:Bind UIVM.IsEditingNickname,Mode=OneWay,Converter={StaticResource B2VConverter}}" Click="CancelNewNicknameButton_Click"/>
             <TextBlock Text="性别" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
             <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center">
-                <RadioButton Content="男" MinWidth="0" Width="96" Margin="8,0" GroupName="Gender" />
-                <RadioButton Content="女" MinWidth="0" Width="96" Margin="8,0" GroupName="Gender" />
+                <RadioButton Content="男" MinWidth="0" Width="96" Margin="8,0" GroupName="Gender" IsChecked="{x:Bind LocalUserVM.LocalUser.Gender,Converter={StaticResource GMConverter},Mode=OneWay}" Checked="MaleRadio_Checked"/>
+                <RadioButton Content="女" MinWidth="0" Width="96" Margin="8,0" GroupName="Gender" IsChecked="{x:Bind LocalUserVM.LocalUser.Gender,Converter={StaticResource GFConverter},Mode=OneWay}" Checked="FemaleRadio_Checked"/>
             </StackPanel>
-            <TextBlock Text="地区" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <!--<TextBlock Text="地区" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed"/>-->
         </Grid>
     </Grid>
 </Page>

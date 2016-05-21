@@ -7,6 +7,7 @@ using WoChat.Utils;
 using Windows.Storage.Streams;
 using Windows.Web.Http;
 using Windows.Storage;
+using System.Text;
 
 namespace WoChat.Net {
     class HTTP {
@@ -222,7 +223,7 @@ namespace WoChat.Net {
                 Content = new HttpStringContent(JsonConvert.SerializeObject(new PostAuthLoginParams() {
                     username = un,
                     password = MD5.Hash(pw)
-                }), UnicodeEncoding.Utf8, "application/json"),
+                }), Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/json"),
                 Method = HttpMethod.Post,
                 RequestUri = new Uri(API_HOST + URI_AUTH_LOGIN)
             };
@@ -384,7 +385,7 @@ namespace WoChat.Net {
                 Content = new HttpStringContent(JsonConvert.SerializeObject(new PostUsersParams() {
                     username = un,
                     password = MD5.Hash(pw)
-                }), UnicodeEncoding.Utf8, "application/json"),
+                }), Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/json"),
                 Method = HttpMethod.Post,
                 RequestUri = new Uri(API_HOST + URI_USERS)
             };
@@ -415,7 +416,7 @@ namespace WoChat.Net {
             HttpRequestMessage req = new HttpRequestMessage() {
                 Content = new HttpStringContent(JsonConvert.SerializeObject(new PostUsers_InvitationParams() {
                     message = m
-                }), UnicodeEncoding.Utf8, "application/json"),
+                }), Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/json"),
                 Method = HttpMethod.Post,
                 RequestUri = new Uri(API_HOST + URI_USERS_ + cn + URI_INVITATION)
             };
@@ -452,7 +453,7 @@ namespace WoChat.Net {
                 Content = new HttpStringContent(JsonConvert.SerializeObject(new PostUsers_MessageParams() {
                     type = t,
                     content = c
-                }), UnicodeEncoding.Utf8, "application/json"),
+                }), Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/json"),
                 Method = HttpMethod.Post,
                 RequestUri = new Uri(API_HOST + URI_USERS_ + cn + URI_MESSAGE)
             };
@@ -569,51 +570,76 @@ namespace WoChat.Net {
             return result;
         }
 
-        public static async Task<PutUser_Result> PutUsers_(string jwt, string un, string nn, string pw, string opw, string at, int gd, int rg) {
-            PutUser_Result result;
-            if (jwt.Equals("") || un.Equals("") || nn.Equals("") || pw.Equals("") || opw.Equals("") || at.Equals("")) {
-                return new PutUser_Result() { StatusCode = PutUser_Result.PutUser_StatusCode.UnknownError };
+        public static async Task<PutUsers_Result> PutUsers_(string jwt, string un, string nn, string pw, string opw, string at, int gd, int rg) {
+            PutUsers_Result result;
+            if (jwt.Equals("") || un.Equals("") || (nn.Equals("") && pw.Equals("") && opw.Equals("") && at.Equals("") && gd == -1 && rg == -1)) {
+                return new PutUsers_Result() { StatusCode = PutUsers_Result.PutUser_StatusCode.UnknownError };
             }
             HttpClient client = new HttpClient();
             HttpRequestMessage req = new HttpRequestMessage() {
-                Content = new HttpStringContent(JsonConvert.SerializeObject(new PutUser_Params() {
-                    nickname = nn,
-                    password = pw,
-                    old_password = opw,
-                    avatar = at,
-                    gender = gd,
-                    region = rg
-                })),
+                Content = new HttpStringContent(PutUsers_GetParams(nn, pw, opw, at, gd, rg)),
                 Method = HttpMethod.Put,
                 RequestUri = new Uri(API_HOST + "/users/" + un)
             };
             req.Headers["Authorization"] = jwt;
             HttpResponseMessage res = await client.SendRequestAsync(req);
             try {
-                result = JsonConvert.DeserializeObject<PutUser_Result>(res.Content.ToString());
+                result = JsonConvert.DeserializeObject<PutUsers_Result>(res.Content.ToString());
                 switch (res.StatusCode) {
                     case HttpStatusCode.Ok:
-                        result.StatusCode = PutUser_Result.PutUser_StatusCode.Success;
+                        result.StatusCode = PutUsers_Result.PutUser_StatusCode.Success;
                         break;
                     case HttpStatusCode.BadRequest:
-                        result.StatusCode = PutUser_Result.PutUser_StatusCode.InvalidParams;
+                        result.StatusCode = PutUsers_Result.PutUser_StatusCode.InvalidParams;
                         break;
                     case HttpStatusCode.Unauthorized:
-                        result.StatusCode = PutUser_Result.PutUser_StatusCode.InvalidToken;
+                        result.StatusCode = PutUsers_Result.PutUser_StatusCode.InvalidToken;
                         break;
                     case HttpStatusCode.NotFound:
-                        result.StatusCode = PutUser_Result.PutUser_StatusCode.NoThisGroup;
+                        result.StatusCode = PutUsers_Result.PutUser_StatusCode.NoThisGroup;
                         break;
                     default:
-                        result.StatusCode = PutUser_Result.PutUser_StatusCode.UnknownError;
+                        result.StatusCode = PutUsers_Result.PutUser_StatusCode.UnknownError;
                         break;
                 }
 #pragma warning disable CS0168 // Variable is declared but never used
             } catch (JsonException e) {
 #pragma warning restore CS0168 // Variable is declared but never used
-                result = new PutUser_Result() { StatusCode = PutUser_Result.PutUser_StatusCode.UnknownError };
+                result = new PutUsers_Result() { StatusCode = PutUsers_Result.PutUser_StatusCode.UnknownError };
             }
             return result;
+        }
+
+        static string PutUsers_GetParams(string nn, string pw, string opw,  string at, int gd, int rg) {
+            StringBuilder sb = new StringBuilder();
+            StringWriter jw = new StringWriter(sb);
+            using (JsonWriter writer = new JsonTextWriter(jw)) {
+                writer.WriteStartObject();
+                if (!nn.Equals("")) {
+                    writer.WritePropertyName("nickname");
+                    writer.WriteValue(nn);
+                }
+                if (!pw.Equals("") && !opw.Equals("")) {
+                    writer.WritePropertyName("password");
+                    writer.WriteValue(pw);
+                    writer.WritePropertyName("old_password");
+                    writer.WriteValue(opw);
+                }
+                if (!at.Equals("")) {
+                    writer.WritePropertyName("avatar");
+                    writer.WriteValue(at);
+                }
+                if (gd != -1) {
+                    writer.WritePropertyName("gender");
+                    writer.WriteValue(gd);
+                }
+                if (rg != -1) {
+                    writer.WritePropertyName("region");
+                    writer.WriteValue(rg);
+                }
+                writer.WriteEndObject();
+            }
+            return sb.ToString();
         }
 
         public static async Task<PutUsers_Contacts_Result> PutUsers_Contacts_(string jwt, string un, string cn, string r, int bl) {
@@ -929,7 +955,7 @@ namespace WoChat.Net {
         public int gender;
         public int region;
     }
-    public class PutUser_Result {
+    public class PutUsers_Result {
         public enum PutUser_StatusCode { Success, InvalidParams, InvalidToken, NoThisGroup, UnknownError };
         public PutUser_StatusCode StatusCode;
     }

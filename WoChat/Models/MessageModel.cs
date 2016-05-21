@@ -1,4 +1,7 @@
-﻿namespace WoChat.Models {
+﻿using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
+
+namespace WoChat.Models {
     public class MessageModel : NotifyPropertyChangedBase {
         public string Content {
             get {
@@ -56,6 +59,25 @@
             private set {
                 senderid = value;
                 OnPropertyChanged();
+                // Change other data that should be retrieved from other model
+                // Sadly, this make this model tight coupling.
+                switch (MessageType) {
+                    case MessageTypeEnum.Text:
+                        SenderModel = App.AppVM.ContactVM.FindUser(value);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        public UserModel SenderModel {
+            get {
+                return senderModel;
+            }
+            set {
+                senderModel = value;
+                OnPropertyChanged();
             }
         }
 
@@ -65,15 +87,28 @@
         /// provide real time access of nickname, It provides lastly used nickname stored in database.
         /// As result, you have to manually set it to latest when opening related chat.
         /// </summary>
-        public string SenderDisplayName {
-            get {
-                return senderDisplayName;
-            }
-            set {
-                senderDisplayName = value;
-                OnPropertyChanged();
-            }
-        }
+        //public string SenderDisplayName {
+        //    get {
+        //        return senderDisplayName;
+        //    }
+        //    set {
+        //        senderDisplayName = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
+
+        /// <summary>
+        /// This property is only relying on SenderId's change.
+        /// </summary>
+        //public ImageSource SenderAvatarSource {
+        //    get {
+        //        return senderAvatarSource;
+        //    }
+        //    set {
+        //        senderAvatarSource = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
 
         /// <summary>
         /// Convert Time to human-readable time string.
@@ -95,7 +130,7 @@
             MessageType = (MessageTypeEnum)_messageType;
             ChatId = _chatId;
             SenderId = _senderId;
-            SenderDisplayName = senderDisplayName;
+            //SenderDisplayName = senderDisplayName;
         }
 
         private string content = "";
@@ -103,6 +138,8 @@
         private MessageTypeEnum messageType = MessageTypeEnum.Text;
         private string chatId = "";
         private string senderid = "";
+        private UserModel senderModel = new UserModel();
         private string senderDisplayName = "";
+        private ImageSource senderAvatarSource = new BitmapImage();
     }
 }

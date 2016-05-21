@@ -5,9 +5,11 @@ using Windows.Storage.Pickers;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
 using WoChat.Models;
 using WoChat.Net;
+using WoChat.Utils;
 using WoChat.ViewModels;
 
 namespace WoChat.Views {
@@ -50,6 +52,58 @@ namespace WoChat.Views {
                 }
             }
         }
+
+        private void EditNicknameButton_Click(object sender, RoutedEventArgs e) {
+            UIVM.IsEditingNickname = true;
+        }
+
+        private void AcceptNewNicknameButton_Click(object sender, RoutedEventArgs e) {
+            UpdateNewNickname();
+        }
+
+        private void CancelNewNicknameButton_Click(object sender, RoutedEventArgs e) {
+            UIVM.IsEditingNickname = false;
+        }
+
+        private void NewNicknameBox_KeyUp(object sender, KeyRoutedEventArgs e) {
+            if (e.Key == Windows.System.VirtualKey.Enter) {
+                UpdateNewNickname();
+            }
+        }
+
+        private async void UpdateNewNickname() {
+            UIVM.IsEditingNickname = false;
+            LocalUserVM.LocalUser.Nickname = UIVM.EditingNickname;
+            PutUsers_Result result = await HTTP.PutUsers_(LocalUserVM.JWT, LocalUserVM.LocalUser.Username, UIVM.EditingNickname, "", "", "", -1, -1);
+            switch (result.StatusCode) {
+                case PutUsers_Result.PutUser_StatusCode.Success:
+                    break;
+                default:
+                    NotificationHelper.ShowToast("修改失败！");
+                    break;
+            }
+            LocalUserVM.Sync();
+        }
+
+        private void MaleRadio_Checked(object sender, RoutedEventArgs e) {
+            UpdateNewGender(0);
+        }
+
+        private void FemaleRadio_Checked(object sender, RoutedEventArgs e) {
+            UpdateNewGender(1);
+        }
+
+        private async void UpdateNewGender(int g) {
+            PutUsers_Result result = await HTTP.PutUsers_(LocalUserVM.JWT, LocalUserVM.LocalUser.Username, "", "", "", "", g, -1);
+            switch (result.StatusCode) {
+                case PutUsers_Result.PutUser_StatusCode.Success:
+                    break;
+                default:
+                    NotificationHelper.ShowToast("修改失败！");
+                    break;
+            }
+            LocalUserVM.Sync();
+        }
     }
 
     class MyProfilePageUIViewModel : NotifyPropertyChangedBase {
@@ -63,6 +117,18 @@ namespace WoChat.Views {
             }
         }
 
+        public string EditingNickname {
+            get {
+                return editingNickname;
+            }
+
+            set {
+                editingNickname = value;
+                OnPropertyChanged();
+            }
+        }
+
         private bool isEditingNickname = false;
+        private string editingNickname = "";
     }
 }

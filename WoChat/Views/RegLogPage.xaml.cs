@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
 using WoChat.Net;
 using WoChat.ViewModels;
@@ -51,14 +52,14 @@ namespace WoChat.Views {
         }
 
         private void LoginButton_Click(object sender, RoutedEventArgs e) {
-            if (RegLogPageUIVM.Password.Equals("") || RegLogPageUIVM.Username.Equals("")) {
-                RegLogPageUIVM.HintText = "用户名或密码不能为空！";
-                return;
-            }
             PerformLogin();
         }
 
         private async void PerformLogin() {
+            if (RegLogPageUIVM.Password.Equals("") || RegLogPageUIVM.Username.Equals("")) {
+                RegLogPageUIVM.HintText = "用户名或密码不能为空！";
+                return;
+            }
             RegLogPageUIVM.HintText = "正在登录，请稍候…";
             RegLogPageUIVM.IsLoading = true;
             PostAuthLoginResult result = await HTTP.PostAuthLogin(RegLogPageUIVM.Username, RegLogPageUIVM.Password);
@@ -89,6 +90,18 @@ namespace WoChat.Views {
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => {
                     rootFrame.Navigate(typeof(MainPage));
                 });
+            }
+        }
+
+        private void UsernameBox_KeyUp(object sender, KeyRoutedEventArgs e) {
+            if (e.Key == Windows.System.VirtualKey.Enter) {
+                PerformLogin();
+            }
+        }
+
+        private void PasswordBox_KeyUp(object sender, KeyRoutedEventArgs e) {
+            if (e.Key == Windows.System.VirtualKey.Enter) {
+                PerformLogin();
             }
         }
     }
