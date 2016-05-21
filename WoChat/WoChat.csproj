@@ -169,6 +169,7 @@
     <None Include="WoChat_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\default.png" />
     <Content Include="Assets\DefaultBackground.jpg" />
     <Content Include="Assets\image.jpg" />
     <Content Include="Assets\th.jpg" />

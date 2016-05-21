@@ -45,9 +45,11 @@ namespace WoChat.ViewModels {
             return new ContactModel();
         }
 
+#pragma warning disable CS1998
         private async Task WaitUntilLoaded() {
             while (isLoading) ;
         }
+#pragma warning restore CS1998
 
         private ObservableCollection<ContactModel> contacts = new ObservableCollection<ContactModel>();
         private bool isLoading = false;

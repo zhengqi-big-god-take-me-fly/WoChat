@@ -95,7 +95,7 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <ListView DataContext="{Binding SelectedItem, ElementName=ChatList}" x:Name="MessageList" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding MessageList,Mode=OneWay}">
+        <ListView DataContext="{Binding SelectedItem, ElementName=ChatList}" x:Name="MessageList" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding MessageList,Mode=OneWay}" SelectionMode="None">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -106,7 +106,7 @@
                 <DataTemplate x:DataType="models:MessageModel">
                     <StackPanel Orientation="Vertical">
                         <!--Friend-->
-                        <Grid>
+                        <Grid Visibility="{Binding MessageType,Mode=OneWay,Converter={StaticResource E2VConverter},ConverterParameter=MessageTypeEnum.Text}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="1*"/>
@@ -119,7 +119,7 @@
                             <Image Grid.Column="2" Source="../Assets/th.jpg" Stretch="UniformToFill" Width="48" Height="48"/>
                         </Grid>
                         <!--System FriendInvitation-->
-                        <Grid Visibility="{Binding MessageType,Mode=OneWay,Converter={StaticResource E2VConverter},ConverterParameter=MessageTypeEnum.System}">
+                        <Grid Visibility="{Binding MessageType,Mode=OneWay,Converter={StaticResource E2VConverter},ConverterParameter=MessageTypeEnum.FriendInvitation}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="1*"/>

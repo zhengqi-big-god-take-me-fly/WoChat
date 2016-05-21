@@ -44,6 +44,23 @@ namespace WoChat.Models {
             set {
                 receiverId = value;
                 OnPropertyChanged();
+                switch (Type) {
+                    case ChatType.User:
+                        ReceiverModel = App.AppVM.ContactVM.FindUser(value);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        public UserModel ReceiverModel {
+            get {
+                return receiverModel;
+            }
+            private set {
+                receiverModel = value;
+                OnPropertyChanged();
             }
         }
 
@@ -126,6 +143,7 @@ namespace WoChat.Models {
 
         private string chatId = "";
         private string receiverId = "";
+        private UserModel receiverModel = new UserModel();
         private ChatType type = ChatType.User;
         private string displayName = "";
         private string latestMessageText = "";

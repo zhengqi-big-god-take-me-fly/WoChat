@@ -24,7 +24,7 @@ namespace WoChat.Views {
                     case 0:
                         int s = -1;
                         for (int i = 0; i < ChatVM.Chats.Count; ++i) {
-                            if (ChatVM.Chats[i].ChatId == info.id) {
+                            if (ChatVM.Chats[i].ReceiverId == info.id) {
                                 s = i;
                                 break;
                             }

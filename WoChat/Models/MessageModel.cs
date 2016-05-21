@@ -1,5 +1,6 @@
 ﻿using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using WoChat.Commons;
 
 namespace WoChat.Models {
     public class MessageModel : NotifyPropertyChangedBase {
@@ -65,6 +66,9 @@ namespace WoChat.Models {
                     case MessageTypeEnum.Text:
                         SenderModel = App.AppVM.ContactVM.FindUser(value);
                         break;
+                    case MessageTypeEnum.FriendInvitation:
+                        SenderModel = App.AppVM.SystemVM.FindUser(SystemIds.SystemIdFriendInvitation);
+                        break;
                     default:
                         break;
                 }
@@ -122,7 +126,7 @@ namespace WoChat.Models {
             }
         }
 
-        public enum MessageTypeEnum { Text };
+        public enum MessageTypeEnum { Text, Image, FriendInvitation };
 
         public MessageModel(string _content = "", long _time = 0, int _messageType = 0, string _chatId = "", string _senderId = "", string _senderDisplayName = "") {
             Content = _content;

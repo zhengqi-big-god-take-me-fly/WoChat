@@ -34,7 +34,8 @@ namespace WoChat.ViewModels {
                         break;
                     case 2:
                         // TODO: Handle more types of system user
-                        AppendMessage(SystemIds.SystemIdFriendInvitation, 2, m.content, m.time);
+                        // Friend Invitation
+                        AppendMessage(m.sender, 2, m.content, m.time);
                         break;
                     default:
                         break;
@@ -54,10 +55,10 @@ namespace WoChat.ViewModels {
                 }
             }
             if (cm == null) {
-                cm = new ChatModel(id, type);
-                Chats.Add(cm);
+                cm = new ChatModel(id, 0);
+                Chats.Insert(0, cm);
             }
-            cm.MessageList.Add(new MessageModel(content, time, type, "", id, "DisplayName"));
+            cm.MessageList.Add(new MessageModel(content, time, type, "", id));
         }
 
         public void Load() {

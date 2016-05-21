@@ -21,6 +21,15 @@ namespace WoChat.ViewModels {
             Systems.Add(new SystemModel(SystemIds.SystemIdFriendInvitation, "WOCHAT_SYSTEM_FRIEND_INVITATION", "Friend invitation", 0, 0, "ms-appx:///Assets/WOCHAT_SYSTEM_FRIEND_INVITATION.png"));
         }
 
+        public SystemModel FindUser(string id) {
+            foreach (var s in Systems) {
+                if (s.UserId == id) {
+                    return s;
+                }
+            }
+            return new SystemModel("", "", "", 0, 0, "ms-appx:///Assets/default.png");
+        }
+
         private ObservableCollection<SystemModel> systems = new ObservableCollection<SystemModel>();
     }
 }
