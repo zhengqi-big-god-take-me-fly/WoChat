@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Diagnostics;
 using System.Text;
 using Windows.Security.Cryptography;
 using Windows.UI;
@@ -112,7 +113,12 @@ namespace WoChat.Utils {
             string jwt = value as string;
             if (jwt == null) return "";
             try {
-                jwt = CryptographicBuffer.ConvertBinaryToString(BinaryStringEncoding.Utf8, CryptographicBuffer.DecodeFromBase64String(jwt.Split('.')[1]));
+                var a = jwt.Split('.')[1];
+                Debug.WriteLine("A done" + a + "GG");
+                var b = CryptographicBuffer.DecodeFromBase64String(a);
+                Debug.WriteLine("B done");
+                jwt = CryptographicBuffer.ConvertBinaryToString(BinaryStringEncoding.Utf8, b);
+                Debug.WriteLine("C done");
                 InvitationInfo info = JsonConvert.DeserializeObject<InvitationInfo>(jwt);
                 return new StringBuilder().Append("你收到了一条好友申请\n").Append(info.message).ToString();
             } catch (Exception e) {

@@ -31,7 +31,7 @@ namespace WoChat.Views {
         }
 
         private async void AddFriend_Click(object sender, RoutedEventArgs e) {
-            PostUsers_InvitationResult result = await HTTP.PostUsers_Invitation(App.AppVM.LocalUserVM.JWT, UIVM.SearchQuery, App.AppVM.LocalUserVM.LocalUser.Nickname + "(" + App.AppVM.LocalUserVM.LocalUser.Username + "): 交个朋友吧！");
+            PostUsers_InvitationResult result = await HTTP.PostUsers_Invitation(App.AppVM.LocalUserVM.JWT, UIVM.SearchQuery, App.AppVM.LocalUserVM.LocalUser.Nickname + "(" + App.AppVM.LocalUserVM.LocalUser.Username + "): Let's make friend!");
             UIVM.SearchQuery = "";
             switch (result.StatusCode) {
                 case PostUsers_InvitationResult.PostUsers_InvitationStatusCode.Success:
